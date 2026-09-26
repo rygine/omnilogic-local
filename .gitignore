@@ -1,0 +1,67 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+
+# testing
+coverage
+.tmp
+playwright-report
+test-results
+.vitest
+.vitest-attachments
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*
+!.env.example
+.dev.vars
+
+# logs
+logs
+*.log
+
+# editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# build artifacts
+dist
+dist-ssr
+.output
+.nitro
+.tanstack
+.turbo
+*.local
+*.tgz
+
+# agent scratch workspaces
+.superpowers
+
+# yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# typescript
+*.tsbuildinfo
+

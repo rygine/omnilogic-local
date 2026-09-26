@@ -1,0 +1,39 @@
+{
+  "name": "@rygine/omnilogic",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Monorepo for the Hayward OmniLogic project",
+  "license": "MIT",
+  "author": "Ry Racherbaumer",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "turbo run build",
+    "ci": "yarn build && yarn lint && yarn format:check && yarn test && yarn typecheck",
+    "clean": "turbo run clean && rimraf .turbo node_modules",
+    "fix": "oxlint --fix .",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint .",
+    "start": "yarn workspace @rygine/omnilogic-local-sdk build && yarn workspace @rygine/omnilogic-web dev",
+    "test": "turbo run test",
+    "test:cov": "turbo run test:cov",
+    "typecheck": "turbo run typecheck"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.0.0",
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "rimraf": "^6.1.3",
+    "turbo": "^2.10.12",
+    "typescript": "^6.0.3"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "yarn@4.18.1"
+}
