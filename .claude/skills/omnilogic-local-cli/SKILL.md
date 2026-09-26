@@ -37,12 +37,13 @@ the party theme. Find the command for it, and never send one on its name alone.
 1. `omnilogic-local info` lists every command with its opcode and `read` or
    `write`. Pick the candidates from their names, such as `SetUIFilterSpeedCmd`.
 2. Read each candidate's page at
-   `https://github.com/rygine/omnilogic-local/blob/main/apps/docs/commands/<Name>.md`.
-   Its frontmatter `summary` says what it does, and `status` says whether it
-   works on hardware: `verified`, `unverified`, or `unusable`. The page also
-   gives each parameter and an example call.
-3. The guide pages in `apps/docs/guide/` (`equipment.md`, `schedules.md`,
-   `favorites.md`, `themes.md`) describe the same operations.
+   `https://rygine.github.io/omnilogic-local/commands/<Name>`. It says what the
+   command does and whether it works on hardware: verified, unverified, or
+   unusable. It also gives each parameter and an example call.
+   `https://rygine.github.io/omnilogic-local/commands/status` lists the commands
+   by status.
+3. The guide pages at `https://rygine.github.io/omnilogic-local/guide/` describe
+   the same operations by equipment, schedules, favorites, and themes.
 4. The ids come from `config`. A body of water's `systemId` is the `poolId`, and
    the equipment's own `systemId` is the `equipmentId`. Use `--format json` and
    `jq` to find them by name.
