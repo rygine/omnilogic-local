@@ -1,0 +1,6 @@
+.title {
+  /* the whole header, so a title's controls can sit at its right edge */
+  flex: 1;
+  font-size: var(--mantine-font-size-lg);
+  font-weight: 700;
+}

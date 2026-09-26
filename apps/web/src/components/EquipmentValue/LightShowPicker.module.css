@@ -1,0 +1,41 @@
+.selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mantine-spacing-sm);
+}
+
+.selectedSwatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--mantine-color-default-border);
+  flex-shrink: 0;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.swatch {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--mantine-color-default-border);
+  transition:
+    box-shadow 120ms ease,
+    transform 120ms ease;
+}
+
+.cell:hover .swatch {
+  transform: scale(1.05);
+}
+
+.cell[data-selected] .swatch {
+  box-shadow:
+    0 0 0 2px var(--mantine-color-body),
+    0 0 0 4px var(--mantine-color-blue-5);
+}

@@ -1,0 +1,74 @@
+/* --tiles-columns fixes the count; without it, as many --tiles-min columns as
+   fit. a wide tile takes the row */
+.tiles {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: var(
+    --tiles-columns,
+    repeat(auto-fill, minmax(var(--tiles-min, 200px), 1fr))
+  );
+  gap: var(--mantine-spacing-xs);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  background: light-dark(
+    var(--mantine-color-gray-0),
+    var(--mantine-color-dark-6)
+  );
+  text-align: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.tile[data-wide] {
+  grid-column: 1 / -1;
+}
+
+/* two tiles wide; one where the grid is only one or two wide */
+.tile[data-span="2"] {
+  grid-column: span 2;
+}
+@container (max-width: 440px) {
+  .tile[data-span="2"] {
+    grid-column: auto;
+  }
+}
+
+/* a fact in each corner, the name in the middle */
+.corners {
+  position: relative;
+  min-height: 92px;
+  padding: calc(var(--mantine-spacing-md) + 6px) var(--mantine-spacing-sm);
+}
+
+.corner {
+  position: absolute;
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  white-space: nowrap;
+}
+
+.corner[data-at="top-left"] {
+  top: 6px;
+  left: 10px;
+}
+.corner[data-at="top-right"] {
+  top: 6px;
+  right: 10px;
+}
+.corner[data-at="bottom-left"] {
+  bottom: 6px;
+  left: 10px;
+}
+.corner[data-at="bottom-right"] {
+  bottom: 6px;
+  right: 10px;
+}

@@ -1,0 +1,28 @@
+.day {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  border: 1px solid var(--mantine-color-default-border);
+  background-color: transparent;
+  color: var(--mantine-color-dimmed);
+}
+
+.day[data-on] {
+  border-color: var(--mantine-primary-color-filled);
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-primary-color-contrast);
+}
+
+/* the schedule form's larger circles */
+.days[data-size="lg"] .day {
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+}

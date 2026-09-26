@@ -1,0 +1,110 @@
+/* a centered content column with the navbar on its left edge; flush left only
+   in full mode */
+
+:global(html) {
+  scrollbar-gutter: stable;
+}
+
+.root {
+  /* wide enough for the wordmark and the air temperature */
+  --layout-aside-min: 15rem;
+  --layout-aside-max: 18rem;
+  --layout-header-height: 3.5rem;
+  --layout-content-pref: 80ch;
+
+  /* percentages, not dvw, so the fixed navbar and the main column both exclude
+     a scrollbar */
+  --layout-content: min(
+    var(--layout-content-pref),
+    100% - 2 * var(--layout-aside-min)
+  );
+  --layout-side: calc((100% - var(--layout-content)) / 2);
+  --layout-aside: min(var(--layout-side), var(--layout-aside-max));
+  --layout-offset: calc(var(--layout-side) - var(--layout-aside));
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.root[data-layout-width="wide"] {
+  --layout-content-pref: 120ch;
+}
+
+.root[data-layout-width="full"] {
+  --layout-side: var(--layout-aside-max);
+  --layout-aside: var(--layout-aside-max);
+  --layout-offset: 0px;
+  --layout-content: calc(100% - var(--layout-aside-max));
+}
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: var(--layout-offset);
+  width: var(--layout-aside);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--mantine-color-body);
+  border-right: 1px solid var(--mantine-color-default-border);
+}
+
+.brand {
+  height: var(--layout-header-height);
+  align-items: center;
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.navBody {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.main {
+  margin-left: var(--layout-side);
+  max-width: var(--layout-content);
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* below sm the navbar is an off-canvas drawer and the content goes full width */
+@media (max-width: 48em) {
+  .root {
+    --layout-aside: var(--layout-aside-max);
+    --layout-offset: 0px;
+  }
+
+  .nav {
+    z-index: 200;
+    visibility: hidden;
+    transform: translateX(-100%);
+    transition:
+      transform 150ms ease,
+      visibility 150ms ease;
+  }
+
+  .root[data-nav-open="true"] .nav {
+    visibility: visible;
+    transform: none;
+  }
+
+  .main {
+    margin-left: 0;
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav {
+    transition: none;
+  }
+}

@@ -1,0 +1,4 @@
+/* the sunrise icon flipped for sunset */
+.sunset {
+  transform: rotate(180deg);
+}

@@ -1,0 +1,13 @@
+/* the header pins itself; content passes under it, so it needs a background */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--layout-header-height);
+  background-color: var(--mantine-color-body);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.title {
+  min-width: 0;
+}

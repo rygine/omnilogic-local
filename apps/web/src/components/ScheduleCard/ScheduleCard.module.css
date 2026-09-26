@@ -1,0 +1,131 @@
+/* the query container: the card reflows on its own width, not the viewport's */
+.container {
+  container-type: inline-size;
+  width: 100%;
+}
+
+/* stacked: .main takes the first line; the value and the days share the
+   second until the card is too narrow for both */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  row-gap: var(--mantine-spacing-xs);
+  column-gap: var(--mantine-spacing-md);
+  width: 100%;
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  /* the readout tiles' well */
+  background-color: light-dark(
+    var(--mantine-color-gray-0),
+    var(--mantine-color-dark-6)
+  );
+}
+
+.card:hover {
+  background-color: light-dark(
+    var(--mantine-color-gray-1),
+    var(--mantine-color-dark-5)
+  );
+}
+
+/* running now: a green well and border; enabled-but-idle keeps the plain well */
+.card[data-status="active"] {
+  border-color: var(--mantine-color-green-outline);
+  background-color: var(--mantine-color-green-light);
+}
+
+.card[data-status="active"]:hover {
+  background-color: var(--mantine-color-green-light-hover);
+}
+
+/* a disabled schedule dims its content; the switch stays crisp */
+.card[data-status="off"] .main,
+.card[data-status="off"] .value,
+.card[data-status="off"] .days {
+  opacity: 0.5;
+}
+
+/* full-card click target, under the switch */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: inherit;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* the whole first line, so a wrapped name wraps against the card */
+  flex: 0 0 100%;
+  /* room for the switch pinned top-right when stacked */
+  padding-right: 60px;
+}
+
+.value {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.days {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+}
+
+/* above the overlay, so the switch never opens the editor */
+.control {
+  position: absolute;
+  top: var(--mantine-spacing-sm);
+  right: var(--mantine-spacing-md);
+  z-index: 2;
+}
+
+/* wide enough: one row; value, days, and control drop under a long name */
+@container (min-width: 560px) {
+  .card {
+    justify-content: flex-end;
+    row-gap: var(--mantine-spacing-md);
+  }
+
+  .main {
+    flex: 1 1 auto;
+    padding-right: 0;
+  }
+
+  /* ellipsis only past this cap */
+  .name {
+    max-width: 24rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .value {
+    align-items: center;
+    min-width: 96px;
+    text-align: center;
+  }
+
+  /* relative, so z-index still lifts it above the overlay */
+  .control {
+    position: relative;
+    top: auto;
+    right: auto;
+    flex: 0 0 auto;
+  }
+}
