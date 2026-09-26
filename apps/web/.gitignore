@@ -1,0 +1,4 @@
+*.timestamp_*.js
+src/generated/
+data/
+

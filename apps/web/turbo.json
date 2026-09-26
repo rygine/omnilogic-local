@@ -1,0 +1,25 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "inputs": [
+        "src/**",
+        "vite.config.ts",
+        "tsconfig.json",
+        "prisma.config.ts"
+      ],
+      "outputs": [".output/**"]
+    },
+    "typecheck": {
+      "inputs": [
+        "src/**",
+        "tests/**",
+        "tsconfig.json",
+        "vite.config.ts",
+        "vitest.config.ts",
+        "prisma.config.ts"
+      ]
+    }
+  }
+}
