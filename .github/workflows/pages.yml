@@ -1,11 +1,15 @@
 # Builds the documentation site and publishes it to GitHub Pages at
-# https://rygine.github.io/omnilogic-local/ on every push to main. Needs the
-# repository's Pages source set to "GitHub Actions" in Settings > Pages.
+# https://rygine.github.io/omnilogic-local/ when a push to main changes
+# apps/docs. Needs the repository's Pages source set to "GitHub Actions" in
+# Settings > Pages.
 name: Docs
 
 on:
   push:
     branches: [main]
+    paths:
+      - "apps/docs/**"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
