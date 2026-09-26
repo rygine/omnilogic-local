@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// the controller access log, one row per operation the app ran
+model Log {
+  id         Int      @id @default(autoincrement())
+  // iso 8601
+  time       String
+  // the operation, such as getWorld or setFilterSpeed
+  op         String
+  ok         Boolean
+  durationMs Int
+  // the error stacks of a failed access, as a json array of strings
+  errors     String?
+
+  @@index([time])
+  @@index([op])
+  @@index([durationMs])
+  @@map("logs")
+}
+
+// the boards on the controller's bus, read again after a firmware change or when the user asks
+model SystemInventory {
+  host            String
+  port            Int
+  // the msp firmware version at the read, null when not known yet
+  firmwareVersion String?
+  // the system info, as json
+  json            String
+  // iso 8601
+  readAt          String
+
+  @@id([host, port])
+  @@map("system_inventory")
+}
+
+// a controller setting outside the configuration and telemetry, read once and kept
+model StoredSetting {
+  host   String
+  port   Int
+  // coordinates, panel, or heaterAutoDifferential:<bowId>
+  key    String
+  // the value, as json
+  json   String
+  // iso 8601, when the controller reported the value or this app wrote it
+  readAt String
+
+  @@id([host, port, key])
+  @@map("stored_settings")
+}
