@@ -1,0 +1,14 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["typedoc.entry.ts"],
+  "tsconfig": "typedoc.tsconfig.json",
+  "out": "reference/api",
+  "docsRoot": ".",
+  "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+  "readme": "none",
+  "cleanOutputDir": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "hideBreadcrumbs": true,
+  "validation": { "notExported": false }
+}

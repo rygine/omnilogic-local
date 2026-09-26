@@ -1,0 +1,49 @@
+name: Command verified
+description: You ran a command on your controller. Report what it did.
+title: "Verified: <CommandName>"
+labels: [verification]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Run the command with `--verbose` and save everything it prints. You do not need to install the command line:
+
+        ```bash
+        export OMNILOGIC_LOCAL_HOST=192.168.1.100   # your controller's IP address
+        npx @rygine/omnilogic-local-cli command GetUIPoolTempCmd --poolId 1 --verbose 2>&1 | tee command.txt
+        ```
+
+        With Yarn, use `yarn dlx` in place of `npx`. For a command that changes something, read the command's page first and watch the equipment.
+  - type: input
+    id: controller
+    attributes:
+      label: Controller model and MSP firmware version
+      description:
+        "`npx @rygine/omnilogic-local-cli sysinfo` shows the firmware version."
+      placeholder: OmniLogic MSP, R0502000
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: The command you ran
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Request and reply
+      description:
+        "Paste command.txt inside a ``` code block, or attach it if it is long."
+    validations:
+      required: true
+  - type: textarea
+    id: effect
+    attributes:
+      label: What changed
+      description:
+        What changed on the equipment, in the configuration, or in the
+        telemetry, and how long after the command you looked.
+    validations:
+      required: true

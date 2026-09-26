@@ -1,0 +1,33 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "inputs": [
+        "**/*.md",
+        ".vitepress/**",
+        "typedoc.json",
+        "tsconfig.json",
+        "package.json"
+      ],
+      "outputs": [".vitepress/dist/**", "reference/api/**"]
+    },
+    "test": {
+      "inputs": [
+        "**/*.md",
+        ".vitepress/**",
+        "tests/**",
+        "vitest.config.ts",
+        "tsconfig.json"
+      ]
+    },
+    "typecheck": {
+      "inputs": [
+        ".vitepress/**",
+        "tests/**",
+        "vitest.config.ts",
+        "tsconfig.json"
+      ]
+    }
+  }
+}

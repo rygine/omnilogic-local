@@ -1,0 +1,88 @@
+name: SDK bug
+description:
+  "@rygine/omnilogic-local-sdk does something other than the docs say."
+title: "SDK: "
+labels: [bug, sdk]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most useful data, in order: the configuration, the telemetry, and the request and reply XML. The command line collects all three. You do not need to install it:
+
+        ```bash
+        export OMNILOGIC_LOCAL_HOST=192.168.1.100   # your controller's IP address
+        npx @rygine/omnilogic-local-cli config > config.txt
+        npx @rygine/omnilogic-local-cli telemetry > telemetry.txt
+        ```
+
+        With Yarn, use `yarn dlx` in place of `npx`.
+  - type: input
+    id: version
+    attributes:
+      label: SDK version
+      description: The version in your package.json or lockfile.
+      placeholder: 0.0.3
+    validations:
+      required: true
+  - type: input
+    id: controller
+    attributes:
+      label: Controller model and MSP firmware version
+      description:
+        "`npx @rygine/omnilogic-local-cli sysinfo` shows the firmware version."
+      placeholder: OmniLogic MSP, R0502000
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      description: The output of `node --version`.
+      placeholder: v22.12.0
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Code
+      description: The smallest program that shows the problem.
+      render: typescript
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: Attach config.txt. Drag the file into this box.
+  - type: textarea
+    id: telemetry
+    attributes:
+      label: Telemetry
+      description:
+        "Collect it while the problem happens. Attach telemetry.txt, or paste it
+        inside a ``` code block."
+  - type: textarea
+    id: xml
+    attributes:
+      label: Request and reply XML
+      description:
+        "If one command is involved: `npx @rygine/omnilogic-local-cli command
+        <Name> <flags> --verbose 2>&1 | tee command.txt`. Paste command.txt
+        inside a ``` code block, or attach it if it is long. If the command
+        changes a setting, running it again repeats the change."
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description:
+        "Run your program with `LOG_LEVEL=debug` and paste the output from the
+        first line of the operation that failed through the error."
+      render: text

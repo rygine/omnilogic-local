@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "jsx": "preserve",
+    "paths": { "@/*": ["../../packages/omnilogic-local-sdk/src/*"] }
+  },
+  "include": [
+    ".vitepress/**/*",
+    "tests/**/*",
+    "typedoc.entry.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": [".vitepress/cache", ".vitepress/dist"]
+}

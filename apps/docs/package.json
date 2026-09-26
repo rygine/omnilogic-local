@@ -1,0 +1,30 @@
+{
+  "name": "@rygine/omnilogic-docs",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "typedoc && vitepress build",
+    "clean": "rimraf .vitepress/cache .vitepress/dist .turbo node_modules",
+    "dev": "typedoc && vitepress dev",
+    "preview": "vitepress preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "typedoc": "typedoc"
+  },
+  "devDependencies": {
+    "@rygine/omnilogic-local-sdk": "workspace:*",
+    "@types/node": "^26.4.1",
+    "gray-matter": "^4.0.3",
+    "rimraf": "^6.1.3",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-markdown": "^4.13.0",
+    "typedoc-vitepress-theme": "^1.1.4",
+    "typescript": "^6.0.3",
+    "vitepress": "2.0.0-alpha.20",
+    "vitest": "^5.0.0",
+    "vue": "^3.5.41",
+    "zod": "^4.5.4"
+  }
+}

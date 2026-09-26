@@ -1,0 +1,84 @@
+/* room for the longest command names in the sidebar, and wrap the rest */
+:root {
+  --vp-sidebar-width: 20rem;
+}
+
+.VPSidebarItem .text {
+  overflow-wrap: anywhere;
+}
+
+/* the hero text at full width */
+.VPHero .name,
+.VPHero .text,
+.VPHero .tagline {
+  max-width: none;
+}
+
+@media (min-width: 60rem) {
+  .VPHero .main {
+    width: 100%;
+  }
+}
+
+.VPHero .container {
+  text-align: center;
+}
+
+.VPHero .name,
+.VPHero .text {
+  margin: 0 auto;
+}
+
+.VPHero .actions {
+  justify-content: center;
+}
+
+/* the line under the tagline */
+.home-note {
+  font-size: 1rem;
+  color: var(--vp-c-text-3);
+}
+
+/* the home page footer: the disclaimer and the license */
+.Layout footer.VPFooter {
+  padding: 2.5rem 1.5rem 2.75rem;
+  border-top: none;
+  background: var(--vp-c-bg-alt);
+}
+
+.Layout footer.VPFooter .container {
+  max-width: 44rem;
+}
+
+.Layout footer.VPFooter .message {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--vp-c-text-2);
+}
+
+.Layout footer.VPFooter .copyright {
+  margin-top: 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--vp-c-text-3);
+}
+
+.dark .Layout footer.VPFooter {
+  background: linear-gradient(
+    180deg,
+    var(--vp-c-bg) 0%,
+    var(--vp-c-bg-alt) 100%
+  );
+}
+
+/* the line above the home page cards */
+.home-intro {
+  max-width: 1152px;
+  margin: 0 auto 1.5rem;
+  padding: 0 24px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--vp-c-text-2);
+}

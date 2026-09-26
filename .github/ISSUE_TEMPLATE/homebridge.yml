@@ -1,0 +1,92 @@
+name: Homebridge plugin bug
+description:
+  "@rygine/homebridge-omnilogic-local does something other than the docs say."
+title: "Homebridge: "
+labels: [bug, homebridge]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most useful data, in order: the configuration, the telemetry, and the Homebridge log. Collect the first two from a computer on the same network. You do not need to install anything:
+
+        ```bash
+        export OMNILOGIC_LOCAL_HOST=192.168.1.100   # your controller's IP address
+        npx @rygine/omnilogic-local-cli config > config.txt
+        npx @rygine/omnilogic-local-cli telemetry > telemetry.txt
+        ```
+
+        With Yarn, use `yarn dlx` in place of `npx`.
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version
+      description: The version the Homebridge UI shows on the plugin's tile.
+      placeholder: 0.0.1
+    validations:
+      required: true
+  - type: input
+    id: homebridge
+    attributes:
+      label: Homebridge and Node.js versions
+      description: The Homebridge UI's status page shows both.
+      placeholder: Homebridge 1.8.5, Node.js v22.12.0
+    validations:
+      required: true
+  - type: input
+    id: controller
+    attributes:
+      label: Controller model and MSP firmware version
+      description:
+        "`npx @rygine/omnilogic-local-cli sysinfo` shows the firmware version."
+      placeholder: OmniLogic MSP, R0502000
+    validations:
+      required: true
+  - type: textarea
+    id: accessory
+    attributes:
+      label: The accessory
+      description:
+        The equipment and the accessory, as the settings page shows them.
+      placeholder: Filter pump, shown as a Fan
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: Attach config.txt. Drag the file into this box.
+  - type: textarea
+    id: telemetry
+    attributes:
+      label: Telemetry
+      description:
+        "Collect it while the problem happens. Attach telemetry.txt, or paste it
+        inside a ``` code block."
+  - type: textarea
+    id: log
+    attributes:
+      label: Homebridge log
+      description:
+        Turn on Homebridge debug mode, restart Homebridge, and make the problem
+        happen again. Paste the plugin's lines from the log.
+      render: text
+  - type: textarea
+    id: plugin-config
+    attributes:
+      label: Plugin configuration
+      description:
+        The plugin's block from the Homebridge JSON config. It holds no
+        passwords.
+      render: json

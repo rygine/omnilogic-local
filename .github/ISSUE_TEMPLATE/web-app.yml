@@ -1,0 +1,74 @@
+name: Web app bug
+description: The web app does something other than the docs say.
+title: "Web app: "
+labels: [bug, web-app]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most useful data, in order: the configuration, the telemetry, and the app's log. Collect the first two from a computer on the same network. You do not need to install anything:
+
+        ```bash
+        export OMNILOGIC_LOCAL_HOST=192.168.1.100   # your controller's IP address
+        npx @rygine/omnilogic-local-cli config > config.txt
+        npx @rygine/omnilogic-local-cli telemetry > telemetry.txt
+        ```
+
+        With Yarn, use `yarn dlx` in place of `npx`.
+  - type: input
+    id: version
+    attributes:
+      label: How you run the app
+      description: Docker or from source, and the commit you built from.
+      placeholder: Docker, built from 6182886
+    validations:
+      required: true
+  - type: input
+    id: controller
+    attributes:
+      label: Controller model and MSP firmware version
+      description: The app's System page shows the firmware version.
+      placeholder: OmniLogic MSP, R0502000
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The page where the problem happens.
+      placeholder: Schedules
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: Attach config.txt. Drag the file into this box.
+  - type: textarea
+    id: telemetry
+    attributes:
+      label: Telemetry
+      description:
+        "Collect it while the problem happens. Attach telemetry.txt, or paste it
+        inside a ``` code block."
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description:
+        "On the Logs page, filter to the operation that failed and copy the
+        rows. For what the app sent to the controller, start the container with
+        `LOG_LEVEL=trace` and paste `docker compose logs`."
+      render: text

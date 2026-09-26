@@ -1,0 +1,83 @@
+name: Command line bug
+description:
+  "@rygine/omnilogic-local-cli (omnilogic-local) does something other than the
+  docs say."
+title: "CLI: "
+labels: [bug, cli]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most useful data, in order: the configuration, the telemetry, and the request and reply XML. The command line collects all three:
+
+        ```bash
+        export OMNILOGIC_LOCAL_HOST=192.168.1.100   # your controller's IP address
+        omnilogic-local config > config.txt
+        omnilogic-local telemetry > telemetry.txt
+        omnilogic-local command <Name> <flags> --verbose --debug 2>&1 | tee command.txt
+        ```
+
+        If you do not have it installed, use `npx @rygine/omnilogic-local-cli` or `yarn dlx @rygine/omnilogic-local-cli` in place of `omnilogic-local`.
+  - type: input
+    id: version
+    attributes:
+      label: Command line version
+      description: The output of `omnilogic-local --version`.
+      placeholder: 0.0.2
+    validations:
+      required: true
+  - type: input
+    id: controller
+    attributes:
+      label: Controller model and MSP firmware version
+      description: "`omnilogic-local sysinfo` shows the firmware version."
+      placeholder: OmniLogic MSP, R0502000
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      description: The output of `node --version`.
+      placeholder: v22.12.0
+  - type: textarea
+    id: command
+    attributes:
+      label: The command you ran
+      description: The whole command line, as you typed it.
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: Attach config.txt. Drag the file into this box.
+  - type: textarea
+    id: telemetry
+    attributes:
+      label: Telemetry
+      description:
+        "Collect it while the problem happens. Attach telemetry.txt, or paste it
+        inside a ``` code block."
+  - type: textarea
+    id: xml
+    attributes:
+      label: Request, reply, and log
+      description:
+        "Paste command.txt, from the last command above, inside a ``` code
+        block, or attach it if it is long. It holds the request XML, the reply
+        XML, and the log. If the command changes a setting, running it again
+        repeats the change."

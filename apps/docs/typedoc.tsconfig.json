@@ -1,0 +1,10 @@
+{
+  "extends": "../../packages/omnilogic-local-sdk/tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "vitest/globals"],
+    "paths": {
+      "@/*": ["../../packages/omnilogic-local-sdk/src/*"]
+    }
+  },
+  "include": ["typedoc.entry.ts", "../../packages/omnilogic-local-sdk/src/**/*"]
+}
