@@ -1,0 +1,42 @@
+name: omnilogic
+
+services:
+  app:
+    init: true
+    image: ${IMAGE:-omnilogic:local}
+    build:
+      # the image needs the whole workspace: the root manifests, the lockfile,
+      # and the SDK it builds first
+      context: ../..
+      dockerfile: apps/web/Dockerfile
+      target: runtime
+    container_name: ${CONTAINER_NAME:-omnilogic}
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT:-3000}
+      HOST: ${HOST:-0.0.0.0}
+      LOG_LEVEL: ${LOG_LEVEL:-}
+      DATA_DIR: /data
+    ports:
+      - "${BIND_ADDR:-127.0.0.1}:${PORT:-3000}:${PORT:-3000}"
+    # if the controller's UDP replies are blocked, use network_mode: host and no ports
+    restart: on-failure:5
+    stop_grace_period: 10s
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777,noexec,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - ${DATA_PATH:-./data}:/data
