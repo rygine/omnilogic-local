@@ -1,0 +1,69 @@
+{
+  "name": "@rygine/homebridge-omnilogic-local",
+  "displayName": "OmniLogicLocal",
+  "version": "0.0.2",
+  "description": "Homebridge plugin for local control of Hayward OmniLogic pool controllers",
+  "keywords": [
+    "hayward",
+    "homebridge-plugin",
+    "omnilogic",
+    "pool",
+    "supports-hap"
+  ],
+  "homepage": "https://github.com/rygine/omnilogic-local/tree/main/packages/homebridge-omnilogic-local#readme",
+  "bugs": {
+    "url": "https://github.com/rygine/omnilogic-local/issues"
+  },
+  "license": "MIT",
+  "author": "Ry Racherbaumer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rygine/omnilogic-local.git",
+    "directory": "packages/homebridge-omnilogic-local"
+  },
+  "files": [
+    "CHANGELOG.md",
+    "config.schema.json",
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "prerelease"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "clean": "rimraf .turbo dist node_modules",
+    "prepack": "yarn build",
+    "tarball": "npm pack",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@homebridge/plugin-ui-utils": "^2.2.6",
+    "@rygine/omnilogic-local-sdk": "^0.0.4"
+  },
+  "devDependencies": {
+    "@homebridge/hap-nodejs": "^2.2.3",
+    "@types/node": "^26.4.1",
+    "@vitest/browser-playwright": "^5.0.0",
+    "@vitest/coverage-v8": "^5.0.0",
+    "homebridge": "^2.4.0",
+    "playwright": "^1.62.1",
+    "rimraf": "^6.1.3",
+    "tsdown": "^0.23.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.0"
+  },
+  "engines": {
+    "homebridge": "^2.0.0",
+    "node": ">=22"
+  }
+}

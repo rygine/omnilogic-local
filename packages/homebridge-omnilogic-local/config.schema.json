@@ -1,0 +1,146 @@
+{
+  "pluginAlias": "OmniLogicLocal",
+  "pluginType": "platform",
+  "singular": true,
+  "customUi": true,
+  "customUiPath": "./dist/ui",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "title": "Name",
+        "default": "OmniLogicLocal",
+        "description": "The platform's name in the Homebridge log"
+      },
+      "controllers": {
+        "type": "array",
+        "title": "Controllers",
+        "items": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "title": "Host"
+            },
+            "port": {
+              "type": "integer",
+              "title": "Port",
+              "default": 10444,
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "pollInterval": {
+              "type": "integer",
+              "title": "Poll interval (seconds)",
+              "default": 300,
+              "minimum": 30,
+              "maximum": 86400
+            },
+            "accessories": {
+              "type": "array",
+              "title": "Accessories",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "title": "Id"
+                  },
+                  "type": {
+                    "type": "string",
+                    "title": "Accessory type",
+                    "enum": [
+                      "filterFan",
+                      "filterSwitch",
+                      "pumpSwitch",
+                      "heaterThermostat",
+                      "heaterSwitch",
+                      "chlorinatorFan",
+                      "chlorinatorSwitch",
+                      "spilloverFan",
+                      "spilloverSwitch",
+                      "light",
+                      "lightSwitch",
+                      "lightDimmer",
+                      "relaySwitch",
+                      "themeSwitch",
+                      "waterTemp",
+                      "airTemp"
+                    ]
+                  },
+                  "equipment": {
+                    "type": "integer",
+                    "title": "Equipment system id"
+                  },
+                  "name": {
+                    "type": "string",
+                    "title": "Name"
+                  },
+                  "fanSpeed": {
+                    "type": "string",
+                    "title": "Speed slider",
+                    "enum": ["presets", "percent"],
+                    "description": "The speed slider snaps to Low, Medium, and High, or moves across the pump's range."
+                  },
+                  "onSpeed": {
+                    "type": "string",
+                    "title": "Speed when turned on",
+                    "enum": ["last", "low", "medium", "high", "custom"],
+                    "description": "The pump's speed when the switch turns on."
+                  },
+                  "onPercent": {
+                    "type": "integer",
+                    "title": "Percentage",
+                    "description": "The pump's speed in percent when the switch speed is Custom, within the pump's range. For a chlorinator switch, the output percent when on, 1 to 100."
+                  },
+                  "setPoint": {
+                    "type": "integer",
+                    "title": "Set point",
+                    "description": "The heater's set point when the switch turns on, in °F, within the heater's range."
+                  },
+                  "show": {
+                    "type": "integer",
+                    "title": "Color",
+                    "description": "The light's color or show when it turns on, by its number in the light's own list."
+                  },
+                  "speed": {
+                    "type": "string",
+                    "title": "Speed",
+                    "enum": [
+                      "1/16x",
+                      "1/8x",
+                      "1/4x",
+                      "1/2x",
+                      "1x",
+                      "2x",
+                      "4x",
+                      "8x",
+                      "16x"
+                    ],
+                    "description": "How fast an OmniDirect light's show runs. Unset keeps the light's current speed."
+                  },
+                  "brightness": {
+                    "type": "integer",
+                    "title": "Brightness",
+                    "enum": [20, 40, 60, 80, 100],
+                    "description": "An OmniDirect light's brightness in percent. Unset keeps the light's current brightness."
+                  },
+                  "offAfter": {
+                    "type": "integer",
+                    "title": "Automatically turn off in (minutes)",
+                    "description": "Minutes after HomeKit turns it on that it turns off again, 5 to 1439. A light, a relay, a theme, or spillover uses the controller's own countdown; a heater is turned off by the plugin.",
+                    "minimum": 5,
+                    "maximum": 1439
+                  }
+                },
+                "required": ["id", "type", "equipment", "name"]
+              }
+            }
+          },
+          "required": ["host"]
+        }
+      }
+    }
+  }
+}
