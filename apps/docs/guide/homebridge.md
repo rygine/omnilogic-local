@@ -38,123 +38,6 @@ asking. A removed accessory leaves HomeKit at the next restart.
 If the page cannot reach the controller, it shows "Could not reach the
 controller" and keeps the saved accessories.
 
-## Configuring
-
-Configure the plugin on its [settings page](#using-the-settings-page) in the
-Homebridge UI. The page saves a configuration like the one below. If you edit
-the JSON by hand, a mistake can stop the plugin from loading an accessory. See
-[Invalid accessories](#invalid-accessories).
-
-```json
-{
-  "platform": "OmniLogicLocal",
-  "controllers": [
-    {
-      "host": "192.168.1.100",
-      "port": 10444,
-      "pollInterval": 300,
-      "accessories": [
-        {
-          "id": "a1b2c3",
-          "type": "filterSwitch",
-          "equipment": 3,
-          "name": "Pool Filter Pump",
-          "onSpeed": "high"
-        },
-        {
-          "id": "d4e5f6",
-          "type": "heaterSwitch",
-          "equipment": 5,
-          "name": "Pool Heater",
-          "setPoint": 88,
-          "offAfter": 60
-        }
-      ]
-    }
-  ]
-}
-```
-
-### Fields
-
-<table>
-  <tr>
-    <td style="vertical-align: top"><code>pollInterval</code></td>
-    <td>How often, in seconds, the plugin refreshes from the controller. The settings page shows it as <strong>Refresh (seconds)</strong>. Default <code>300</code>, from <code>30</code> to <code>86400</code>. Changes made from HomeKit show immediately. Temperatures and changes made elsewhere update on this interval.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>id</code></td>
-    <td>The settings page generates it when you add the accessory. It identifies the accessory in the configuration. HomeKit does not show it.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>type</code></td>
-    <td>Which accessory this entry is: <code>filterFan</code>, <code>filterSwitch</code>, <code>pumpSwitch</code>, <code>heaterThermostat</code>, <code>heaterSwitch</code>, <code>chlorinatorFan</code>, <code>chlorinatorSwitch</code>, <code>spilloverFan</code>, <code>spilloverSwitch</code>, <code>light</code>, <code>lightSwitch</code>, <code>lightDimmer</code>, <code>relaySwitch</code>, <code>themeSwitch</code>, <code>waterTemp</code>, or <code>airTemp</code>.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>equipment</code></td>
-    <td>The controller's id for the equipment this accessory controls. The settings page fills it in.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>name</code></td>
-    <td>The accessory's name when HomeKit first adds it. The settings page suggests one from the equipment and the accessory's options. If you change it later, the accessory gets the new name in HomeKit at the next restart.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>fanSpeed</code></td>
-    <td>On a filter or spillover accessory shown as a fan, <code>presets</code> snaps the slider to Low, Medium, and High. This is the default. <code>percent</code> lets the slider move to any percentage within the pump's range.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>onSpeed</code></td>
-    <td>On a filter or spillover accessory shown as a switch, the speed the pump turns on at: <code>last</code>, <code>low</code>, <code>medium</code>, <code>high</code>, or <code>custom</code>. The default is <code>last</code>.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>onPercent</code></td>
-    <td>On a filter or spillover switch, the pump's speed in percent when <strong>Speed when turned on</strong> is Custom. It is required in that case and must be within the pump's range. On a chlorinator switch, the output percentage when on, 1 to 100.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>setPoint</code></td>
-    <td>On a heater switch, the set point when the switch turns on, in °F, within the heater's range.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>offAfter</code></td>
-    <td>Minutes, <code>5</code> to <code>1439</code>. The settings page shows it as <strong>Automatically turn off in</strong>. See <a href="#turning-off-automatically">Turning off automatically</a>.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>show</code></td>
-    <td>Required on a light switch or one-color light: the show it turns on to, by its number in the light's own list.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>speed</code></td>
-    <td>On an OmniDirect light switch or one-color light, how fast its show runs: <code>1/16x</code> to <code>16x</code>. If you leave it empty, the light keeps its current speed. The plugin drops an accessory that sets a speed with a solid color, or on a light that is not in OmniDirect mode. If the light of a light switch leaves OmniDirect mode while the plugin runs, the switch sends its show without the speed. The log says so.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top"><code>brightness</code></td>
-    <td>On an OmniDirect light switch, its brightness in percent: 20, 40, 60, 80, or 100. If you leave it empty, the light keeps its current brightness. The plugin drops the accessory on a light not in OmniDirect mode. If the light leaves OmniDirect mode, the plugin leaves out the brightness and logs a line.</td>
-  </tr>
-</table>
-
-## Invalid accessories
-
-When Homebridge starts, the plugin checks every accessory. It drops any
-accessory that has one of these problems:
-
-- no id or name, or an id another accessory already uses
-- an unknown type, or a setting its type does not take
-- a value the settings page does not offer, or a number outside the range it
-  shows
-- a missing required value, such as a light switch's show
-- a number that is not a whole number
-- equipment the controller does not report
-
-The log names each dropped accessory and its problem. The settings page lists it
-under "INVALID" with what is wrong, such as "Relay 99 is not on the controller."
-To use it again, remove it and add it again.
-
-The plugin also drops a controller that has one of these problems:
-
-- a host that is not an IPv4 address or a host name
-- a port outside 1 to 65535
-- a refresh interval outside 30 to 86400 seconds
-
 ## Accessories
 
 After every command, the plugin refreshes from the controller over the next
@@ -403,6 +286,123 @@ setting only changes what its panel shows. The plugin converts readings to
 Celsius for HomeKit, and the Home app shows them in the phone's units. A set
 point you enter on the settings page is in °F. The thermostat's display unit
 matches the controller's units setting.
+
+## Configuring manually
+
+You can edit the plugin's JSON configuration by hand instead of using the
+[settings page](#using-the-settings-page). The settings page saves the same
+configuration, in the form below. A mistake in the JSON can stop the plugin from
+loading an accessory. See [Invalid accessories](#invalid-accessories).
+
+```json
+{
+  "platform": "OmniLogicLocal",
+  "controllers": [
+    {
+      "host": "192.168.1.100",
+      "port": 10444,
+      "pollInterval": 300,
+      "accessories": [
+        {
+          "id": "a1b2c3",
+          "type": "filterSwitch",
+          "equipment": 3,
+          "name": "Pool Filter Pump",
+          "onSpeed": "high"
+        },
+        {
+          "id": "d4e5f6",
+          "type": "heaterSwitch",
+          "equipment": 5,
+          "name": "Pool Heater",
+          "setPoint": 88,
+          "offAfter": 60
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Fields
+
+<table>
+  <tr>
+    <td style="vertical-align: top"><code>pollInterval</code></td>
+    <td>How often, in seconds, the plugin refreshes from the controller. The settings page shows it as <strong>Refresh (seconds)</strong>. Default <code>300</code>, from <code>30</code> to <code>86400</code>. Changes made from HomeKit show immediately. Temperatures and changes made elsewhere update on this interval.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>id</code></td>
+    <td>The settings page generates it when you add the accessory. It identifies the accessory in the configuration. HomeKit does not show it.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>type</code></td>
+    <td>Which accessory this entry is: <code>filterFan</code>, <code>filterSwitch</code>, <code>pumpSwitch</code>, <code>heaterThermostat</code>, <code>heaterSwitch</code>, <code>chlorinatorFan</code>, <code>chlorinatorSwitch</code>, <code>spilloverFan</code>, <code>spilloverSwitch</code>, <code>light</code>, <code>lightSwitch</code>, <code>lightDimmer</code>, <code>relaySwitch</code>, <code>themeSwitch</code>, <code>waterTemp</code>, or <code>airTemp</code>.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>equipment</code></td>
+    <td>The controller's id for the equipment this accessory controls. The settings page fills it in.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>name</code></td>
+    <td>The accessory's name when HomeKit first adds it. The settings page suggests one from the equipment and the accessory's options. If you change it later, the accessory gets the new name in HomeKit at the next restart.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>fanSpeed</code></td>
+    <td>On a filter or spillover accessory shown as a fan, <code>presets</code> snaps the slider to Low, Medium, and High. This is the default. <code>percent</code> lets the slider move to any percentage within the pump's range.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>onSpeed</code></td>
+    <td>On a filter or spillover accessory shown as a switch, the speed the pump turns on at: <code>last</code>, <code>low</code>, <code>medium</code>, <code>high</code>, or <code>custom</code>. The default is <code>last</code>.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>onPercent</code></td>
+    <td>On a filter or spillover switch, the pump's speed in percent when <strong>Speed when turned on</strong> is Custom. It is required in that case and must be within the pump's range. On a chlorinator switch, the output percentage when on, 1 to 100.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>setPoint</code></td>
+    <td>On a heater switch, the set point when the switch turns on, in °F, within the heater's range.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>offAfter</code></td>
+    <td>Minutes, <code>5</code> to <code>1439</code>. The settings page shows it as <strong>Automatically turn off in</strong>. See <a href="#turning-off-automatically">Turning off automatically</a>.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>show</code></td>
+    <td>Required on a light switch or one-color light: the show it turns on to, by its number in the light's own list.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>speed</code></td>
+    <td>On an OmniDirect light switch or one-color light, how fast its show runs: <code>1/16x</code> to <code>16x</code>. If you leave it empty, the light keeps its current speed. The plugin drops an accessory that sets a speed with a solid color, or on a light that is not in OmniDirect mode. If the light of a light switch leaves OmniDirect mode while the plugin runs, the switch sends its show without the speed. The log says so.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top"><code>brightness</code></td>
+    <td>On an OmniDirect light switch, its brightness in percent: 20, 40, 60, 80, or 100. If you leave it empty, the light keeps its current brightness. The plugin drops the accessory on a light not in OmniDirect mode. If the light leaves OmniDirect mode, the plugin leaves out the brightness and logs a line.</td>
+  </tr>
+</table>
+
+## Invalid accessories
+
+When Homebridge starts, the plugin checks every accessory. It drops any
+accessory that has one of these problems:
+
+- no id or name, or an id another accessory already uses
+- an unknown type, or a setting its type does not take
+- a value the settings page does not offer, or a number outside the range it
+  shows
+- a missing required value, such as a light switch's show
+- a number that is not a whole number
+- equipment the controller does not report
+
+The log names each dropped accessory and its problem. The settings page lists it
+under "INVALID" with what is wrong, such as "Relay 99 is not on the controller."
+To use it again, remove it and add it again.
+
+The plugin also drops a controller that has one of these problems:
+
+- a host that is not an IPv4 address or a host name
+- a port outside 1 to 65535
+- a refresh interval outside 30 to 86400 seconds
 
 ## Faults
 
