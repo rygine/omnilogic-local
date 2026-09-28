@@ -1,23 +1,23 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg">
-    <img alt="" src="brand/logo.svg" height="96">
+    <img alt="" src="brand/logo.svg" height="160">
   </picture>
 </p>
 
-# OmniLogicLocal
+<h1 align="center">OmniLogicLocal</h1>
 
 A [TypeScript SDK](packages/omnilogic-local-sdk) for local control of Hayward
 OmniLogic pool controllers. No internet or cloud login required.
 
 Built with the SDK
 
-- [Command line interface](packages/omnilogic-local-cli) — get the configuration
-  and telemetry, or send any command.
-- [Homebridge plugin](packages/homebridge-omnilogic-local) — control your pool
-  equipment from HomeKit.
-- [Web app](apps/web) — a browser interface for your pool equipment and
-  controller settings.
+- [Command line interface](packages/omnilogic-local-cli)\
+  Get the configuration and telemetry, or send any command.
+- [Homebridge plugin](packages/homebridge-omnilogic-local)\
+  Control your pool equipment from HomeKit.
+- [Web app](apps/web)\
+  A browser interface for your pool equipment and controller settings.
 
 ## Documentation
 
