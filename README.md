@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg">
+    <img alt="" src="brand/logo.svg" height="96">
+  </picture>
+</p>
+
 # omnilogic-local
 
 A [TypeScript SDK](packages/omnilogic-local-sdk) for local control of Hayward

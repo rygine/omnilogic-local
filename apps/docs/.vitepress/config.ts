@@ -8,7 +8,17 @@ export default defineConfig({
   description: "TypeScript SDK for the Hayward OmniLogic local API via UDP.",
   cleanUrls: true,
   lastUpdated: true,
+  // the logo files are shared with the web app and the README
+  vite: { publicDir: "../../brand" },
+  // head links are not prefixed with the base the Pages build passes
+  transformHead: ({ siteData: { base } }) => [
+    [
+      "link",
+      { rel: "icon", type: "image/svg+xml", href: `${base}favicon.svg` },
+    ],
+  ],
   themeConfig: {
+    logo: { light: "/logo.svg", dark: "/logo-dark.svg", alt: "" },
     nav: [...nav],
     sidebar,
     search: { provider: "local" },

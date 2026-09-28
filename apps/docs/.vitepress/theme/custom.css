@@ -33,6 +33,20 @@
   justify-content: center;
 }
 
+/* the logo above the hero title, and the title in the logo's ink */
+.home-logo img {
+  height: 10rem;
+  margin: 0 auto;
+}
+
+:root {
+  --vp-home-hero-name-color: #0f172a;
+}
+
+.dark {
+  --vp-home-hero-name-color: #fff;
+}
+
 /* the line under the tagline */
 .home-note {
   font-size: 1rem;

@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "apps/docs/**"
+      - "brand/**"
       - "packages/omnilogic-local-sdk/src/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:

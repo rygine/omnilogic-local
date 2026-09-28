@@ -22,6 +22,7 @@ COPY packages/omnilogic-local-sdk/src packages/omnilogic-local-sdk/src
 RUN yarn workspace @rygine/omnilogic-local-sdk build
 COPY apps/web/tsconfig.json apps/web/vite.config.ts apps/web/
 COPY apps/web/src apps/web/src
+COPY brand brand
 RUN yarn workspace @rygine/omnilogic-web build:image
 
 FROM base AS prod-deps

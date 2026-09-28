@@ -24,6 +24,8 @@ import { AppNav } from "@/components/layout/AppNav";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { theme } from "@/theme";
 
+import favicon from "../../../../brand/favicon.svg?url";
+
 const RootComponent = () => {
   const [queryClient] = useState(
     () =>
@@ -80,6 +82,7 @@ export const Route = createRootRoute({
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "OmniLogic" },
     ],
+    links: [{ rel: "icon", type: "image/svg+xml", href: favicon }],
   }),
   component: RootComponent,
 });

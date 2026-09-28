@@ -1,5 +1,5 @@
 import type { Theme } from "vitepress";
-import DefaultTheme from "vitepress/theme";
+import DefaultTheme, { VPImage } from "vitepress/theme";
 import { h } from "vue";
 
 import CommandFacts from "./CommandFacts.vue";
@@ -13,6 +13,15 @@ export default {
   extends: DefaultTheme,
   Layout: () =>
     h(DefaultTheme.Layout, null, {
+      "home-hero-info-before": () =>
+        h(
+          "div",
+          { class: "home-logo" },
+          h(VPImage, {
+            image: { light: "/logo.svg", dark: "/logo-dark.svg" },
+            alt: "",
+          }),
+        ),
       "home-hero-info-after": () =>
         h("p", { class: "home-note" }, "No internet or cloud login required."),
       "home-features-before": () =>
