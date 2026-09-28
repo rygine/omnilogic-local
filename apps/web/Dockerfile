@@ -15,7 +15,8 @@ COPY apps/web/src/server/db/database.ts apps/web/src/server/db/database.ts
 
 FROM base AS build
 # fetched tarballs, cached across builds and both install stages
-RUN --mount=type=cache,target=/app/.yarn/cache yarn install --immutable
+# focus, since a full install without the other workspaces' manifests rewrites the lockfile
+RUN --mount=type=cache,target=/app/.yarn/cache yarn workspaces focus @rygine/omnilogic-local-sdk @rygine/omnilogic-web
 COPY tsconfig.base.json ./
 COPY packages/omnilogic-local-sdk/tsconfig.json packages/omnilogic-local-sdk/tsdown.config.ts packages/omnilogic-local-sdk/
 COPY packages/omnilogic-local-sdk/src packages/omnilogic-local-sdk/src
