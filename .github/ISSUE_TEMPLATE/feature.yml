@@ -1,0 +1,39 @@
+name: Feature request
+description:
+  "Suggest a new feature or an improvement for the SDK, command line, Homebridge
+  plugin, or web app."
+title: "Feature: "
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - SDK
+        - Command line
+        - Homebridge plugin
+        - Web app
+        - Documentation
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: want
+    attributes:
+      label: What you want to do
+      description: Describe the feature and how you would use it.
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do today
+      description: How you do it now, if you can, and what makes it hard.
+  - type: input
+    id: controller
+    attributes:
+      label: MSP firmware version
+      description:
+        "`npx @rygine/omnilogic-local-cli sysinfo` shows the firmware version."
+      placeholder: R0502000

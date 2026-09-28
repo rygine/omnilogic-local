@@ -1,5 +1,7 @@
 name: Command verified
-description: You ran a command on your controller. Report what it did.
+description:
+  "Report what an unverified command did on your controller, so its page can say
+  whether it works."
 title: "Verified: <CommandName>"
 labels: [verification]
 body:
@@ -17,10 +19,10 @@ body:
   - type: input
     id: controller
     attributes:
-      label: Controller model and MSP firmware version
+      label: MSP firmware version
       description:
         "`npx @rygine/omnilogic-local-cli sysinfo` shows the firmware version."
-      placeholder: OmniLogic MSP, R0502000
+      placeholder: R0502000
     validations:
       required: true
   - type: textarea
@@ -35,7 +37,7 @@ body:
     attributes:
       label: Request and reply
       description:
-        "Paste command.txt inside a ``` code block, or attach it if it is long."
+        "Paste command.txt inside a ``` code block. If it is long, attach it."
     validations:
       required: true
   - type: textarea

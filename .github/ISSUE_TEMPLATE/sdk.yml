@@ -1,6 +1,5 @@
 name: SDK bug
-description:
-  "@rygine/omnilogic-local-sdk does something other than the docs say."
+description: "Report something in the SDK that does not work as expected."
 title: "SDK: "
 labels: [bug, sdk]
 body:
@@ -27,10 +26,10 @@ body:
   - type: input
     id: controller
     attributes:
-      label: Controller model and MSP firmware version
+      label: MSP firmware version
       description:
         "`npx @rygine/omnilogic-local-cli sysinfo` shows the firmware version."
-      placeholder: OmniLogic MSP, R0502000
+      placeholder: R0502000
     validations:
       required: true
   - type: input
@@ -74,15 +73,16 @@ body:
     attributes:
       label: Request and reply XML
       description:
-        "If one command is involved: `npx @rygine/omnilogic-local-cli command
-        <Name> <flags> --verbose 2>&1 | tee command.txt`. Paste command.txt
-        inside a ``` code block, or attach it if it is long. If the command
-        changes a setting, running it again repeats the change."
+        "If the problem is one command, run `npx @rygine/omnilogic-local-cli
+        command <Name> <flags> --verbose 2>&1 | tee command.txt`. Paste
+        command.txt inside a ``` code block. If it is long, attach it. If the
+        command changes a setting, it makes the change again each time you run
+        it."
   - type: textarea
     id: log
     attributes:
       label: Log
       description:
-        "Run your program with `LOG_LEVEL=debug` and paste the output from the
-        first line of the operation that failed through the error."
+        "Run your program with `LOG_LEVEL=debug`. Paste the output from the
+        first line of the failed operation through the error."
       render: text

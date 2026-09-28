@@ -1,6 +1,6 @@
 name: Homebridge plugin bug
 description:
-  "@rygine/homebridge-omnilogic-local does something other than the docs say."
+  "Report something in the Homebridge plugin that does not work as expected."
 title: "Homebridge: "
 labels: [bug, homebridge]
 body:
@@ -35,10 +35,10 @@ body:
   - type: input
     id: controller
     attributes:
-      label: Controller model and MSP firmware version
+      label: MSP firmware version
       description:
         "`npx @rygine/omnilogic-local-cli sysinfo` shows the firmware version."
-      placeholder: OmniLogic MSP, R0502000
+      placeholder: R0502000
     validations:
       required: true
   - type: textarea
@@ -79,7 +79,7 @@ body:
     attributes:
       label: Homebridge log
       description:
-        Turn on Homebridge debug mode, restart Homebridge, and make the problem
+        Turn on Homebridge debug mode. Restart Homebridge and make the problem
         happen again. Paste the plugin's lines from the log.
       render: text
   - type: textarea

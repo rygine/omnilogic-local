@@ -38,8 +38,7 @@ Any other command can change a setting or turn equipment on or off.
 [Open an issue](https://github.com/rygine/omnilogic-local/issues/new/choose)
 with the **Command verified** template. It asks for:
 
-- your controller model and its MSP firmware version, which the web app's System
-  page and `sysinfo` show,
+- your MSP firmware version, which the web app's System page and `sysinfo` show,
 - the command and the parameters you sent,
 - `command.txt`, with the request and the reply,
 - what changed on the equipment, the configuration, or the telemetry, and when

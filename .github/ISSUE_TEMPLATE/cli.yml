@@ -1,7 +1,6 @@
 name: Command line bug
 description:
-  "@rygine/omnilogic-local-cli (omnilogic-local) does something other than the
-  docs say."
+  "Report something in the command line that does not work as expected."
 title: "CLI: "
 labels: [bug, cli]
 body:
@@ -29,9 +28,9 @@ body:
   - type: input
     id: controller
     attributes:
-      label: Controller model and MSP firmware version
+      label: MSP firmware version
       description: "`omnilogic-local sysinfo` shows the firmware version."
-      placeholder: OmniLogic MSP, R0502000
+      placeholder: R0502000
     validations:
       required: true
   - type: input
@@ -77,7 +76,7 @@ body:
     attributes:
       label: Request, reply, and log
       description:
-        "Paste command.txt, from the last command above, inside a ``` code
-        block, or attach it if it is long. It holds the request XML, the reply
-        XML, and the log. If the command changes a setting, running it again
-        repeats the change."
+        "Paste command.txt from the last command above inside a ``` code block.
+        If it is long, attach it. It holds the request XML, the reply XML, and
+        the log. If the command changes a setting, it makes the change again
+        each time you run it."

@@ -1,5 +1,5 @@
 name: Web app bug
-description: The web app does something other than the docs say.
+description: "Report something in the web app that does not work as expected."
 title: "Web app: "
 labels: [bug, web-app]
 body:
@@ -26,9 +26,9 @@ body:
   - type: input
     id: controller
     attributes:
-      label: Controller model and MSP firmware version
+      label: MSP firmware version
       description: The app's System page shows the firmware version.
-      placeholder: OmniLogic MSP, R0502000
+      placeholder: R0502000
     validations:
       required: true
   - type: input
@@ -68,7 +68,7 @@ body:
     attributes:
       label: Log
       description:
-        "On the Logs page, filter to the operation that failed and copy the
-        rows. For what the app sent to the controller, start the container with
-        `LOG_LEVEL=trace` and paste `docker compose logs`."
+        "On the Logs page, filter to the failed operation and copy its rows. To
+        include what the app sent to the controller, start the container with
+        `LOG_LEVEL=trace` and paste the output of `docker compose logs`."
       render: text

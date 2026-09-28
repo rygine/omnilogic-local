@@ -1,39 +1,26 @@
 # omnilogic-local
 
-A TypeScript SDK, a command line, a Homebridge plugin, and an example web app
-for local control of Hayward OmniLogic pool controllers, with the documentation
-for all of them. No internet or cloud login required.
+A [TypeScript SDK](packages/omnilogic-local-sdk) for local control of Hayward
+OmniLogic pool controllers. No internet or cloud login required.
 
-- [`packages/omnilogic-local-sdk`](packages/omnilogic-local-sdk) — the SDK. See
-  its [README](packages/omnilogic-local-sdk/README.md) for installation and
-  usage.
-- [`packages/omnilogic-local-cli`](packages/omnilogic-local-cli) — the command
-  line: the configuration, telemetry, and any command from a shell. See its
-  [README](packages/omnilogic-local-cli/README.md).
-- [`packages/homebridge-omnilogic-local`](packages/homebridge-omnilogic-local) —
-  the Homebridge plugin: the equipment in HomeKit. See its
-  [README](packages/homebridge-omnilogic-local/README.md).
-- [`apps/web`](apps/web) — the example web app: a browser interface to the
-  verified commands, for one controller. Runs on the host or in Docker.
-- [`apps/docs`](apps/docs) — the documentation site: the SDK guide, the command
-  reference, and how to run the web app.
+Built with the SDK
 
-## Development
+- [Command line interface](packages/omnilogic-local-cli) — get the configuration
+  and telemetry, or send any command.
+- [Homebridge plugin](packages/homebridge-omnilogic-local) — control your pool
+  equipment from HomeKit.
+- [Web app](apps/web) — a browser interface for your pool equipment and
+  controller settings.
 
-Node.js 24 or later and Yarn 4 (installed by Corepack from `packageManager`).
+## Documentation
 
-```bash
-git clone https://github.com/rygine/omnilogic-local.git
-cd omnilogic-local
-yarn install
-yarn ci        # lint, format check, build, test, and typecheck, as CI runs them
-yarn start     # build the SDK and run the web app in dev mode
-```
+The [documentation site](apps/docs) has a command reference and covers the SDK,
+CLI, Homebridge plugin, and how to run the web app.
 
-`yarn build`, `yarn test`, and `yarn typecheck` run in every package through
-Turborepo; `yarn lint`, `yarn fix`, `yarn format`, and `yarn format:check` apply
-to the whole repository. `yarn dev` inside `apps/docs` serves the documentation
-site.
+## Contributing
+
+See the [contribution guide](./CONTRIBUTING.md) to learn more about contributing
+to this project.
 
 ## Disclaimer
 

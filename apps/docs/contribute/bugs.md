@@ -74,7 +74,7 @@ command line prints the request XML before it sends the command, and the reply
 XML after. `tee` shows the output and also saves it in `command.txt`. Paste the
 file inside a code block, or attach it if it is long.
 
-### The controller model and firmware
+### The MSP firmware version
 
 ```bash
 npx @rygine/omnilogic-local-cli sysinfo
