@@ -4,7 +4,7 @@ import { nav } from "./nav.js";
 import { sidebar } from "./sidebar.js";
 
 export default defineConfig({
-  title: "OmniLogicLocal SDK",
+  title: "OmniLogicLocal",
   description: "TypeScript SDK for the Hayward OmniLogic local API via UDP.",
   cleanUrls: true,
   lastUpdated: true,

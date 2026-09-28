@@ -133,5 +133,5 @@ const Section = ({
 
 export const Route = createFileRoute("/favorites")({
   component: Favorites,
-  head: () => ({ meta: [{ title: "OmniLogic - Favorites" }] }),
+  head: () => ({ meta: [{ title: "OmniLogicLocal - Favorites" }] }),
 });

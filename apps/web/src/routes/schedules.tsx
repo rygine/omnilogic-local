@@ -129,5 +129,5 @@ const BodySection = ({
 
 export const Route = createFileRoute("/schedules")({
   component: Schedules,
-  head: () => ({ meta: [{ title: "OmniLogic - Schedules" }] }),
+  head: () => ({ meta: [{ title: "OmniLogicLocal - Schedules" }] }),
 });

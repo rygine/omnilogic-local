@@ -148,5 +148,5 @@ const ThemesSkeleton = () => (
 
 export const Route = createFileRoute("/themes")({
   component: ThemesPage,
-  head: () => ({ meta: [{ title: "OmniLogic - Themes" }] }),
+  head: () => ({ meta: [{ title: "OmniLogicLocal - Themes" }] }),
 });

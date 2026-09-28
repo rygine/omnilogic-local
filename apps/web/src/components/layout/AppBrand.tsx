@@ -29,7 +29,7 @@ export const AppBrand = () => {
             lightHidden
           />
           <Text fw={700} size="lg">
-            OmniLogic
+            OmniLogicLocal
           </Text>
         </Group>
       </Link>

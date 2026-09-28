@@ -1,8 +1,9 @@
 ---
 layout: home
 hero:
-  name: OmniLogicLocal SDK
-  tagline: TypeScript SDK for the Hayward OmniLogic local API
+  name: OmniLogicLocal
+  tagline:
+    TypeScript SDK for local control of Hayward OmniLogic pool controllers
   actions:
     - theme: brand
       text: Get started

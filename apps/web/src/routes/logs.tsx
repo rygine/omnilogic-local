@@ -378,5 +378,5 @@ export const Route = createFileRoute("/logs")({
       page: Number.isInteger(page) && page > 1 ? page : undefined,
     };
   },
-  head: () => ({ meta: [{ title: "OmniLogic - Logs" }] }),
+  head: () => ({ meta: [{ title: "OmniLogicLocal - Logs" }] }),
 });

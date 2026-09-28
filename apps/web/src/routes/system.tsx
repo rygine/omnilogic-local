@@ -210,5 +210,5 @@ const GroupsSkeleton = () => (
 
 export const Route = createFileRoute("/system")({
   component: SystemPage,
-  head: () => ({ meta: [{ title: "OmniLogic - System" }] }),
+  head: () => ({ meta: [{ title: "OmniLogicLocal - System" }] }),
 });

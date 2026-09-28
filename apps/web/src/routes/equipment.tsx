@@ -93,5 +93,5 @@ const BodySection = ({
 
 export const Route = createFileRoute("/equipment")({
   component: Equipment,
-  head: () => ({ meta: [{ title: "OmniLogic - Equipment" }] }),
+  head: () => ({ meta: [{ title: "OmniLogicLocal - Equipment" }] }),
 });

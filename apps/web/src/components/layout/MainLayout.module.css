@@ -7,7 +7,7 @@
 
 .root {
   /* wide enough for the wordmark and the air temperature */
-  --layout-aside-min: 15rem;
+  --layout-aside-min: 18rem;
   --layout-aside-max: 18rem;
   --layout-header-height: 3.5rem;
   --layout-content-pref: 80ch;

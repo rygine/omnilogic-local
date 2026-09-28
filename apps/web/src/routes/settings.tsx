@@ -259,5 +259,5 @@ const FieldSkeleton = () => (
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
-  head: () => ({ meta: [{ title: "OmniLogic - Settings" }] }),
+  head: () => ({ meta: [{ title: "OmniLogicLocal - Settings" }] }),
 });

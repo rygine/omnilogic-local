@@ -5,7 +5,7 @@
   </picture>
 </p>
 
-# omnilogic-local
+# OmniLogicLocal
 
 A [TypeScript SDK](packages/omnilogic-local-sdk) for local control of Hayward
 OmniLogic pool controllers. No internet or cloud login required.
