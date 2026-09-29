@@ -3,6 +3,10 @@
 All notable changes to this project are recorded here, and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## 0.0.5
+
+- Added `setSolarSetPoint` to heaters
+
 ## 0.0.4
 
 - Removed the valve warning from `command()`

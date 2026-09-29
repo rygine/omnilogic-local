@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@homebridge/plugin-ui-utils": "^2.2.6",
-    "@rygine/omnilogic-local-sdk": "^0.0.4"
+    "@rygine/omnilogic-local-sdk": "^0.0.5"
   },
   "devDependencies": {
     "@homebridge/hap-nodejs": "^2.2.3",

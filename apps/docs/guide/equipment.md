@@ -198,14 +198,16 @@ omni.backyard.pool?.heater?.solarSetPoint;
 omni.backyard.pool?.heater?.applianceState;
 
 await omni.backyard.pool?.heater?.setSetPoint(90);
+await omni.backyard.pool?.heater?.setSolarSetPoint(92);
 await omni.backyard.pool?.heater?.setEnabled(true);
 ```
 
 For a set point outside the body's range (`minSetPoint` to `maxSetPoint`),
-`setSetPoint()` throws `OmniValidationError` and sends nothing. `setMode()`
-takes the `HEATER_MODE` code (0 heat, 1 cool, 2 auto) and throws
-`OmniValidationError` for any other. `mode` is "Off" when the controller reports
-thermostat mode 3. The panel never sets that mode.
+`setSetPoint()` and `setSolarSetPoint()` throw `OmniValidationError` and send
+nothing. In heat mode, the controller raises the solar set point to match a
+higher set point. `setMode()` takes the `HEATER_MODE` code (0 heat, 1 cool, 2
+auto) and throws `OmniValidationError` for any other. `mode` is "Off" when the
+controller reports thermostat mode 3. The panel never sets that mode.
 
 Each remaining setting has a setter. `cooldown`, `extend`, `allowLowSpeed`, and
 `lowSpeed` are getters that read the configuration. `silentMode` is a getter

@@ -670,6 +670,11 @@ describe("Backyard", () => {
         },
       ],
       [
+        () => pool.heater!.setSolarSetPoint(90),
+        "SetUISolarSetPointCmd",
+        { poolId: 1, equipmentId: 4, data: 90 },
+      ],
+      [
         () => pool.heater!.autoDifferential(),
         "GetHeaterAutoDifferential",
         { poolId: 1, equipmentId: 4 },
@@ -716,6 +721,9 @@ describe("Backyard", () => {
     );
     const pool = eq.pool!;
     expect(() => pool.heater!.setSetPoint(500)).toThrow(OmniValidationError);
+    expect(() => pool.heater!.setSolarSetPoint(500)).toThrow(
+      OmniValidationError,
+    );
     expect(() => pool.heater!.setMode(7)).toThrow(OmniValidationError);
     expect(() => pool.heater!.setMode(3)).toThrow(OmniValidationError);
     expect(() => pool.chlorinator!.setTimedPercent(150)).toThrow(

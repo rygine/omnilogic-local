@@ -40,7 +40,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@rygine/omnilogic-local-sdk": "^0.0.4"
+    "@rygine/omnilogic-local-sdk": "^0.0.5"
   },
   "devDependencies": {
     "@types/node": "^26.6.3",

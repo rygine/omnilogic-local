@@ -66,6 +66,20 @@ export class Heater extends Device {
     });
   }
 
+  setSolarSetPoint(degrees: number) {
+    const { minSetPoint: min, maxSetPoint: max } = this;
+    if (degrees < min || degrees > max) {
+      throw new OmniValidationError(
+        `Solar set point ${degrees} is not between ${min} and ${max}`,
+      );
+    }
+    return this.omni.command("SetUISolarSetPointCmd", {
+      poolId: this.poolId,
+      equipmentId: this.equipmentId,
+      data: degrees,
+    });
+  }
+
   get enabled() {
     return this.#runningState.enable !== 0;
   }
