@@ -3,30 +3,13 @@ export type Range = { min: number; max: number };
 // a pump's low, medium, and high preset speeds, in percent
 export type SpeedPresets = { low: number; medium: number; high: number };
 
-// linear interpolation across the aligned percent and rpm operating ranges
-export const percentToRpm = (
-  percent: number,
-  rpmRange: Range,
-  speedRange: Range,
-): number => {
-  const span = speedRange.max - speedRange.min;
-  if (span <= 0) {
-    return rpmRange.min;
-  }
-  const clamped = Math.min(Math.max(percent, speedRange.min), speedRange.max);
-  const frac = (clamped - speedRange.min) / span;
-  return Math.round(rpmRange.min + frac * (rpmRange.max - rpmRange.min));
-};
+// a percent as the Hayward app shows it in RPM: its share of the pump's maximum, to the nearest 10
+export const percentToRpm = (percent: number, rpmRange: Range): number =>
+  Math.round((percent * rpmRange.max) / 1000) * 10;
 
 // rpm when the pump's range is known, else the raw percent
-export const formatSpeed = (
-  percent: number,
-  rpmRange: Range | null,
-  speedRange: Range,
-): string =>
-  rpmRange
-    ? `${percentToRpm(percent, rpmRange, speedRange)} RPM`
-    : `${percent}%`;
+export const formatSpeed = (percent: number, rpmRange: Range | null): string =>
+  rpmRange ? `${percentToRpm(percent, rpmRange)} RPM` : `${percent}%`;
 
 // the vsp preset names, in preset order, mirrors the SDK's SPEED_PRESET
 export const SPEED_PRESET_LABELS = ["Low", "Medium", "High"] as const;

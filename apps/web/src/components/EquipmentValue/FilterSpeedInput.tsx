@@ -45,7 +45,7 @@ export const FilterSpeedInput = ({
           {displayLabel}
         </Text>
         <Text fz="1.75rem" fw={700} lh={1}>
-          {formatSpeed(value, rpmRange, speedRange)}
+          {formatSpeed(value, rpmRange)}
         </Text>
         <Slider
           w="100%"

@@ -104,7 +104,7 @@ const pumpRpm = (
   if (!rpmRange) {
     return null;
   }
-  return percentToRpm(percent, rpmRange, filterSpeedRange(config));
+  return percentToRpm(percent, rpmRange);
 };
 
 // the vsp presets in percent, or null without config
@@ -376,15 +376,11 @@ const scheduleValue = (
     case "spillover":
       return (
         presetOf(data, filterPresets(configBody?.filter)) ??
-        formatSpeed(
-          data,
-          filterRpmRange(configBody?.filter),
-          filterSpeedRange(configBody?.filter),
-        )
+        formatSpeed(data, filterRpmRange(configBody?.filter))
       );
     case "pump": {
       const pump = configBody?.pumps.find((p) => p.systemId === equipmentId);
-      return formatSpeed(data, filterRpmRange(pump), filterSpeedRange(pump));
+      return formatSpeed(data, filterRpmRange(pump));
     }
     case "chlorinator":
       return `${data}%`;

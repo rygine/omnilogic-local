@@ -18,7 +18,7 @@ export const PumpControl = ({
       {pump.speed != null && (
         <Group justify="space-between">
           <Text fw={500}>Speed</Text>
-          <Text>{formatSpeed(pump.speed, pump.rpmRange, pump.speedRange)}</Text>
+          <Text>{formatSpeed(pump.speed, pump.rpmRange)}</Text>
         </Group>
       )}
       <Group justify="center">

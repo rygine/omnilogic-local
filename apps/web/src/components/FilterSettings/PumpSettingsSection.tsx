@@ -17,6 +17,7 @@ import {
 import { FilterSpeedInput } from "@/components/EquipmentValue/FilterSpeedInput";
 import type { FilterSetting } from "@/server/fns/bow";
 import type { FilterSettings } from "@/server/serializers";
+import type { Range } from "@/shared/speed";
 
 import { CopyDiffAlerts, DurationRow } from "./system-wide";
 
@@ -70,23 +71,25 @@ const speedChangesFor = (
 // one body's Minimum and Maximum sliders, plus the min > max note
 const SpeedRangeBody = ({
   draft,
+  rpmRange,
   onChange,
 }: {
   draft: SpeedDraft;
+  rpmRange: Range | null;
   onChange: (field: SpeedField, value: number) => void;
 }) => (
   <Stack gap="sm">
     <Stack gap="md">
       <FilterSpeedInput
         label="Minimum"
-        rpmRange={null}
+        rpmRange={rpmRange}
         speedRange={{ min: 0, max: 100 }}
         value={draft.pumpMinSpeed}
         onChange={(p) => onChange("pumpMinSpeed", p)}
       />
       <FilterSpeedInput
         label="Maximum"
-        rpmRange={null}
+        rpmRange={rpmRange}
         speedRange={{ min: 0, max: 100 }}
         value={draft.pumpMaxSpeed}
         onChange={(p) => onChange("pumpMaxSpeed", p)}
@@ -184,6 +187,7 @@ export const PumpSettingsSection = ({
       {bodies.length === 1 ? (
         <SpeedRangeBody
           draft={speedDraftFor(bodies[0]!, speedEdits)}
+          rpmRange={bodies[0]!.filter.rpmRange}
           onChange={(field, value) => setSpeed(bodies[0]!.bowId, field, value)}
         />
       ) : (
@@ -201,6 +205,7 @@ export const PumpSettingsSection = ({
                 <Title order={6}>{b.bodyName}</Title>
                 <SpeedRangeBody
                   draft={speedDraftFor(b, speedEdits)}
+                  rpmRange={b.filter.rpmRange}
                   onChange={(field, value) => setSpeed(b.bowId, field, value)}
                 />
               </Stack>

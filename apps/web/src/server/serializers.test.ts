@@ -894,11 +894,7 @@ describe("serializeWorld schedules: kind + value", () => {
   });
 
   it("formats a filter schedule at a non-preset speed in RPM when the pump's range is known", () => {
-    const rpm = percentToRpm(
-      80,
-      { min: 2000, max: 3450 },
-      { min: 58, max: 100 },
-    );
+    const rpm = percentToRpm(80, { min: 2000, max: 3450 });
     const [s] = scheduleSummaries(
       scheduleKindOmni([{ scheduleSystemId: 1, equipmentId: 3, data: 80 }], {
         minPumpSpeed: 58,
@@ -1189,8 +1185,8 @@ describe("auxiliary pumps", () => {
       bodyName: "Pool",
       equipmentName: "Waterfall Pump",
       kind: "pump",
-      // 80% across the pump's own 20–100% and 1000–3000 RPM
-      value: "2500 RPM",
+      // 80% of the pump's own 3000 RPM maximum
+      value: "2400 RPM",
     });
   });
 });

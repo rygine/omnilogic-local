@@ -61,6 +61,28 @@ describe("PumpSettingsSection", () => {
     expect(max).toHaveAttribute("aria-valuenow", "100");
   });
 
+  it("reads Minimum and Maximum in RPM when the pump's RPM range is known", () => {
+    r(<PumpSettingsSection bodies={agreeingBodies} />);
+    expect(pool().getByText("2000 RPM")).toBeInTheDocument();
+    expect(pool().getByText("3450 RPM")).toBeInTheDocument();
+  });
+
+  it("reads Minimum and Maximum in percent without an RPM range", () => {
+    r(
+      <PumpSettingsSection
+        bodies={[
+          {
+            bowId: 1,
+            bodyName: "Pool",
+            filter: { ...makeFilter({ id: 3 }), rpmRange: null },
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText("58%")).toBeInTheDocument();
+    expect(screen.getByText("100%")).toBeInTheDocument();
+  });
+
   it("priming edit writes to every body, pool then spa", async () => {
     r(<PumpSettingsSection bodies={agreeingBodies} />);
     const priming = screen.getByLabelText("Priming duration");

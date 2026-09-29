@@ -42,7 +42,7 @@ export type DeviceRow = {
 
 // a pump's speed, in rpm when the range is known, "" when off
 const pumpSpeed = (p: PumpDetail): string =>
-  p.speed === null ? "" : formatSpeed(p.speed, p.rpmRange, p.speedRange);
+  p.speed === null ? "" : formatSpeed(p.speed, p.rpmRange);
 
 const pumpState = (p: PumpDetail): string => {
   if (!p.on) {
@@ -64,7 +64,7 @@ export const deviceRows = (bow: BowDetail): DeviceRow[] => {
   // a device name can be empty, and heaters carry none
   const rows: DeviceRow[] = [];
   for (const f of bow.filters) {
-    const speed = formatSpeed(f.speed, f.rpmRange, f.speedRange);
+    const speed = formatSpeed(f.speed, f.rpmRange);
     const preset = presetOf(f.speed, f.presets);
     rows.push({
       kind: "filter",
@@ -155,7 +155,7 @@ export const deviceRows = (bow: BowDetail): DeviceRow[] => {
   // spillover has no equipment id, the body id stands in
   if (bow.spillover) {
     const s = bow.spillover;
-    const speed = formatSpeed(s.speed, s.rpmRange, s.speedRange);
+    const speed = formatSpeed(s.speed, s.rpmRange);
     const preset = presetOf(s.speed, s.presets);
     rows.push({
       kind: "spillover",

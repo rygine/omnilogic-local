@@ -4,15 +4,17 @@ import { describe, expect, it } from "vitest";
 import { formatSpeed, presetOf, SPEED_PRESET_LABELS } from "@/shared/speed";
 
 const rpm = { min: 2000, max: 3450 };
-const pct = { min: 58, max: 100 };
 
 describe("formatSpeed", () => {
-  it("formats as RPM when the pump's RPM range is known", () => {
-    expect(formatSpeed(58, rpm, pct)).toBe("2000 RPM");
+  it("formats as the percent of the pump's maximum RPM, to the nearest 10, whatever its minimum speed", () => {
+    expect(formatSpeed(58, rpm)).toBe("2000 RPM");
+    expect(formatSpeed(60, rpm)).toBe("2070 RPM");
+    expect(formatSpeed(80, rpm)).toBe("2760 RPM");
+    expect(formatSpeed(100, rpm)).toBe("3450 RPM");
   });
 
   it("falls back to percent without an RPM range", () => {
-    expect(formatSpeed(58, null, pct)).toBe("58%");
+    expect(formatSpeed(58, null)).toBe("58%");
   });
 });
 

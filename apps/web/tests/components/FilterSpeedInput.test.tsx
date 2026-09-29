@@ -37,8 +37,8 @@ describe("FilterSpeedInput", () => {
   });
 
   it("steps in whole percent (the wire value) while reading in RPM", async () => {
-    const onChange = renderInput(60); // 60% ↔ 2069 RPM, not a 50-RPM step
-    expect(screen.getByText("2069 RPM")).toBeInTheDocument();
+    const onChange = renderInput(60); // 60% ↔ 2070 RPM, not a 50-RPM step
+    expect(screen.getByText("2070 RPM")).toBeInTheDocument();
     const slider = screen.getByRole("slider", { name: "Speed" });
     expect(slider).toHaveAttribute("aria-valuenow", "60");
     await act(async () => {

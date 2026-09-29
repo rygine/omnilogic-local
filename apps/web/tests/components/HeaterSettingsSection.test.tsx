@@ -86,7 +86,7 @@ describe("HeaterSettingsSection", () => {
     // the speed slider works in percent and reads in RPM
     const slider = screen.getByRole("slider", { name: /minimum speed/i });
     expect(slider).toHaveAttribute("aria-valuenow", "60");
-    expect(screen.getByText("2069 RPM")).toBeInTheDocument();
+    expect(screen.getByText("2070 RPM")).toBeInTheDocument();
     expect(screen.getByText("Low")).toBeInTheDocument();
     expect(screen.getByText("Med")).toBeInTheDocument();
     expect(screen.getByText("High")).toBeInTheDocument();
