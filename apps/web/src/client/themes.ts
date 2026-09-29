@@ -6,7 +6,11 @@ import {
   clearCountdownTimers,
   scheduleCountdownTimers,
 } from "@/client/countdown-timers";
-import { READ_QUERY_DEFAULTS, queryKeys } from "@/client/queries";
+import {
+  READ_QUERY_DEFAULTS,
+  pollUntilFailure,
+  queryKeys,
+} from "@/client/queries";
 import { formatDuration } from "@/client/schedule-format";
 import { useSettings } from "@/client/settings";
 import { createStoredValue, type StoredValue } from "@/client/stored";
@@ -31,7 +35,7 @@ export const useThemes = (): UseQueryResult<ThemeSummary[]> => {
     queryFn: () => getThemes({ data: { host, port } }),
     enabled: !!host,
     ...READ_QUERY_DEFAULTS,
-    refetchInterval: refreshSeconds * 1000,
+    refetchInterval: pollUntilFailure(refreshSeconds * 1000),
   });
 };
 

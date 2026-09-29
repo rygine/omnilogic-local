@@ -63,6 +63,12 @@ export const READ_QUERY_DEFAULTS = {
   refetchOnReconnect: false,
 } as const;
 
+// re-reads every ms until a read fails, then waits for Try again
+export const pollUntilFailure =
+  (ms: number) =>
+  (query: { state: { status: string } }): number | false =>
+    query.state.status === "error" ? false : ms;
+
 // the world, re-read on the refresh cadence while a page observes it
 const useWorldSelect = <T>(
   select: (world: WorldData) => T,
@@ -74,7 +80,7 @@ const useWorldSelect = <T>(
     enabled: !!host,
     select,
     ...READ_QUERY_DEFAULTS,
-    refetchInterval: refreshSeconds * 1000,
+    refetchInterval: pollUntilFailure(refreshSeconds * 1000),
   });
 };
 
