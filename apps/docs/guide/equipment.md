@@ -149,15 +149,31 @@ omni.backyard.pool?.filter?.reportedSpeed;
 // watts
 omni.backyard.pool?.filter?.power;
 
-// a percent, whatever the speed format
+// a percent
 await omni.backyard.pool?.filter?.setSpeed(80);
 // off
 await omni.backyard.pool?.filter?.setSpeed(0);
 ```
 
-Speeds are percents, whatever the speed format. The SDK does not convert them.
-After a start, the pump primes at high speed for its priming duration and then
-runs at the speed you set. Immediately after the start, `speed` shows 100.
+Speeds are percents regardless of format. After a start, the pump primes at high
+speed for its priming duration and then runs at the speed you set. Immediately
+after the start, `speed` shows 100.
+
+The SDK converts a pump's speed to and from RPM: the percent's share of the top
+speed, to the nearest 10 RPM.
+
+```typescript
+// 3450, undefined for a pump without a top speed in RPM
+omni.backyard.pool?.filter?.maxRpm;
+// 2000, the speed in RPM
+omni.backyard.pool?.filter?.rpm;
+// 2760
+omni.backyard.pool?.filter?.toRpm(80);
+// 58, a whole percent from 0 to 100
+omni.backyard.pool?.filter?.fromRpm(2000);
+```
+
+`fromRpm` throws an `OmniLogicError` for a pump without a top speed in RPM.
 
 Each of these settings has a getter that reads the configuration, and a setter:
 

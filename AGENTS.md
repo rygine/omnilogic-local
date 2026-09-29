@@ -155,7 +155,9 @@ owns `~/.config/omnilogic-local/`. No dependency the SDK does not already need.
   temperature on the wire is °F whichever way the units are set, since the
   firmware normalizes a Celsius sensor to °F on the way in and converts only on
   the panel's screen. The configuration carries RPM bounds in the 2000–3450
-  range beside those percents, so a percent range check would be wrong.
+  range beside those percents, so a percent range check would be wrong. The one
+  exception is a pump's speed to and from RPM (`toRpm`, `fromRpm`): the
+  percent's share of the pump's top RPM, to the nearest 10.
 
 ## Working on the controller
 

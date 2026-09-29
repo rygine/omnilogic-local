@@ -18,8 +18,11 @@ export const cellVolts = (raw: number) => ((raw * 5) / 255) * 8.15;
 export const cellAmps = (raw: number) =>
   raw === 0 ? 0 : (raw * 5) / 255 / 0.489;
 
-// thermistor count → °F, NaN past the table's end (raw ≥ 640)
+// thermistor count → °F, NaN for no reading (0) or past the table's end (≥ 640)
 export const thermistorF = (raw: number) => {
+  if (raw === 0) {
+    return Number.NaN;
+  }
   const i = raw >> 3;
   const lo = THERMISTOR[i];
   if (lo === undefined) {

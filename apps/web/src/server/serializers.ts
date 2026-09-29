@@ -14,7 +14,6 @@ import { lightBusyWord } from "@/server/transitions";
 import { sentenceCase } from "@/shared/sentence-case";
 import {
   formatSpeed,
-  percentToRpm,
   presetOf,
   type Range,
   type SpeedPresets,
@@ -90,21 +89,6 @@ const filterRpmRange = (config: PumpRanges | undefined): Range | null => {
     return { min: config.minPumpRpm, max: config.maxPumpRpm };
   }
   return null;
-};
-
-// the pump's rpm at a percent, null when off or without an rpm range
-const pumpRpm = (
-  percent: number | null,
-  config: FilterConfig | undefined,
-): number | null => {
-  if (percent === null) {
-    return null;
-  }
-  const rpmRange = filterRpmRange(config);
-  if (!rpmRange) {
-    return null;
-  }
-  return percentToRpm(percent, rpmRange);
 };
 
 // the vsp presets in percent, or null without config
@@ -637,7 +621,7 @@ export const detailFor = (
               lastSpeed: filter.lastSpeed,
               countdown: filter.onCountdown,
               speedRange: filterSpeedRange(filterConfig),
-              rpm: pumpRpm(filter.speed, filterConfig),
+              rpm: filterRpmRange(filterConfig) ? (filter.rpm ?? null) : null,
               rpmRange: filterRpmRange(filterConfig),
               presets: filterPresets(filterConfig),
               settings: filterSettings(filterConfig),

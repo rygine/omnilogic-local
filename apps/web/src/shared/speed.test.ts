@@ -1,7 +1,16 @@
-import { SPEED_PRESET } from "@rygine/omnilogic-local-sdk";
+import {
+  type MSPConfig,
+  OmniLogic,
+  SPEED_PRESET,
+} from "@rygine/omnilogic-local-sdk";
 import { describe, expect, it } from "vitest";
 
-import { formatSpeed, presetOf, SPEED_PRESET_LABELS } from "@/shared/speed";
+import {
+  formatSpeed,
+  percentToRpm,
+  presetOf,
+  SPEED_PRESET_LABELS,
+} from "@/shared/speed";
 
 const rpm = { min: 2000, max: 3450 };
 
@@ -11,6 +20,35 @@ describe("formatSpeed", () => {
     expect(formatSpeed(60, rpm)).toBe("2070 RPM");
     expect(formatSpeed(80, rpm)).toBe("2760 RPM");
     expect(formatSpeed(100, rpm)).toBe("3450 RPM");
+  });
+
+  it("converts every percent as the SDK's pump does", () => {
+    const config = {
+      backyard: {
+        bodiesOfWater: [
+          {
+            systemId: 1,
+            name: "Pool",
+            type: "BOW_POOL",
+            colorLogicLights: [],
+            pumps: [],
+            relays: [],
+            sensors: [],
+            filter: {
+              systemId: 3,
+              name: "Filter Pump",
+              filterType: "FMT_VARIABLE_SPEED_PUMP",
+              maxPumpRpm: rpm.max,
+            },
+          },
+        ],
+      },
+    } as unknown as MSPConfig;
+    const filter = new OmniLogic({ host: "127.0.0.1", config }).backyard.pool!
+      .filter!;
+    for (let p = 0; p <= 100; p++) {
+      expect(percentToRpm(p, rpm)).toBe(filter.toRpm(p));
+    }
   });
 
   it("falls back to percent without an RPM range", () => {

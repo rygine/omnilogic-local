@@ -52,7 +52,7 @@ describe("record decoders", () => {
     expect(cellAmps(0)).toBe(0);
     expect(cellAmps(51)).toBeCloseTo(2.045, 3);
     expect(thermistorF(432)).toBeCloseTo(89.5, 1);
-    expect(thermistorF(0)).toBe(800);
+    expect(Number.isNaN(thermistorF(0))).toBe(true);
     expect(Number.isNaN(thermistorF(640))).toBe(true);
     expect(bcdWatts(4, 0x58)).toBe(458);
     expect(bcdWatts(4, 0x88)).toBe(488);

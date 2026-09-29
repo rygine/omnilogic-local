@@ -456,6 +456,35 @@ describe("serializeWorld", () => {
   });
 });
 
+describe("filter RPM", () => {
+  it("gives the filter's RPM only with the RPM range the page shows it in", () => {
+    const omni = stubOmni();
+    const body = (
+      omni.backyard as unknown as {
+        bodies: { filter: Record<string, unknown> }[];
+      }
+    ).bodies[0]!;
+    body.filter.rpm = 2590;
+    const bodyConfig = omni.config.backyard.bodiesOfWater[0]!;
+
+    bodyConfig.filter = {
+      ...bodyConfig.filter!,
+      minPumpRpm: 2000,
+      maxPumpRpm: 3450,
+    };
+    expect(serializeWorld(omni).bows[0]!.filters[0]).toMatchObject({
+      rpm: 2590,
+      rpmRange: { min: 2000, max: 3450 },
+    });
+
+    bodyConfig.filter = { ...bodyConfig.filter, minPumpRpm: 3450 };
+    expect(serializeWorld(omni).bows[0]!.filters[0]).toMatchObject({
+      rpm: null,
+      rpmRange: null,
+    });
+  });
+});
+
 describe("outside normal operation", () => {
   it("reads equipment off, hides heater settings, and names the mode", () => {
     const omni = heaterOmni({ enable: 1, heaterState: 1 });

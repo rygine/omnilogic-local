@@ -359,6 +359,34 @@ describe("Backyard", () => {
     ]);
   });
 
+  it("converts a pump's percent to and from RPM against its own top speed", () => {
+    const config = loadConfigFixture("config-extra.xml");
+    const { eq } = sessionFor(config, undefined, telemetryIn(1));
+    const filter = eq.pool!.filter!;
+
+    expect(filter.maxRpm).toBe(3450);
+    expect(eq.spa!.pumps[1]!.maxRpm).toBe(3450);
+    expect(filter.rpm).toBe(2000);
+    expect([0, 60, 80, 100].map((p) => filter.toRpm(p))).toEqual([
+      0, 2070, 2760, 3450,
+    ]);
+    expect([2000, 2070, 5000, -10].map((r) => filter.fromRpm(r))).toEqual([
+      58, 60, 100, 0,
+    ]);
+    // every percent survives the round trip
+    for (let p = 0; p <= 100; p++) {
+      expect(filter.fromRpm(filter.toRpm(p)!)).toBe(p);
+    }
+
+    config.backyard.bodiesOfWater[0]!.filter!.maxPumpRpm = 0;
+    expect([filter.maxRpm, filter.rpm, filter.toRpm(50)]).toEqual([
+      undefined,
+      undefined,
+      undefined,
+    ]);
+    expect(() => filter.fromRpm(2000)).toThrow(OmniLogicError);
+  });
+
   it("lists every heat source under one thermostat, each on its own row", () => {
     const { eq, sent } = sessionFor(
       loadConfigFixture("config-extra.xml"),

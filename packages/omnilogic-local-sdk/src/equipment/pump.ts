@@ -2,6 +2,7 @@ import type { OmniLogic } from "@/client/omnilogic";
 import { PUMP_STATE, PUMP_WHY_ON } from "@/constants/labels";
 import { Device } from "@/equipment/device";
 import { timerParams } from "@/utils/command";
+import { OmniLogicError } from "@/utils/errors";
 
 type PumpConfig = {
   systemId: number;
@@ -96,6 +97,37 @@ export class Pump extends Device {
 
   get onCountdown() {
     return this.reported && this.#reading.whyOn === this.countdownReason;
+  }
+
+  get #configRow() {
+    const body = this.bodyConfig;
+    return [body?.filter, ...(body?.pumps ?? [])].find(
+      (r) => r?.systemId === this.equipmentId,
+    );
+  }
+
+  get maxRpm() {
+    const max = this.#configRow?.maxPumpRpm ?? 0;
+    return max > 0 ? max : undefined;
+  }
+
+  get rpm() {
+    return this.toRpm(this.speed);
+  }
+
+  toRpm(percent: number) {
+    const max = this.maxRpm;
+    return max === undefined
+      ? undefined
+      : Math.round((percent * max) / 1000) * 10;
+  }
+
+  fromRpm(rpm: number) {
+    const max = this.maxRpm;
+    if (max === undefined) {
+      throw new OmniLogicError(`"${this.name}" has no top speed in RPM`);
+    }
+    return Math.min(100, Math.max(0, Math.round((rpm * 100) / max)));
   }
 
   // set the pump speed, 0 for off
