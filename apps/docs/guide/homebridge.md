@@ -222,9 +222,9 @@ For a light in OmniDirect mode.
 - **Delay:** after a theme starts or stops, the controller is silent for 12 to
   22 seconds. Other commands wait, and the tile updates once the controller
   responds.
-- **Deleted theme:** a theme deleted on the panel or in the OmniLogic app leaves
-  HomeKit at the next refresh. Until then, the plugin refuses a tap on it. The
-  settings page shows it as [invalid](#invalid-accessories) until you remove it.
+- **Deleted theme:** a theme deleted on the panel or elsewhere leaves HomeKit at
+  the next refresh. Until then, the plugin refuses a tap on it. The settings
+  page shows it as [invalid](#invalid-accessories) until you remove it.
 
 ---
 

@@ -3,7 +3,7 @@ export type Range = { min: number; max: number };
 // a pump's low, medium, and high preset speeds, in percent
 export type SpeedPresets = { low: number; medium: number; high: number };
 
-// a percent as the Hayward app shows it in RPM: its share of the pump's maximum, to the nearest 10
+// a percent in RPM: its share of the pump's maximum, to the nearest 10
 export const percentToRpm = (percent: number, rpmRange: Range): number =>
   Math.round((percent * rpmRange.max) / 1000) * 10;
 

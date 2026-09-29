@@ -34,7 +34,7 @@ export const UiSettingsSection = () => {
     <Stack gap="lg" aria-label="UI settings">
       <SettingRow
         label="Equipment refresh"
-        description="How often the app re-reads the controller for the state of every piece of equipment. Changes made from the panel or the Hayward app show up within this time; changes made here show at once."
+        description="How often the app re-reads the controller for the state of every piece of equipment. Changes made at the panel or elsewhere show up within this time; changes made here show at once."
         control={
           <Select
             aria-label="Equipment refresh"

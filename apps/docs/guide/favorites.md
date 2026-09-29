@@ -1,7 +1,7 @@
 # Favorites
 
-A favorite bookmarks one piece of equipment on the panel and in the Hayward app.
-It stores one equipment id and a `data` value.
+A favorite bookmarks one piece of equipment on the panel. It stores one
+equipment id and a `data` value.
 
 ```typescript
 await omni.refresh();

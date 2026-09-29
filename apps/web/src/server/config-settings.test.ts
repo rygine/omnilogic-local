@@ -101,7 +101,7 @@ describe("serializeSettings", () => {
     ]);
   });
 
-  it("drops the Hayward app UI flags", () => {
+  it("drops the UI flags", () => {
     const labels = rowLabels(baseConfig(), "System");
     expect(labels).not.toContain("Mood color");
     expect(labels).not.toContain("Filter simple mode");

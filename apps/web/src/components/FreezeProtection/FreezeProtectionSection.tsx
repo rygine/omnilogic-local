@@ -19,7 +19,7 @@ import {
 } from "@/components/FilterSettings/system-wide";
 import type { FilterSetting } from "@/server/fns/bow";
 
-// the firmware caps the freeze protection temperature at 42 °F, the 33 floor is the app's
+// the firmware caps the freeze protection temperature at 42 °F
 const FREEZE_TEMP_RANGE = { min: 33, max: 42 };
 
 const FREEZE_PROTECT_DESCRIPTION =
