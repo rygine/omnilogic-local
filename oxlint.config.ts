@@ -238,6 +238,10 @@ export default defineConfig({
         // Test stubs swap a method wholesale (`const good = omni.fetchTelemetry`)
         // to restore it later; that stub is never called unbound
         "typescript/unbound-method": "off",
+        // a helper sits beside the one test that uses it
+        "unicorn/consistent-function-scoping": "off",
+        // a type assertion may pin a type that is `{}` on purpose
+        "typescript/no-generated-empty-object-type": "off",
       },
     },
     {

@@ -175,10 +175,6 @@ export const useSetEquipmentOn = (bowId: number) =>
       setEquipmentOn({ data: { ...settings, bowId, ...vars } }),
     (world, vars) =>
       patchBow(world, bowId, (bow) => {
-        const apply = <T extends { id: number; on: boolean }>(arr: T[]): T[] =>
-          arr.map((item) =>
-            item.id === vars.equipmentId ? { ...item, on: vars.on } : item,
-          );
         return {
           ...bow,
           filters: bow.filters.map((f) =>
@@ -193,7 +189,9 @@ export const useSetEquipmentOn = (bowId: number) =>
               ? { ...p, on: vars.on, speed: vars.on ? p.speed : null }
               : p,
           ),
-          relays: apply(bow.relays),
+          relays: bow.relays.map((r) =>
+            r.id === vars.equipmentId ? { ...r, on: vars.on } : r,
+          ),
         };
       }),
   );
