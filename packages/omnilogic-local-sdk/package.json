@@ -1,6 +1,6 @@
 {
   "name": "@rygine/omnilogic-local-sdk",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "TypeScript SDK for local control of Hayward OmniLogic pool controllers",
   "keywords": [
     "api",
