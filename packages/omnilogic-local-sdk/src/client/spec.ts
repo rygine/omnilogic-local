@@ -1407,7 +1407,7 @@ const SPEC = defineSpec({
     request: [
       { name: "poolId", type: "int" },
       { name: "equipmentId", type: "int" },
-      // a filter speed for a filter, 0/1 for everything else
+      // a filter speed for a filter, a percent for a chlorinator, 0/1 for everything else
       { name: "isOn", type: "int" },
       { name: "isCountDownTimer", type: "byte" },
       { name: "startTimeHours", type: "byte" },

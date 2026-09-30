@@ -3,8 +3,8 @@ opcode: 164
 area: equipment
 status: verified
 summary: >-
-  Turns a piece of equipment on or off, sets a filter's speed, or starts a
-  countdown.
+  Turns a piece of equipment on or off, sets a filter's speed or a chlorinator's
+  percent, or starts a countdown.
 firmware:
   - R0502000
 models:
@@ -15,8 +15,8 @@ models:
 
 <CommandFacts />
 
-Turns a piece of equipment on or off, sets a filter's speed, or starts a
-countdown.
+Turns a piece of equipment on or off, sets a filter's speed or a chlorinator's
+percent, or starts a countdown.
 
 ## Parameters
 
