@@ -88,10 +88,10 @@ export const loadSettings = async (
   const token = env.SUPERVISOR_TOKEN;
   if (token !== undefined) {
     const parsed: unknown = JSON.parse(await readFile(optionsPath, "utf8"));
-    if (!isRecord(parsed) || typeof parsed.host !== "string") {
-      throw new Error(`${optionsPath} is missing "host"`);
+    if (!isRecord(parsed)) {
+      throw new Error(`${optionsPath} is not an options object`);
     }
-    if (parsed.host.trim() === "") {
+    if (typeof parsed.host !== "string" || parsed.host.trim() === "") {
       throw new Error("The controller address is not set");
     }
     return {

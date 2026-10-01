@@ -140,12 +140,14 @@ describe("loadSettings", () => {
       loadSettings({ OMNILOGIC_HOST: "h", MQTT_URL: "m", SPEED_UNIT: "fast" }),
     ).rejects.toThrow('speed unit "fast" is not rpm or percent');
 
-    await expect(
-      loadSettings(
-        { SUPERVISOR_TOKEN: "sv" },
-        await options({ host: " ", mqtt_url: "mqtt://x" }),
-      ),
-    ).rejects.toThrow("The controller address is not set");
+    for (const host of [" ", null]) {
+      await expect(
+        loadSettings(
+          { SUPERVISOR_TOKEN: "sv" },
+          await options({ host, mqtt_url: "mqtt://x" }),
+        ),
+      ).rejects.toThrow("The controller address is not set");
+    }
 
     vi.stubGlobal("fetch", async () => new Response("", { status: 400 }));
     await expect(

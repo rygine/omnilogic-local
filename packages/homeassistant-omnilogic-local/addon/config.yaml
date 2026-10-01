@@ -15,7 +15,7 @@ map:
   - type: share
     read_only: false
 options:
-  host: ""
+  host: null
   poll_interval: 30
   diagnostics_interval: 600
   log_level: info
