@@ -7,7 +7,7 @@ change.
 <table>
   <tr>
     <td><StatusPill status="verified" /></td>
-    <td>You sent it to a controller, and verified the effect in the configuration, the telemetry, or on the equipment.</td>
+    <td>The command was sent to the controller and its effect was verified in the configuration, the telemetry, or on the equipment.</td>
   </tr>
   <tr>
     <td><StatusPill status="unverified" /></td>
