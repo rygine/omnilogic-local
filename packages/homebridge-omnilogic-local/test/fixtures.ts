@@ -8,18 +8,15 @@ export const omniDirectConfigXml = (): string =>
     "<Networked>no</Networked><V2-Active>yes</V2-Active>",
   );
 
-const sdkFixture = (name: string): string =>
-  readFileSync(
-    join(import.meta.dirname, "../../omnilogic-local-sdk/test/fixtures", name),
-    "utf8",
-  );
+const fixture = (name: string): string =>
+  readFileSync(join(import.meta.dirname, "../../../fixtures", name), "utf8");
 
-// the SDK's config with relays on the backyard itself
-export const extraConfigXml = (): string => sdkFixture("config-extra.xml");
+// the extra config, with relays on the backyard itself
+export const extraConfigXml = (): string => fixture("config-extra.xml");
 
-// the SDK's reference config plus one theme
+// the reference config plus one theme
 export const configXml = (): string =>
-  sdkFixture("config.xml").replace(
+  fixture("config.xml").replace(
     "</MSPConfig>",
     "<Groups><group><System-Id>29</System-Id><Name>Party</Name><Icon-Id>0</Icon-Id></group></Groups></MSPConfig>",
   );

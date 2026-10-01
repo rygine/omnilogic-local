@@ -218,8 +218,8 @@ built and run as an image before it lands. See `apps/web/README.md`.
   and verify loop run against them. Without them the fakes answer an empty
   configuration and telemetry; `{ realFetches: true }` sends the fetches through
   the transport.
-- **The plugin's tests read the SDK's `test/fixtures/config.xml` and
-  `config-extra.xml`; nothing under its `src` does.**
+- **Every package's tests read the controller captures in the root `fixtures/`;
+  nothing under any `src` does.**
 - **No test talks to a controller.** Anything that reaches real hardware goes
   through the command line (`packages/omnilogic-local-cli`); its `info` says
   whether a command is a read, from the spec's `read` flag.

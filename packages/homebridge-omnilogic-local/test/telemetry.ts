@@ -1,6 +1,6 @@
 import type { Telemetry } from "@rygine/omnilogic-local-sdk";
 
-// telemetry matching the SDK's reference config
+// telemetry matching the reference config
 const base: Telemetry = {
   version: "1",
   backyard: {

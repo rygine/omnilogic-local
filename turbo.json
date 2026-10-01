@@ -29,6 +29,7 @@
         "src/**",
         "test/**",
         "tests/**",
+        "$TURBO_ROOT$/fixtures/**",
         "vitest.config.ts",
         "tsconfig.json"
       ],
@@ -40,6 +41,7 @@
         "src/**",
         "test/**",
         "tests/**",
+        "$TURBO_ROOT$/fixtures/**",
         "vitest.config.ts",
         "tsconfig.json"
       ],

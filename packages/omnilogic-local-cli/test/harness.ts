@@ -7,19 +7,13 @@ import type { OmniLogicProtocol } from "@rygine/omnilogic-local-sdk";
 
 import { run } from "@/cli";
 
-// the SDK's reference config
+// the reference config
 export const CONFIG_XML = readFileSync(
-  join(
-    import.meta.dirname,
-    "../../omnilogic-local-sdk/test/fixtures/config.xml",
-  ),
+  join(import.meta.dirname, "../../../fixtures/config.xml"),
   "utf8",
 );
 export const SYSINFO_XML = readFileSync(
-  join(
-    import.meta.dirname,
-    "../../omnilogic-local-sdk/test/fixtures/sysinfo.xml",
-  ),
+  join(import.meta.dirname, "../../../fixtures/sysinfo.xml"),
   "utf8",
 );
 export const TELEMETRY_XML =

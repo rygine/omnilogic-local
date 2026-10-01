@@ -81,9 +81,9 @@ export const makeRecorder = (
   return { omni, sent };
 };
 
-// a fixture under `test/fixtures`, as text
+// a controller capture from the repository's fixtures folder, as text
 export const fixture = (name: string): string =>
-  readFileSync(join(import.meta.dirname, "fixtures", name), "utf8");
+  readFileSync(join(import.meta.dirname, "../../../fixtures", name), "utf8");
 
 // a config fixture, parsed
 export const loadConfigFixture = (name = "config.xml"): MSPConfig =>
