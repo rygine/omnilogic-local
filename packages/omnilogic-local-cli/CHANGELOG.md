@@ -3,6 +3,10 @@
 All notable changes to this project are recorded here, and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## 0.0.4
+
+- Upgraded `@rygine/omnilogic-local-sdk` to `0.0.7`
+
 ## 0.0.3
 
 - Changed Ctrl-C at the write prompt to exit 3

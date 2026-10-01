@@ -1,6 +1,6 @@
 {
   "name": "@rygine/omnilogic-local-cli",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Command line for local control of Hayward OmniLogic pool controllers",
   "keywords": [
     "cli",
@@ -40,7 +40,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@rygine/omnilogic-local-sdk": "^0.0.6"
+    "@rygine/omnilogic-local-sdk": "^0.0.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
