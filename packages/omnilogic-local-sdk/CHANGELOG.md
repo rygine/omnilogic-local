@@ -3,6 +3,14 @@
 All notable changes to this project are recorded here, and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## 0.0.7
+
+- Added `minSpeed`, `maxSpeed`, `presets`, and `speedType` to every pump
+- Added `pumpSpeedType`
+- Removed `lowSpeed`, `mediumSpeed`, and `highSpeed` from filters
+- Changed the speed, freeze protect, heater low speed, and auto-differential
+  setters to refuse invalid values
+
 ## 0.0.6
 
 - Added `maxRpm`, `rpm`, `toRpm`, and `fromRpm` to pumps

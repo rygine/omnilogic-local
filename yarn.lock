@@ -1946,7 +1946,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@rygine/omnilogic-local-sdk@npm:^0.0.6, @rygine/omnilogic-local-sdk@workspace:*, @rygine/omnilogic-local-sdk@workspace:packages/omnilogic-local-sdk":
+"@rygine/omnilogic-local-sdk@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "@rygine/omnilogic-local-sdk@npm:0.0.6"
+  dependencies:
+    fast-xml-builder: "npm:^1.3.1"
+    fast-xml-parser: "npm:^5.11.1"
+  checksum: 10/69d07a506eb7bb965ecb1a42a3bfa0cc13bad21eb7a480e80a582f3edc8a00d1e9470a96b6b2c968dbd428134145b81c620d6ffc6b2e384b2fc4311a07bb2e67
+  languageName: node
+  linkType: hard
+
+"@rygine/omnilogic-local-sdk@workspace:*, @rygine/omnilogic-local-sdk@workspace:packages/omnilogic-local-sdk":
   version: 0.0.0-use.local
   resolution: "@rygine/omnilogic-local-sdk@workspace:packages/omnilogic-local-sdk"
   dependencies:
