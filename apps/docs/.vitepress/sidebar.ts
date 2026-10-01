@@ -65,6 +65,7 @@ export const sidebar: Record<string, Group[]> = {
         { text: "Supported hardware", link: "/guide/hardware" },
         { text: "The command line", link: "/guide/cli" },
         { text: "Homebridge plugin", link: "/guide/homebridge" },
+        { text: "Home Assistant bridge", link: "/guide/home-assistant" },
         { text: "The web app", link: "/guide/web-app" },
       ],
     },

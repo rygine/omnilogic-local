@@ -1,0 +1,56 @@
+{
+  "name": "@rygine/homeassistant-omnilogic-local",
+  "version": "0.0.1",
+  "description": "Home Assistant bridge for local control of Hayward OmniLogic pool controllers",
+  "keywords": [
+    "hayward",
+    "home-assistant",
+    "mqtt",
+    "omnilogic",
+    "pool"
+  ],
+  "homepage": "https://github.com/rygine/omnilogic-local/tree/main/packages/homeassistant-omnilogic-local#readme",
+  "bugs": {
+    "url": "https://github.com/rygine/omnilogic-local/issues"
+  },
+  "license": "MIT",
+  "author": "Ry Racherbaumer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rygine/omnilogic-local.git",
+    "directory": "packages/homeassistant-omnilogic-local"
+  },
+  "bin": "dist/index.js",
+  "files": [
+    "CHANGELOG.md",
+    "dist"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "tag": "prerelease"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "clean": "rimraf .turbo dist node_modules",
+    "prepack": "yarn build",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@rygine/omnilogic-local-sdk": "^0.0.7",
+    "mqtt": "^5.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@vitest/coverage-v8": "^5.0.2",
+    "rimraf": "^6.1.3",
+    "tsdown": "^0.23.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.2"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

@@ -1,0 +1,33 @@
+configuration:
+  host:
+    name: Controller address
+    description: The OmniLogic controller's IP address on your network.
+  poll_interval:
+    name: Poll interval
+    description:
+      The number of seconds between reads of the controller, from 5 to 86400.
+  diagnostics_interval:
+    name: Diagnostics interval
+    description:
+      The number of seconds between reads of the auto-differential, drive
+      errors, cell readings, and relay polarity, up to 86400. 0 stops these
+      reads.
+  log_level:
+    name: Log level
+    description: The log level. Use trace for a bug report.
+  mqtt_url:
+    name: MQTT broker URL
+    description:
+      The URL of a broker other than the Mosquitto broker add-on, such as
+      mqtt://user:password@host:1883.
+  disable_imported_schedules:
+    name: Disable imported schedules
+    description:
+      Turn a controller schedule off once it is imported, and leave its
+      automation on. Otherwise the automation is imported turned off, and the
+      controller keeps running the schedule.
+  speed_unit:
+    name: Speed unit
+    description:
+      The unit of a read-only speed sensor on each variable-speed pump. rpm adds
+      Speed (RPM), and percent adds none. Speed controls always use percent.

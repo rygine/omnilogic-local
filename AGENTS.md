@@ -55,6 +55,11 @@ every guide and command page example compiles against the SDK.
 config cache, prompt, send), `utils.ts` reads the spec for all three, `store.ts`
 owns `~/.config/omnilogic-local/`. No dependency the SDK does not already need.
 
+`packages/homeassistant-omnilogic-local` is the Home Assistant MQTT bridge and
+its add-on (`addon/`, published through the root `repository.yaml`): `entities/`
+builds one device per piece of equipment, `bridge.ts` publishes discovery and
+state, and `import.ts` imports controller schedules as automations.
+
 ## Key Conventions
 
 - **ESM** with `moduleResolution: "bundler"`. `src/index.ts` uses relative
@@ -110,6 +115,12 @@ owns `~/.config/omnilogic-local/`. No dependency the SDK does not already need.
   per operation and closes it when the operation ends; a shared socket carries a
   failed operation's late acks and the kernel's buffered datagrams into the next
   one. `test/protocol.test.ts` pins this.
+- **A user has one controller.** Nothing is namespaced, keyed, or configured for
+  a second one: no controller id in a topic, entity id, or storage key, no
+  per-host queue, no controller picker. Integrations for many devices put a
+  hardware serial in every unique id; that convention does not apply here. A
+  package meant to manage several controllers is a new design, agreed with the
+  maintainer before it is built.
 - **Operations run one at a time.** One process-wide queue, shared by every
   instance because a user has one controller, starts each operation in arrival
   order once the previous one has ended and `minSendGapMs` (default 500 ms) has
@@ -157,7 +168,9 @@ owns `~/.config/omnilogic-local/`. No dependency the SDK does not already need.
   the panel's screen. The configuration carries RPM bounds in the 2000–3450
   range beside those percents, so a percent range check would be wrong. The one
   exception is a pump's speed to and from RPM (`toRpm`, `fromRpm`): the
-  percent's share of the pump's top RPM, to the nearest 10.
+  percent's share of the pump's top RPM, to the nearest 10. The Home Assistant
+  bridge reads `rpm` for a read-only Speed (RPM) sensor when its speed unit
+  option is `rpm`; its speed controls stay in percent.
 
 ## Working on the controller
 
@@ -218,8 +231,9 @@ built and run as an image before it lands. See `apps/web/README.md`.
   and verify loop run against them. Without them the fakes answer an empty
   configuration and telemetry; `{ realFetches: true }` sends the fetches through
   the transport.
-- **Every package's tests read the controller captures in the root `fixtures/`;
-  nothing under any `src` does.**
+- **Every package's tests read the controller captures in the root `fixtures/`,
+  and the Home Assistant bridge's tests also import the Homebridge plugin's test
+  helpers; nothing under any `src` does.**
 - **No test talks to a controller.** Anything that reaches real hardware goes
   through the command line (`packages/omnilogic-local-cli`); its `info` says
   whether a command is a read, from the spec's `read` flag.

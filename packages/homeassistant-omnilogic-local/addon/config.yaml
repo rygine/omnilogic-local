@@ -1,0 +1,31 @@
+name: OmniLogicLocal
+version: "0.0.1"
+slug: omnilogic_local
+description: Local control of a Hayward OmniLogic pool controller over MQTT
+url: https://rygine.github.io/omnilogic-local/guide/home-assistant
+arch:
+  - amd64
+  - aarch64
+startup: application
+homeassistant: 2025.10.0
+services:
+  - mqtt:want
+homeassistant_api: true
+map:
+  - type: share
+    read_only: false
+options:
+  host: ""
+  poll_interval: 30
+  diagnostics_interval: 600
+  log_level: info
+  disable_imported_schedules: false
+  speed_unit: rpm
+schema:
+  host: str
+  poll_interval: int(5,86400)
+  diagnostics_interval: int(0,86400)
+  log_level: list(error|warn|info|debug|trace)
+  mqtt_url: str?
+  disable_imported_schedules: bool
+  speed_unit: list(rpm|percent)

@@ -21,6 +21,10 @@ features:
     details: Your pool equipment in HomeKit via Homebridge.
     link: /guide/homebridge
     linkText: Set up the plugin
+  - title: Home Assistant bridge
+    details: Your pool equipment in Home Assistant via MQTT discovery.
+    link: /guide/home-assistant
+    linkText: Set up the bridge
   - title: Web app
     details: A browser interface for your controller, run locally or in Docker.
     link: /guide/web-app

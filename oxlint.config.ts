@@ -250,6 +250,7 @@ export default defineConfig({
         "apps/web/tests/**",
         "packages/homebridge-omnilogic-local/test/**",
         "packages/omnilogic-local-cli/test/**",
+        "packages/homeassistant-omnilogic-local/test/**",
       ],
       // test harnesses stub the protocol with type assertions
       rules: {
