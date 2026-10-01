@@ -98,6 +98,10 @@ export const fitProblem = (
       continue;
     }
     if (!applies) {
+      // a default saved before the field stopped applying
+      if (v === f.default?.(eq)) {
+        continue;
+      }
       return `${f.key} does not apply to this ${def.fits}`;
     }
     if (f.choices !== undefined) {

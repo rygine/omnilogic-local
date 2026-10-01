@@ -9,6 +9,7 @@ const filter: Exposable = {
   defaultName: "Pool Filter Pump",
   minSpeed: 58,
   maxSpeed: 100,
+  speedType: "variable",
   presets: { low: 58, medium: 80, high: 100 },
 };
 const light: Exposable = {
@@ -82,7 +83,7 @@ describe("catalog", () => {
 
   it("summarizes what an accessory does in one lower-case line", () => {
     expect(CATALOG.filterFan.summary(filter, {})).toBe(
-      "slider snaps to low 58%, medium 80%, high 100%",
+      "slider snaps to low 58%, medium 80%, and high 100%",
     );
     expect(CATALOG.filterFan.summary(filter, { fanSpeed: "percent" })).toBe(
       "slider moves across 58% to 100%",
@@ -94,6 +95,51 @@ describe("catalog", () => {
       "deep blue sea · turns off after 2 hours",
     );
     expect(CATALOG.waterTemp.summary(water, {})).toBe("");
+  });
+
+  it("explains a fan's slider with the pump's own presets or range", () => {
+    expect(CATALOG.filterFan.note!(filter, {})).toBe(
+      "The slider snaps to the presets in the controller's configuration: Low 58%, Medium 80%, and High 100%.",
+    );
+    expect(CATALOG.spilloverFan.note!(filter, { fanSpeed: "percent" })).toBe(
+      "The slider moves to any percent, held to the pump's minimum and maximum speed in the controller's configuration: 58% to 100%.",
+    );
+    expect(CATALOG.filterSwitch.note!(filter, {})).toBe("");
+  });
+
+  it("offers a dual-speed pump its two speeds and a single-speed pump only a switch at its maximum", () => {
+    const dual: Exposable = {
+      ...filter,
+      speedType: "dual",
+      presets: { low: 50, high: 100 },
+    };
+    expect(fitting(dual)).toEqual(["filterFan", "filterSwitch"]);
+    expect(CATALOG.filterFan.note!(dual, {})).toBe(
+      "This pump runs at two speeds, so the slider snaps to Low 50% and High 100%.",
+    );
+    expect(CATALOG.filterFan.summary(dual, {})).toBe(
+      "slider snaps to low 50% and high 100%",
+    );
+    const fields = (eq: Exposable) =>
+      CATALOG.filterSwitch.fields
+        .filter((f) => f.visible?.(eq) !== false)
+        .map((f) => [f.key, f.choices?.(eq).map(([value]) => value)]);
+    expect(fields(dual)).toEqual([["onSpeed", ["last", "low", "high"]]]);
+    expect(CATALOG.filterFan.fields[0]!.visible!(dual)).toBe(false);
+
+    const single: Exposable = {
+      ...filter,
+      speedType: "single",
+      presets: undefined,
+    };
+    expect(fitting(single)).toEqual(["filterSwitch"]);
+    expect(fields(single)).toEqual([]);
+    expect(CATALOG.filterSwitch.summary(single, {})).toBe(
+      "turns on at its maximum speed, 100%",
+    );
+    expect(CATALOG.filterSwitch.note!(single, {})).toBe(
+      "This pump runs at one speed, so the switch turns it on at its maximum speed, 100%.",
+    );
   });
 
   it("declares every option field with its control and its config key", () => {

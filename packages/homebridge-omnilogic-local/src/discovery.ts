@@ -1,5 +1,6 @@
 import {
   getAvailableShows,
+  pumpSpeedType,
   LIGHT_BRIGHTNESS,
   LIGHT_SPEED,
   type LightShowInfo,
@@ -7,7 +8,7 @@ import {
   type Telemetry,
 } from "@rygine/omnilogic-local-sdk";
 
-import type { Presets } from "@/helpers";
+import { presetsFor, type Presets, type SpeedType } from "@/helpers";
 
 export type EquipmentKind =
   | "filter"
@@ -29,8 +30,10 @@ export type Exposable = {
   bodyId?: number;
   defaultName: string;
   // a filter pump
+  speedType?: SpeedType;
   minSpeed?: number;
   maxSpeed?: number;
+  // the configured presets, or a dual-speed pump's two speeds
   presets?: Presets;
   lastSpeed?: number;
   // a chlorinator
@@ -128,14 +131,16 @@ export const discover = (
     const bodyId = body.systemId;
     if (body.filter) {
       const filterId = body.filter.systemId;
+      const speedType = pumpSpeedType(body.filter.filterType);
       const pump = {
+        speedType,
         minSpeed: body.filter.minPumpSpeed,
         maxSpeed: body.filter.maxPumpSpeed,
-        presets: {
+        presets: presetsFor(speedType, {
           low: body.filter.vspLowPumpSpeed,
           medium: body.filter.vspMediumPumpSpeed,
           high: body.filter.vspHighPumpSpeed,
-        },
+        }),
         lastSpeed:
           telemetry?.filters.find((f) => f.systemId === filterId)?.lastSpeed ||
           undefined,

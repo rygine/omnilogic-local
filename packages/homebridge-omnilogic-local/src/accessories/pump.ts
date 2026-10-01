@@ -25,22 +25,22 @@ import {
 const fitSpeed = (
   mode: "presets" | "percent" | "switch",
   percent: number,
-  presets: Presets,
+  presets: Presets | undefined,
   range: Range,
 ): number =>
-  mode === "presets"
+  mode === "presets" && presets !== undefined
     ? snapToPreset(percent, presets)
     : clampToRange(percent, range);
 
-// the pump's last speed, else its low preset
-const lastOrLow = (
+// the pump's last speed, or its default speed when it has none
+const lastOrDefault = (
   a: Attach,
   bodyId: number,
-  low: number,
+  defaultSpeed: number,
   fit = (percent: number) => percent,
 ): number => {
   const last = deviceOf(a, bodyId, "filter").lastSpeed;
-  return last > 0 ? fit(last) : low;
+  return last > 0 ? fit(last) : defaultSpeed;
 };
 
 export const attachFilter = (
@@ -53,7 +53,7 @@ export const attachFilter = (
   },
 ): Handle => {
   const { Characteristic } = a.hap;
-  const { range, presets } = speeds(a, opts.bodyId);
+  const { speedType, range, presets, defaultSpeed } = speeds(a, opts.bodyId);
   const on = a.service.getCharacteristic(Characteristic.On);
   const speed =
     opts.speedMode === "switch"
@@ -95,7 +95,9 @@ export const attachFilter = (
   const chosen =
     opts.speedMode !== "switch"
       ? undefined
-      : startSpeed(opts.onSpeed, opts.onPercent, presets);
+      : speedType === "single"
+        ? range.max
+        : startSpeed(opts.onSpeed, opts.onPercent, presets);
   const whenOn = chosen === undefined ? undefined : clampToRange(chosen, range);
 
   const start = async () => {
@@ -103,7 +105,7 @@ export const attachFilter = (
     if (filter.isRunning || filter.isPriming) {
       return;
     }
-    await send(whenOn ?? lastOrLow(a, opts.bodyId, presets.low, wanted));
+    await send(whenOn ?? lastOrDefault(a, opts.bodyId, defaultSpeed, wanted));
   };
 
   const queue = coalesce((p) =>
@@ -189,7 +191,7 @@ export const attachSpilloverFan = (
   opts: { bodyId: number; speedMode: "presets" | "percent"; offAfter?: number },
 ): Handle => {
   const { Characteristic } = a.hap;
-  const { range, presets } = speeds(a, opts.bodyId);
+  const { range, presets, defaultSpeed } = speeds(a, opts.bodyId);
   const pump = spillover(a, opts.bodyId);
   const on = a.service.getCharacteristic(Characteristic.On);
   const speed = a.service.getCharacteristic(Characteristic.RotationSpeed);
@@ -216,7 +218,7 @@ export const attachSpilloverFan = (
         ? 0
         : (p.percent ??
             (speedOf(a, opts.bodyId) ||
-              lastOrLow(a, opts.bodyId, presets.low, wanted))),
+              lastOrDefault(a, opts.bodyId, defaultSpeed, wanted))),
     ),
   );
   on.onSet((value) => queue({ on: value === true }));
@@ -243,14 +245,20 @@ export const attachSpilloverSwitch = (
   },
 ): Handle => {
   const on = a.service.getCharacteristic(a.hap.Characteristic.On);
-  const { range, presets } = speeds(a, opts.bodyId);
+  const { speedType, range, presets, defaultSpeed } = speeds(a, opts.bodyId);
   const pump = spillover(a, opts.bodyId);
-  const chosen = startSpeed(opts.onSpeed, opts.onPercent, presets);
+  const chosen =
+    speedType === "single"
+      ? range.max
+      : startSpeed(opts.onSpeed, opts.onPercent, presets);
 
   on.onSet(async (value) => {
     const percent =
       value === true
-        ? clampToRange(chosen ?? lastOrLow(a, opts.bodyId, presets.low), range)
+        ? clampToRange(
+            chosen ?? lastOrDefault(a, opts.bodyId, defaultSpeed),
+            range,
+          )
         : 0;
     await pump.send(percent, opts.offAfter);
     on.updateValue(percent > 0);

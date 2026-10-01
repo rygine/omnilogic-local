@@ -492,6 +492,10 @@ export const mount = async (root: HTMLElement) => {
         }
       }
       const t = type();
+      note.textContent =
+        eq === undefined || t === undefined
+          ? ""
+          : (CATALOG[t].note?.(eq, options) ?? "");
       if (!typed && eq !== undefined && t !== undefined) {
         nameInput.value = nameFor(t, eq, readOptions());
       }
@@ -578,7 +582,6 @@ export const mount = async (root: HTMLElement) => {
       if (eq === undefined || t === undefined) {
         return;
       }
-      note.textContent = CATALOG[t].note?.(eq) ?? "";
       for (const f of CATALOG[t].fields) {
         if (f.visible?.(eq) !== false) {
           fieldsRow.append(addControl(f, eq));

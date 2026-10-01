@@ -21,6 +21,7 @@ const found: Exposable[] = [
     defaultName: "Pool Filter Pump",
     minSpeed: 58,
     maxSpeed: 100,
+    speedType: "variable",
     presets: { low: 58, medium: 80, high: 100 },
     lastSpeed: 80,
   },
@@ -46,6 +47,7 @@ const found: Exposable[] = [
     defaultName: "Pool Spillover",
     minSpeed: 58,
     maxSpeed: 100,
+    speedType: "variable",
     presets: { low: 58, medium: 80, high: 100 },
   },
   {
@@ -390,7 +392,7 @@ describe("the settings page", () => {
     await tick();
     const cards = [...document.querySelectorAll(".accessory")];
     expect(cards.map((c) => c.textContent)).toEqual([
-      "Pumpfan · slider snaps to low 58%, medium 80%, high 100%",
+      "Pumpfan · slider snaps to low 58%, medium 80%, and high 100%",
       "Pool ChlorinatorAnother accessory already uses id dup.",
       "Unknown equipmentNot an accessory entry.",
     ]);

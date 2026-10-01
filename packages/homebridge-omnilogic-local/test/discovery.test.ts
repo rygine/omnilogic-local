@@ -44,6 +44,34 @@ describe("discover for the accessory catalog", () => {
     expect(one("heater", "Pool")?.cooling).toBe(false);
   });
 
+  it("gives a variable-speed pump its configured presets, a dual-speed pump its two speeds, and a single-speed pump none", async () => {
+    const speedTypeAndPresets = async (type: string) => {
+      const config = await testSession({
+        config: () =>
+          configXml().replace(
+            "<Filter-Type>FMT_VARIABLE_SPEED_PUMP</Filter-Type>",
+            `<Filter-Type>${type}</Filter-Type>`,
+          ),
+      }).omni.fetchConfig();
+      const pump = discover(config).find(
+        (e) => e.kind === "filter" && e.body === "Pool",
+      );
+      return [pump?.speedType, pump?.presets];
+    };
+    expect(await speedTypeAndPresets("FMT_VARIABLE_SPEED_PUMP")).toEqual([
+      "variable",
+      { low: 58, medium: 80, high: 100 },
+    ]);
+    expect(await speedTypeAndPresets("FMT_DUAL_SPEED")).toEqual([
+      "dual",
+      { low: 50, high: 100 },
+    ]);
+    expect(await speedTypeAndPresets("FMT_SINGLE_SPEED")).toEqual([
+      "single",
+      undefined,
+    ]);
+  });
+
   it("marks a heater's cooling only when a heat source supports it", async () => {
     const withCooling = await testSession({
       config: () =>

@@ -10,7 +10,13 @@ import type {
   Service,
 } from "homebridge";
 
-import type { Presets, Range } from "@/helpers";
+import {
+  defaultSpeedFor,
+  presetsFor,
+  type Presets,
+  type Range,
+  type SpeedType,
+} from "@/helpers";
 import type { AutoOff, Readings } from "@/persist";
 import type { ControllerSession } from "@/session";
 
@@ -148,15 +154,19 @@ export const deviceOf = <K extends "filter" | "heater" | "chlorinator">(
 export const speeds = (
   a: Attach,
   bodyId: number,
-): { range: Range; presets: Presets } => {
+): {
+  speedType: SpeedType;
+  range: Range;
+  presets?: Presets;
+  defaultSpeed: number;
+} => {
   const filter = deviceOf(a, bodyId, "filter");
+  const presets = presetsFor(filter.speedType, filter.presets);
   return {
+    speedType: filter.speedType,
     range: { min: filter.minSpeed, max: filter.maxSpeed },
-    presets: filter.presets ?? {
-      low: filter.minSpeed,
-      medium: Math.round((filter.minSpeed + filter.maxSpeed) / 2),
-      high: filter.maxSpeed,
-    },
+    presets,
+    defaultSpeed: defaultSpeedFor(filter.speedType, presets, filter.maxSpeed),
   };
 };
 

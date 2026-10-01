@@ -1,6 +1,6 @@
 import { colorForShow } from "@/colors";
 import type { Exposable } from "@/discovery";
-import { startSpeed, type Range } from "@/helpers";
+import { type Presets, startSpeed, type Range } from "@/helpers";
 
 export type Options = Record<string, string | number | undefined>;
 
@@ -34,7 +34,7 @@ export type Definition = {
   offered?: (eq: Exposable) => boolean;
   service: Service;
   fields: Field[];
-  note?: (eq: Exposable) => string;
+  note?: (eq: Exposable, o: Options) => string;
   // the name the form suggests, in place of the equipment's own
   defaultName?: (eq: Exposable, o: Options) => string;
   summary: (eq: Exposable, o: Options) => string;
@@ -68,8 +68,15 @@ const speedRange = (eq: Exposable) => ({
   min: eq.minSpeed ?? 0,
   max: eq.maxSpeed ?? 100,
 });
-const presetsOf = (eq: Exposable) =>
-  eq.presets ?? { low: 0, medium: 50, high: 100 };
+const presetList = (p: Presets) =>
+  new Intl.ListFormat("en-US", { type: "conjunction" }).format([
+    `Low ${p.low}%`,
+    ...(p.medium === undefined ? [] : [`Medium ${p.medium}%`]),
+    `High ${p.high}%`,
+  ]);
+// the presets the slider snaps to, none when it moves to any percent
+const sliderPresets = (eq: Exposable, o: Options) =>
+  o.fanSpeed === "percent" ? undefined : eq.presets;
 const onSpeedOf = (o: Options) =>
   typeof o.onSpeed === "string" ? o.onSpeed : undefined;
 const isPreset = (w: string | undefined) =>
@@ -79,9 +86,12 @@ const onPercentOf = (eq: Exposable, o: Options) =>
   startSpeed(
     onSpeedOf(o),
     typeof o.onPercent === "number" ? o.onPercent : undefined,
-    presetsOf(eq),
+    eq.presets,
   ) ?? (o.onSpeed === "custom" ? undefined : eq.lastSpeed);
 const onSpeedWord = (eq: Exposable, o: Options) => {
+  if (eq.speedType === "single") {
+    return `its maximum speed, ${speedRange(eq).max}%`;
+  }
   const percent = onPercentOf(eq, o);
   if (o.onSpeed === "custom") {
     return `${percent ?? "?"}%`;
@@ -98,12 +108,26 @@ const onSpeedName = (eq: Exposable, o: Options) => {
       : "";
 };
 const fanSummary = (eq: Exposable, o: Options) => {
-  const p = presetsOf(eq);
   const r = speedRange(eq);
-  return o.fanSpeed === "percent"
+  const p = sliderPresets(eq, o);
+  return p === undefined
     ? `slider moves across ${r.min}% to ${r.max}%`
-    : `slider snaps to low ${p.low}%, medium ${p.medium}%, high ${p.high}%`;
+    : `slider snaps to ${presetList(p).toLowerCase()}`;
 };
+const fanNote = (eq: Exposable, o: Options) => {
+  const r = speedRange(eq);
+  const p = sliderPresets(eq, o);
+  if (p === undefined) {
+    return `The slider moves to any percent, held to the pump's minimum and maximum speed in the controller's configuration: ${r.min}% to ${r.max}%.`;
+  }
+  return eq.speedType === "dual"
+    ? `This pump runs at two speeds, so the slider snaps to ${presetList(p)}.`
+    : `The slider snaps to the presets in the controller's configuration: ${presetList(p)}.`;
+};
+const switchNote = (eq: Exposable) =>
+  eq.speedType === "single"
+    ? `This pump runs at one speed, so the switch turns it on at its maximum speed, ${speedRange(eq).max}%.`
+    : "";
 
 const FAN_SPEED: Field = {
   key: "fanSpeed",
@@ -115,20 +139,24 @@ const FAN_SPEED: Field = {
     ["percent", "Any percent"],
   ],
   default: () => "presets",
+  visible: (eq) => eq.speedType === "variable",
 };
+const MEDIUM: Choice = ["medium", "Medium"];
+const CUSTOM: Choice = ["custom", "Custom"];
 const ON_SPEED: Field = {
   key: "onSpeed",
   label: "Speed when turned on",
   control: "select",
   value: "string",
-  choices: () => [
+  choices: (eq) => [
     ["last", "Last speed"],
     ["low", "Low"],
-    ["medium", "Medium"],
+    ...(eq.presets?.medium === undefined ? [] : [MEDIUM]),
     ["high", "High"],
-    ["custom", "Custom"],
+    ...(eq.speedType === "variable" ? [CUSTOM] : []),
   ],
   default: () => "last",
+  visible: (eq) => eq.presets !== undefined,
 };
 const ON_PERCENT: Field = {
   key: "onPercent",
@@ -138,6 +166,7 @@ const ON_PERCENT: Field = {
   range: speedRange,
   default: (eq) => eq.minSpeed ?? 0,
   enabled: (o) => o.onSpeed === "custom",
+  visible: (eq) => eq.speedType === "variable",
   required: true,
 };
 
@@ -180,8 +209,10 @@ const DEFINITIONS = {
   filterFan: {
     label: "Fan",
     fits: "filter",
+    offered: (eq) => eq.speedType !== "single",
     service: "Fan",
     fields: [FAN_SPEED],
+    note: fanNote,
     summary: (eq, o) => fanSummary(eq, o),
   },
   filterSwitch: {
@@ -189,6 +220,7 @@ const DEFINITIONS = {
     fits: "filter",
     service: "Switch",
     fields: [ON_SPEED, ON_PERCENT],
+    note: switchNote,
     defaultName: (eq, o) => withName(eq, onSpeedName(eq, o)),
     summary: (eq, o) => `turns on at ${onSpeedWord(eq, o)}`,
   },
@@ -273,8 +305,10 @@ const DEFINITIONS = {
   spilloverFan: {
     label: "Fan",
     fits: "spillover",
+    offered: (eq) => eq.speedType !== "single",
     service: "Fan",
     fields: [FAN_SPEED, OFF_TIMER],
+    note: fanNote,
     summary: (eq, o) => `${fanSummary(eq, o)}${offTail(o)}`,
   },
   spilloverSwitch: {
@@ -282,6 +316,7 @@ const DEFINITIONS = {
     fits: "spillover",
     service: "Switch",
     fields: [ON_SPEED, ON_PERCENT, OFF_TIMER],
+    note: switchNote,
     defaultName: (eq, o) => withName(eq, onSpeedName(eq, o)),
     summary: (eq, o) => `turns on at ${onSpeedWord(eq, o)}${offTail(o)}`,
   },

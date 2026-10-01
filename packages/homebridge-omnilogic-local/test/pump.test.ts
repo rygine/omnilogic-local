@@ -7,7 +7,7 @@ import {
   attachSpilloverSwitch,
 } from "@/accessories/pump";
 
-import { extraConfigXml } from "./fixtures";
+import { configXml, extraConfigXml } from "./fixtures";
 import { attachment, read, recordingLog, set } from "./hap";
 import { readySession, testSession } from "./session";
 
@@ -93,6 +93,29 @@ describe("filter fan", () => {
     expect(await stopped("custom")).toBe(73);
   });
 
+  it("turns a single-speed pump on at its maximum, whatever its last speed", async () => {
+    const t = testSession({
+      config: () =>
+        configXml().replace(
+          "<Filter-Type>FMT_VARIABLE_SPEED_PUMP</Filter-Type>",
+          "<Filter-Type>FMT_SINGLE_SPEED</Filter-Type>",
+        ),
+    });
+    t.telemetry.filters[0]!.filterState = 0;
+    t.telemetry.filters[0]!.filterSpeed = 0;
+    t.telemetry.filters[0]!.lastSpeed = 73;
+    await t.session.refresh();
+    const service = new Service.Switch("Pool Filter Pump");
+    attachFilter(attachment(service, t.session), {
+      bodyId: 1,
+      speedMode: "switch",
+      onSpeed: "last",
+    }).update();
+
+    await set(service, Characteristic.On, true);
+    expect(t.sent.at(-1)?.params.isOn).toBe(100);
+  });
+
   it("as a fan ignores the entry's chosen speed and resumes the last", async () => {
     const { service, sent, telemetry, session } = await filterFan(
       "percent",
@@ -114,6 +137,34 @@ describe("filter fan", () => {
       params: { poolId: 1, equipmentId: 3, isOn: 80 },
     });
     expect(read(service, Characteristic.RotationSpeed)).toBe(80);
+  });
+
+  it("snaps a dual-speed pump to its two speeds, and starts it at its maximum with no last speed", async () => {
+    const t = testSession({
+      config: () =>
+        configXml().replace(
+          "<Filter-Type>FMT_VARIABLE_SPEED_PUMP</Filter-Type>",
+          "<Filter-Type>FMT_DUAL_SPEED</Filter-Type>",
+        ),
+    });
+    await t.session.refresh();
+    const service = new Service.Fan("Pool Filter Pump");
+    attachFilter(attachment(service, t.session), {
+      bodyId: 1,
+      speedMode: "presets",
+    }).update();
+
+    await set(service, Characteristic.RotationSpeed, 80);
+    expect(t.sent.at(-1)?.params.isOn).toBe(100);
+    await set(service, Characteristic.RotationSpeed, 60);
+    expect(t.sent.at(-1)?.params.isOn).toBe(50);
+
+    t.telemetry.filters[0]!.filterState = 0;
+    t.telemetry.filters[0]!.filterSpeed = 0;
+    t.telemetry.filters[0]!.lastSpeed = 0;
+    await t.session.refresh();
+    await set(service, Characteristic.On, true);
+    expect(t.sent.at(-1)?.params.isOn).toBe(100);
   });
 
   it("sends a clamped percent in percent mode", async () => {

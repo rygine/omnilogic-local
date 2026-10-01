@@ -60,15 +60,19 @@ is slow.
 
 #### Fan
 
-- **On:** resumes the pump's last speed, or starts at Low if it has none.
-- **Speed slider:** snaps to Low, Medium, and High, or moves freely across the
-  pump's range. With Low, Medium, High, the last speed snaps to the nearest of
-  the three.
+- **On:** resumes the pump's last speed. If it has none, a variable-speed pump
+  starts at its Low preset and a dual-speed pump at High.
+- **Speed slider:** on a variable-speed pump, snaps to the Low, Medium, and High
+  presets in the controller's configuration, or moves freely across the pump's
+  minimum and maximum speed. With Low, Medium, High, the last speed snaps to the
+  nearest of the three. On a dual-speed pump, the slider snaps to Low (50%) and
+  High (100%).
 
 #### Switch
 
 - **On:** sends the **Speed when turned on** speed: the last speed, Low, Medium,
-  High, or a custom percentage.
+  High, or a custom percentage. A dual-speed pump offers the last speed, Low,
+  and High. A single-speed pump turns on at its maximum speed.
 
 ---
 
@@ -149,7 +153,8 @@ for the pool of a pool and spa that share a pump.
 
 #### Fan
 
-- **On:** runs spillover at the pump's last speed, or at Low if it has none.
+- **On:** runs spillover at the pump's last speed, or, if it has none, at the
+  same speed as the filter pump Fan.
 - **Speed slider:** snaps to Low, Medium, and High, or moves freely across the
   pump's range, as on the filter pump Fan.
 
@@ -329,7 +334,7 @@ loading an accessory. See [Invalid accessories](#invalid-accessories).
 <table>
   <tr>
     <td style="vertical-align: top"><code>pollInterval</code></td>
-    <td>How often, in seconds, the plugin refreshes from the controller. The settings page shows it as <strong>Refresh (seconds)</strong>. Default <code>300</code>, from <code>30</code> to <code>86400</code>. Changes made from HomeKit show immediately. Temperatures and changes made elsewhere update on this interval.</td>
+    <td>The number of seconds between the plugin's refreshes from the controller. The settings page shows it as <strong>Refresh (seconds)</strong>. Default <code>300</code>, from <code>30</code> to <code>86400</code>. Changes made from HomeKit show immediately. Temperatures and changes made elsewhere update on this interval.</td>
   </tr>
   <tr>
     <td style="vertical-align: top"><code>id</code></td>
@@ -349,11 +354,11 @@ loading an accessory. See [Invalid accessories](#invalid-accessories).
   </tr>
   <tr>
     <td style="vertical-align: top"><code>fanSpeed</code></td>
-    <td>On a filter or spillover accessory shown as a fan, <code>presets</code> snaps the slider to Low, Medium, and High. This is the default. <code>percent</code> lets the slider move to any percentage within the pump's range.</td>
+    <td>On a filter or spillover accessory shown as a fan, <code>presets</code> snaps the slider to Low, Medium, and High. This is the default. <code>percent</code> lets the slider move to any percentage within the pump's range. Only a variable-speed pump takes it.</td>
   </tr>
   <tr>
     <td style="vertical-align: top"><code>onSpeed</code></td>
-    <td>On a filter or spillover accessory shown as a switch, the speed the pump turns on at: <code>last</code>, <code>low</code>, <code>medium</code>, <code>high</code>, or <code>custom</code>. The default is <code>last</code>.</td>
+    <td>On a filter or spillover accessory shown as a switch, the speed the pump turns on at: <code>last</code>, <code>low</code>, <code>medium</code>, <code>high</code>, or <code>custom</code>. The default is <code>last</code>. A dual-speed pump takes <code>last</code>, <code>low</code>, or <code>high</code>, and a single-speed pump none.</td>
   </tr>
   <tr>
     <td style="vertical-align: top"><code>onPercent</code></td>
@@ -365,7 +370,7 @@ loading an accessory. See [Invalid accessories](#invalid-accessories).
   </tr>
   <tr>
     <td style="vertical-align: top"><code>offAfter</code></td>
-    <td>Minutes, <code>5</code> to <code>1439</code>. The settings page shows it as <strong>Automatically turn off in</strong>. See <a href="#turning-off-automatically">Turning off automatically</a>.</td>
+    <td>The number of minutes until the accessory turns off after HomeKit turns it on, from <code>5</code> to <code>1439</code>. The settings page shows it as <strong>Automatically turn off in</strong>. See <a href="#turning-off-automatically">Turning off automatically</a>.</td>
   </tr>
   <tr>
     <td style="vertical-align: top"><code>show</code></td>

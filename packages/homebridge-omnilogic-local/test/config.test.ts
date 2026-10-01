@@ -98,6 +98,7 @@ describe("fitProblem", () => {
       defaultName: "Pool Filter Pump",
       minSpeed: 58,
       maxSpeed: 100,
+      speedType: "variable",
       presets: { low: 58, medium: 80, high: 100 },
     },
     {
@@ -129,6 +130,39 @@ describe("fitProblem", () => {
       }),
     ).toBeUndefined();
     expect(fit({ type: "lightSwitch", equipment: 8, show: 1 })).toBeUndefined();
+  });
+
+  it("keeps a default saved for a field a dual- or single-speed pump no longer shows", () => {
+    const pump = found[0]!;
+    const dual: Exposable = {
+      ...pump,
+      speedType: "dual",
+      presets: { low: 50, high: 100 },
+    };
+    const single: Exposable = {
+      ...pump,
+      speedType: "single",
+      presets: undefined,
+    };
+    const fitOn = (eq: Exposable, entry: Record<string, unknown>) => {
+      const a = accessoryOf({ id: "a", name: "n", equipment: 3, ...entry });
+      if (typeof a === "string") {
+        throw new Error(a);
+      }
+      return fitProblem(a, [eq]);
+    };
+    expect(
+      fitOn(dual, { type: "filterFan", fanSpeed: "presets" }),
+    ).toBeUndefined();
+    expect(fitOn(dual, { type: "filterFan", fanSpeed: "percent" })).toBe(
+      "fanSpeed does not apply to this filter",
+    );
+    expect(
+      fitOn(single, { type: "filterSwitch", onSpeed: "last" }),
+    ).toBeUndefined();
+    expect(fitOn(single, { type: "filterSwitch", onSpeed: "high" })).toBe(
+      "onSpeed does not apply to this filter",
+    );
   });
 
   it("names equipment the controller does not report", () => {
