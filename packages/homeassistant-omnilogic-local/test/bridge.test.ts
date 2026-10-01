@@ -316,6 +316,19 @@ describe("availability", () => {
     expect(t.last("omnilogic/bridge")).toBe("offline");
   });
 
+  it("says when it connects to the broker and how many devices it publishes", async () => {
+    const info = vi.fn();
+    const t = setup({}, { log: { ...silent, info } });
+
+    t.bridge.start();
+    expect(info).toHaveBeenCalledWith("connected to the MQTT broker");
+    await t.bridge.poll();
+    expect(info).toHaveBeenCalledWith(
+      expect.stringMatching(/^published \d+ devices with \d+ entities$/),
+    );
+    t.bridge.stop();
+  });
+
   it("follows the controller, warning once when it stops answering and saying once when it answers again", async () => {
     const warn = vi.fn();
     const info = vi.fn();
@@ -338,8 +351,9 @@ describe("availability", () => {
     expect(await t.bridge.poll()).toBe(true);
     expect(await t.bridge.poll()).toBe(true);
     expect(t.last("omnilogic/controller")).toBe("online");
-    expect(info).toHaveBeenCalledTimes(1);
-    expect(info).toHaveBeenCalledWith("controller answering again");
+    expect(
+      info.mock.calls.filter(([line]) => line === "controller answering again"),
+    ).toHaveLength(1);
   });
 
   it("warns on an unexpected error instead of ending the process", async () => {

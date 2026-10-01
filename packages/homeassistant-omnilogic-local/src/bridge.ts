@@ -359,7 +359,10 @@ export class Bridge {
     );
     this.#devices = devices;
     this.#checksum = this.#omni.configChecksum;
-    this.#log.debug("discovery rebuilt", { devices: this.#devices.length });
+    const entities = devices.reduce((n, d) => n + d.entities.length, 0);
+    this.#log.info(
+      `published ${devices.length} devices with ${entities} entities`,
+    );
     this.#publishDiscovery();
   }
 
@@ -529,6 +532,7 @@ export class Bridge {
   }
 
   #onConnect = () => {
+    this.#log.info("connected to the MQTT broker");
     this.#client.subscribe([
       "homeassistant/status",
       "homeassistant/device/+/config",
