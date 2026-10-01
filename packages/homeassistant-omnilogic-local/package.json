@@ -1,6 +1,6 @@
 {
   "name": "@rygine/homeassistant-omnilogic-local",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Home Assistant bridge for local control of Hayward OmniLogic pool controllers",
   "keywords": [
     "hayward",
