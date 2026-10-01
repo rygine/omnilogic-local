@@ -3,6 +3,7 @@ import { PUMP_STATE, PUMP_WHY_ON } from "@/constants/labels";
 import { Device } from "@/equipment/device";
 import { timerParams } from "@/utils/command";
 import { OmniLogicError } from "@/utils/errors";
+import { pumpSpeedType } from "@/utils/inventory";
 
 type PumpConfig = {
   systemId: number;
@@ -26,7 +27,6 @@ export class Pump extends Device {
     return this.#type;
   }
 
-  // what it drives, absent on the filter pump
   get function() {
     return this.#function;
   }
@@ -104,6 +104,31 @@ export class Pump extends Device {
     return [body?.filter, ...(body?.pumps ?? [])].find(
       (r) => r?.systemId === this.equipmentId,
     );
+  }
+
+  get minSpeed() {
+    return this.configured(this.#configRow).minPumpSpeed;
+  }
+
+  get maxSpeed() {
+    return this.configured(this.#configRow).maxPumpSpeed;
+  }
+
+  get speedType() {
+    return pumpSpeedType(this.type);
+  }
+
+  // the speeds of the Low, Medium, and High presets
+  get presets() {
+    if (this.speedType !== "variable") {
+      return undefined;
+    }
+    const row = this.configured(this.#configRow);
+    return {
+      low: row.vspLowPumpSpeed,
+      medium: row.vspMediumPumpSpeed,
+      high: row.vspHighPumpSpeed,
+    };
   }
 
   get maxRpm() {

@@ -109,10 +109,6 @@ export class Filter extends Pump {
     };
   }
 
-  get minSpeed() {
-    return this.#config.minPumpSpeed;
-  }
-
   setMinSpeed(value: number) {
     return this.omni.command("SetFilterLowSpeed", {
       poolId: this.poolId,
@@ -121,31 +117,12 @@ export class Filter extends Pump {
     });
   }
 
-  get maxSpeed() {
-    return this.#config.maxPumpSpeed;
-  }
-
   setMaxSpeed(value: number) {
     return this.omni.command("SetFilterHighSpeed", {
       poolId: this.poolId,
       equipmentId: this.equipmentId,
       data: value,
     });
-  }
-
-  // the speed the Low preset runs
-  get lowSpeed() {
-    return this.#config.vspLowPumpSpeed;
-  }
-
-  // the speed the Medium preset runs
-  get mediumSpeed() {
-    return this.#config.vspMediumPumpSpeed;
-  }
-
-  // the speed the High preset runs
-  get highSpeed() {
-    return this.#config.vspHighPumpSpeed;
   }
 
   get primingDuration() {

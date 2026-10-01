@@ -114,11 +114,12 @@ await omni.backyard.spa?.pumps[1]?.setSpeed(75);
 
 `setSpeed` on a pump other than the filter pump is not verified on hardware.
 
-Every pump also has `status`, `lastSpeed`, `whyOn`, and `onCountdown`, shown on
-the filter pump below. The filter pump and other pumps use different codes for
-`status` and `whyOn`. The SDK decodes each with the list for that kind of pump.
-For example, a state code of 2 is "Priming" on the filter pump and "On (Freeze
-Protect)" on any other pump.
+Every pump also has `status`, `lastSpeed`, `whyOn`, `onCountdown`, `minSpeed`,
+`maxSpeed`, `presets`, and `speedType`, shown on the filter pump below. The
+filter pump and other pumps use different codes for `status` and `whyOn`. The
+SDK decodes each with the list for that kind of pump. For example, a state code
+of 2 is "Priming" on the filter pump and "On (Freeze Protect)" on any other
+pump.
 
 The filter pump is the same object in `pumps` and on `filter`. Use `filter` for
 the members that only the filter pump has.
@@ -180,14 +181,18 @@ Each of these settings has a getter that reads the configuration, and a setter:
 - `primingDuration`
 - `cooldownDuration`
 - `sharedFilterTimeout`
-- `minSpeed` and `maxSpeed`
 - `freezeProtect`, `freezeProtectTemp`, `freezeProtectSpeed`, and
   `freezeProtectOverrideInterval`
 - `offDuringValveChange`
 - `flowMonitor`
 
-`lowSpeed`, `mediumSpeed`, and `highSpeed` give the speeds of the Low, Medium,
-and High presets. They read the configuration and have no setter.
+`minSpeed` and `maxSpeed` read the speed range from the configuration on every
+pump, and a filter pump has `setMinSpeed()` and `setMaxSpeed()` too. `presets`
+gives the speeds of the Low, Medium, and High presets on a variable-speed pump,
+and is `undefined` on a single- or dual-speed pump. `speedType` says which kind
+a pump is: `"single"`, `"dual"`, or `"variable"`, and an unknown type counts as
+variable. `pumpSpeedType(type)` gives the same for a type string from the
+configuration.
 
 ```typescript
 // 38

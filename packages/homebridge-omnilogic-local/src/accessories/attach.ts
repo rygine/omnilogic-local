@@ -152,10 +152,10 @@ export const speeds = (
   const filter = deviceOf(a, bodyId, "filter");
   return {
     range: { min: filter.minSpeed, max: filter.maxSpeed },
-    presets: {
-      low: filter.lowSpeed,
-      medium: filter.mediumSpeed,
-      high: filter.highSpeed,
+    presets: filter.presets ?? {
+      low: filter.minSpeed,
+      medium: Math.round((filter.minSpeed + filter.maxSpeed) / 2),
+      high: filter.maxSpeed,
     },
   };
 };

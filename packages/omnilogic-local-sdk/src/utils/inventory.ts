@@ -57,10 +57,15 @@ const unreachablePath = (path: never) => {
   throw new OmniLogicError(`Unhandled inventory path ${String(path)}`);
 };
 
-const SINGLE_SPEED_FILTER_TYPES: Set<string> = new Set([
-  "FMT_SINGLE_SPEED",
-  "FMT_DUAL_SPEED",
-]);
+const SPEED_TYPES: Record<string, "single" | "dual"> = {
+  FMT_SINGLE_SPEED: "single",
+  PMP_SINGLE_SPEED: "single",
+  FMT_DUAL_SPEED: "dual",
+  PMP_DUAL_SPEED: "dual",
+};
+
+export const pumpSpeedType = (type: string | undefined) =>
+  SPEED_TYPES[type ?? ""] ?? "variable";
 
 const OTHER_HEATER_TYPES: Set<string> = new Set([
   "HTR_HEAT_PUMP",
@@ -87,7 +92,7 @@ const filterOf = (bow: BodyOfWater): BodyInventory["filter"] => {
   return {
     installed: true,
     systemId: filter.systemId,
-    vsp: hasFeature(stringOf(filter.filterType), SINGLE_SPEED_FILTER_TYPES),
+    vsp: pumpSpeedType(stringOf(filter.filterType)) === "variable",
   };
 };
 

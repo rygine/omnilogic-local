@@ -111,12 +111,11 @@ describe("Backyard", () => {
     // the thermostat, not the appliance (5), whose settings read through it
     expect(eq.pool?.heater?.equipmentId).toBe(4);
     expect(eq.pool?.heater?.allowLowSpeed).toBe(true);
-    // each body's own three presets, from the configuration
+    // each body's own range and three presets, from the configuration
     const pool = eq.pool!.filter!;
-    expect([pool.lowSpeed, pool.mediumSpeed, pool.highSpeed]).toEqual([
-      58, 80, 100,
-    ]);
-    expect(eq.spa!.filter!.lowSpeed).toBe(60);
+    expect([pool.minSpeed, pool.maxSpeed]).toEqual([58, 100]);
+    expect(pool.presets).toEqual({ low: 58, medium: 80, high: 100 });
+    expect(eq.spa!.filter!.presets?.low).toBe(60);
     // a collection is handed out as a copy, so pushing into it changes nothing
     const spa = eq.spa!;
     spa.relays.push(spa.relays[0]!);
@@ -357,6 +356,26 @@ describe("Backyard", () => {
       "On (Freeze Protect)",
       true,
     ]);
+  });
+
+  it("reads an auxiliary pump's range and presets, and no presets on a single- or dual-speed pump", () => {
+    const config = loadConfigFixture("config-extra.xml");
+    const jets = sessionFor(config).eq.spa!.pumps[1]!;
+    expect([jets.minSpeed, jets.maxSpeed]).toEqual([18, 100]);
+    expect(jets.presets).toEqual({ low: 50, medium: 75, high: 100 });
+    expect(jets.speedType).toBe("variable");
+
+    for (const type of ["FMT_SINGLE_SPEED", "FMT_DUAL_SPEED"]) {
+      const typed = loadConfigFixture();
+      typed.backyard.bodiesOfWater[0]!.filter!.filterType = type;
+      const fixed = sessionFor(typed).eq.pool!.filter!;
+      expect([type, fixed.speedType, fixed.presets, fixed.maxSpeed]).toEqual([
+        type,
+        type === "FMT_SINGLE_SPEED" ? "single" : "dual",
+        undefined,
+        100,
+      ]);
+    }
   });
 
   it("converts a pump's percent to and from RPM against its own top speed", () => {

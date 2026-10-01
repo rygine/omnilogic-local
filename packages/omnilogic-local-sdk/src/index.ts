@@ -34,6 +34,7 @@ export type * as telemetry from "./types/telemetry";
 export { parseConfig, parseSysInfo, parseTelemetry } from "./utils/xml";
 export { findBySystemId } from "./utils/helpers";
 export type { Inventory, InventoryPath } from "./utils/inventory";
+export { pumpSpeedType } from "./utils/inventory";
 
 export type { Backyard } from "./equipment/backyard";
 export type { BodyOfWater } from "./equipment/bodyOfWater";
