@@ -1,6 +1,6 @@
 import {
-  failed,
   forMinutes,
+  guard,
   relayOf,
   sent,
   type Attach,
@@ -14,21 +14,21 @@ export const attachRelaySwitch = (
   const { Characteristic } = a.hap;
   const on = a.service.getCharacteristic(Characteristic.On);
   const relay = () => relayOf(a, opts.relayId);
-  on.onSet(async (value) => {
-    const r = relay();
-    await a.session
-      .write(() => {
+  on.onSet(
+    guard(a, async (value) => {
+      const r = relay();
+      await a.session.write(() => {
         if (value !== true) {
           return r.off();
         }
         return opts.offAfter === undefined
           ? r.on()
           : r.setCountdownTime(opts.offAfter);
-      })
-      .catch((e: unknown) => failed(a, e));
-    on.updateValue(value === true);
-    sent(a, value === true ? `on${forMinutes(opts.offAfter)}` : "off");
-  });
+      });
+      on.updateValue(value === true);
+      sent(a, value === true ? `on${forMinutes(opts.offAfter)}` : "off");
+    }),
+  );
   return { update: () => on.updateValue(relay().isOn) };
 };
 
@@ -37,9 +37,9 @@ export const attachThemeSwitch = (
   opts: { themeId: number; offAfter?: number },
 ): Handle => {
   const on = a.service.getCharacteristic(a.hap.Characteristic.On);
-  on.onSet(async (value) => {
-    await a.session
-      .write(() => {
+  on.onSet(
+    guard(a, async (value) => {
+      await a.session.write(() => {
         if (a.session.omni.backyard.themes.get(opts.themeId) === undefined) {
           throw new Error("the theme is no longer on the controller");
         }
@@ -50,11 +50,11 @@ export const attachThemeSwitch = (
             minutes: value === true ? opts.offAfter : undefined,
           },
         );
-      })
-      .catch((e: unknown) => failed(a, e));
-    on.updateValue(value === true);
-    sent(a, value === true ? `run${forMinutes(opts.offAfter)}` : "stop");
-  });
+      });
+      on.updateValue(value === true);
+      sent(a, value === true ? `run${forMinutes(opts.offAfter)}` : "stop");
+    }),
+  );
   return {
     update: () =>
       on.updateValue(

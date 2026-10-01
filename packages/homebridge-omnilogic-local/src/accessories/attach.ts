@@ -53,6 +53,20 @@ export const failed = (a: Attach, error: unknown, what = ""): never => {
   throw new a.hap.HapStatusError(SERVICE_COMMUNICATION_FAILURE);
 };
 
+// wrap a handler in a try/catch that logs on error and reverts the tile
+export const guard =
+  (a: Attach, handler: (value: CharacteristicValue) => Promise<void>) =>
+  async (value: CharacteristicValue): Promise<void> => {
+    try {
+      await handler(value);
+    } catch (e) {
+      if (e instanceof a.hap.HapStatusError) {
+        throw e;
+      }
+      failed(a, e);
+    }
+  };
+
 // logs a change from HomeKit that the controller acknowledged
 export const sent = (a: Attach, what: string): void => {
   a.log.info(`${label(a)}: ${what}`);

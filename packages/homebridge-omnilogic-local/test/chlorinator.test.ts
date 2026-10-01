@@ -92,3 +92,12 @@ describe("chlorinator faults", () => {
     expect(lines.at(-1)).toBe("Pool Chlorinator: error None");
   });
 });
+
+it("a tap after the chlorinator leaves the controller is logged and reverts the tile", async () => {
+  const { service, lines, omni } = await chlorinator(true);
+  vi.spyOn(omni.backyard, "body").mockReturnValue(undefined);
+  await expect(set(service, Characteristic.On, true)).rejects.toBeDefined();
+  expect(lines.at(-1)).toBe(
+    "Pool Chlorinator failed, the tile reverts: Error: no chlorinator on body 1",
+  );
+});

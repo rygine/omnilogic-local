@@ -3,6 +3,7 @@ import {
   deviceOf,
   failed,
   forMinutes,
+  guard,
   heaterTimer,
   sent,
   waterTemp,
@@ -72,42 +73,46 @@ export const attachHeaterThermostat = (
   // allow readings below 0°C
   water.setProps({ minValue: -40 });
 
-  target.onSet(async (value) => {
-    const h = heater();
-    const wanted = modes.find((m) => m.target === Number(value));
-    const on = wanted !== undefined;
-    const arming = on && !h.enabled;
-    if (arming) {
-      timer.arm();
-    }
-    await a.session
-      .write(async () => {
-        if (cools && wanted !== undefined && h.mode !== wanted.label) {
-          await h.setMode(wanted.mode);
-        }
-        await h.setEnabled(on);
-      })
-      .catch((e: unknown) => failed(a, e, "enable"));
-    if (!on && timer.cancel()) {
-      sent(a, "timer canceled");
-    }
-    target.updateValue(value);
-    sent(
-      a,
-      on
-        ? `${wanted.label.toLowerCase()}${arming ? forMinutes(opts.offAfter) : ""}`
-        : "off",
-    );
-  });
-  setPoint.onSet(async (value) => {
-    const h = heater();
-    const degrees = clampToRange(fromCelsius(Number(value)), range);
-    await a.session
-      .write(() => h.setSetPoint(degrees))
-      .catch((e: unknown) => failed(a, e, "set point"));
-    defer(setPoint, toCelsius(degrees));
-    sent(a, `set point ${degrees}°F`);
-  });
+  target.onSet(
+    guard(a, async (value) => {
+      const h = heater();
+      const wanted = modes.find((m) => m.target === Number(value));
+      const on = wanted !== undefined;
+      const arming = on && !h.enabled;
+      if (arming) {
+        timer.arm();
+      }
+      await a.session
+        .write(async () => {
+          if (cools && wanted !== undefined && h.mode !== wanted.label) {
+            await h.setMode(wanted.mode);
+          }
+          await h.setEnabled(on);
+        })
+        .catch((e: unknown) => failed(a, e, "enable"));
+      if (!on && timer.cancel()) {
+        sent(a, "timer canceled");
+      }
+      target.updateValue(value);
+      sent(
+        a,
+        on
+          ? `${wanted.label.toLowerCase()}${arming ? forMinutes(opts.offAfter) : ""}`
+          : "off",
+      );
+    }),
+  );
+  setPoint.onSet(
+    guard(a, async (value) => {
+      const h = heater();
+      const degrees = clampToRange(fromCelsius(Number(value)), range);
+      await a.session
+        .write(() => h.setSetPoint(degrees))
+        .catch((e: unknown) => failed(a, e, "set point"));
+      defer(setPoint, toCelsius(degrees));
+      sent(a, `set point ${degrees}°F`);
+    }),
+  );
 
   return {
     update: () => {
@@ -168,32 +173,32 @@ export const attachHeaterSwitch = (
           max: attached.maxSetPoint,
         });
 
-  on.onSet(async (value) => {
-    const h = deviceOf(a, opts.bodyId, "heater");
-    const turningOn = value === true;
-    const arming = turningOn && !h.enabled;
-    if (arming) {
-      timer.arm();
-    }
-    await a.session
-      .write(async () => {
+  on.onSet(
+    guard(a, async (value) => {
+      const h = deviceOf(a, opts.bodyId, "heater");
+      const turningOn = value === true;
+      const arming = turningOn && !h.enabled;
+      if (arming) {
+        timer.arm();
+      }
+      await a.session.write(async () => {
         if (turningOn && setPoint !== undefined) {
           await h.setSetPoint(setPoint);
         }
         await h.setEnabled(turningOn);
-      })
-      .catch((e: unknown) => failed(a, e));
-    if (!turningOn && timer.cancel()) {
-      sent(a, "timer canceled");
-    }
-    on.updateValue(turningOn);
-    sent(
-      a,
-      turningOn
-        ? `on${setPoint === undefined ? "" : ` at ${setPoint}°F`}${arming ? forMinutes(opts.offAfter) : ""}`
-        : "off",
-    );
-  });
+      });
+      if (!turningOn && timer.cancel()) {
+        sent(a, "timer canceled");
+      }
+      on.updateValue(turningOn);
+      sent(
+        a,
+        turningOn
+          ? `on${setPoint === undefined ? "" : ` at ${setPoint}°F`}${arming ? forMinutes(opts.offAfter) : ""}`
+          : "off",
+      );
+    }),
+  );
   return {
     update: () => {
       const enabled = deviceOf(a, opts.bodyId, "heater").enabled;

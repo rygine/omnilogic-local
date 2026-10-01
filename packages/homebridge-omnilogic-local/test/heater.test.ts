@@ -381,3 +381,15 @@ describe("heater switch", () => {
     expect(calls).toEqual(["clear"]);
   });
 });
+
+it("a tap after the heater leaves the controller is logged and reverts the tile", async () => {
+  const t = await readySession();
+  const { lines, log } = recordingLog();
+  const service = new Service.Switch("Pool Heater");
+  attachHeaterSwitch(attachment(service, t.session, log), { bodyId: 1 });
+  vi.spyOn(t.omni.backyard, "body").mockReturnValue(undefined);
+  await expect(set(service, Characteristic.On, true)).rejects.toBeDefined();
+  expect(lines.at(-1)).toBe(
+    "Pool Heater failed, the tile reverts: Error: no heater on body 1",
+  );
+});

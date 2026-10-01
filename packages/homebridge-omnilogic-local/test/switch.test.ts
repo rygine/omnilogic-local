@@ -150,3 +150,15 @@ describe("theme switch", () => {
     expect(sent.at(-1)?.params).toMatchObject({ data: 0, isCountDownTimer: 0 });
   });
 });
+
+it("a tap after the relay leaves the controller is logged and reverts the tile", async () => {
+  const t = await readySession();
+  const { lines, log } = recordingLog();
+  const service = new Service.Switch("Spa Blower");
+  attachRelaySwitch(attachment(service, t.session, log), { relayId: 22 });
+  vi.spyOn(t.omni.backyard, "bodies", "get").mockReturnValue([]);
+  await expect(set(service, Characteristic.On, true)).rejects.toBeDefined();
+  expect(lines.at(-1)).toBe(
+    "Spa Blower failed, the tile reverts: Error: no relay 22",
+  );
+});

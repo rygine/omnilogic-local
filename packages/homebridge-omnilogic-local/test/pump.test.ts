@@ -581,3 +581,18 @@ describe("spillover", () => {
     expect(read(service, Characteristic.RotationSpeed)).toBe(80);
   });
 });
+
+it("a tap after the filter leaves the controller is logged and reverts the tile", async () => {
+  const t = await readySession();
+  const { lines, log } = recordingLog();
+  const service = new Service.Switch("Pool Filter Pump");
+  attachFilter(attachment(service, t.session, log), {
+    bodyId: 1,
+    speedMode: "switch",
+  });
+  vi.spyOn(t.omni.backyard, "body").mockReturnValue(undefined);
+  await expect(set(service, Characteristic.On, true)).rejects.toBeDefined();
+  expect(lines.at(-1)).toBe(
+    "Pool Filter Pump failed, the tile reverts: Error: no filter on body 1",
+  );
+});

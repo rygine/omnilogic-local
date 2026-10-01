@@ -2,6 +2,7 @@ import {
   defer,
   deviceOf,
   failed,
+  guard,
   label,
   sent,
   type Attach,
@@ -29,11 +30,11 @@ export const attachChlorinator = (
       ? undefined
       : clampToRange(opts.onPercent, OUTPUT);
 
-  on.onSet(async (value) => {
-    const c = deviceOf(a, opts.bodyId, "chlorinator");
-    const turningOn = value === true;
-    await a.session
-      .write(async () => {
+  on.onSet(
+    guard(a, async (value) => {
+      const c = deviceOf(a, opts.bodyId, "chlorinator");
+      const turningOn = value === true;
+      await a.session.write(async () => {
         if (
           turningOn &&
           onPercent !== undefined &&
@@ -42,26 +43,28 @@ export const attachChlorinator = (
           await c.setTimedPercent(onPercent);
         }
         await c.setEnabled(turningOn);
-      })
-      .catch((e: unknown) => failed(a, e));
-    on.updateValue(turningOn);
-    sent(
-      a,
-      turningOn
-        ? `on${onPercent === undefined ? "" : ` at ${onPercent}%`}`
-        : "off",
-    );
-  });
-  output?.onSet(async (value) => {
-    const percent = Number(value);
-    await a.session
-      .write(() =>
-        deviceOf(a, opts.bodyId, "chlorinator").setTimedPercent(percent),
-      )
-      .catch((e: unknown) => failed(a, e, "output"));
-    defer(output, percent);
-    sent(a, `output ${percent}%`);
-  });
+      });
+      on.updateValue(turningOn);
+      sent(
+        a,
+        turningOn
+          ? `on${onPercent === undefined ? "" : ` at ${onPercent}%`}`
+          : "off",
+      );
+    }),
+  );
+  output?.onSet(
+    guard(a, async (value) => {
+      const percent = Number(value);
+      await a.session
+        .write(() =>
+          deviceOf(a, opts.bodyId, "chlorinator").setTimedPercent(percent),
+        )
+        .catch((e: unknown) => failed(a, e, "output"));
+      defer(output, percent);
+      sent(a, `output ${percent}%`);
+    }),
+  );
 
   return {
     update: () => {

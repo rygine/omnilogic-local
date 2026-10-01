@@ -6,6 +6,7 @@ import {
   deviceOf,
   failed,
   forMinutes,
+  guard,
   pumpOf,
   sent,
   speeds,
@@ -116,8 +117,8 @@ export const attachFilter = (
         : start(),
   );
 
-  on.onSet((value) => queue({ on: value === true }));
-  speed?.onSet((value) => queue({ percent: wanted(Number(value)) }));
+  on.onSet(guard(a, (value) => queue({ on: value === true })));
+  speed?.onSet(guard(a, (value) => queue({ percent: wanted(Number(value)) })));
 
   return {
     update: () => {
@@ -133,15 +134,15 @@ export const attachFilter = (
 export const attachPump = (a: Attach, opts: { pumpId: number }): Handle => {
   const on = a.service.getCharacteristic(a.hap.Characteristic.On);
   const pump = () => pumpOf(a, opts.pumpId);
-  on.onSet(async (value) => {
-    await a.session
-      .write(() =>
+  on.onSet(
+    guard(a, async (value) => {
+      await a.session.write(() =>
         pump().setSpeed(value === true ? pump().lastSpeed || 100 : 0),
-      )
-      .catch((e: unknown) => failed(a, e));
-    on.updateValue(value === true);
-    sent(a, value === true ? "on" : "off");
-  });
+      );
+      on.updateValue(value === true);
+      sent(a, value === true ? "on" : "off");
+    }),
+  );
   return { update: () => on.updateValue(pump().isRunning) };
 };
 
@@ -221,8 +222,8 @@ export const attachSpilloverFan = (
               lastOrDefault(a, opts.bodyId, defaultSpeed, wanted))),
     ),
   );
-  on.onSet((value) => queue({ on: value === true }));
-  speed.onSet((value) => queue({ percent: wanted(Number(value)) }));
+  on.onSet(guard(a, (value) => queue({ on: value === true })));
+  speed.onSet(guard(a, (value) => queue({ percent: wanted(Number(value)) })));
 
   return {
     update: () => {
@@ -252,21 +253,23 @@ export const attachSpilloverSwitch = (
       ? range.max
       : startSpeed(opts.onSpeed, opts.onPercent, presets);
 
-  on.onSet(async (value) => {
-    const percent =
-      value === true
-        ? clampToRange(
-            chosen ?? lastOrDefault(a, opts.bodyId, defaultSpeed),
-            range,
-          )
-        : 0;
-    await pump.send(percent, opts.offAfter);
-    on.updateValue(percent > 0);
-    sent(
-      a,
-      percent > 0 ? `on at ${percent}%${forMinutes(opts.offAfter)}` : "off",
-    );
-  });
+  on.onSet(
+    guard(a, async (value) => {
+      const percent =
+        value === true
+          ? clampToRange(
+              chosen ?? lastOrDefault(a, opts.bodyId, defaultSpeed),
+              range,
+            )
+          : 0;
+      await pump.send(percent, opts.offAfter);
+      on.updateValue(percent > 0);
+      sent(
+        a,
+        percent > 0 ? `on at ${percent}%${forMinutes(opts.offAfter)}` : "off",
+      );
+    }),
+  );
 
   return { update: () => on.updateValue(pump.isOn(speedOf(a, opts.bodyId))) };
 };

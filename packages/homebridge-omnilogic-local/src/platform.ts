@@ -79,6 +79,7 @@ export class OmniLogicPlatform implements DynamicPlatformPlugin {
   #log: Logging;
   #api: API;
   #controllers: ControllerConfig[];
+  #dropped = false;
   #accessories = new Map<string, PlatformAccessory>();
   #sessions: ControllerSession[] = [];
   #makeSession: SessionFactory;
@@ -103,13 +104,20 @@ export class OmniLogicPlatform implements DynamicPlatformPlugin {
     );
     const raw = Array.isArray(config.controllers) ? config.controllers : [];
     this.#controllers = raw.flatMap((c: unknown) => {
-      const block = controllerConfig(c, (m) => this.#log.warn(m));
+      const block = controllerConfig(c, (m) => {
+        this.#dropped = true;
+        this.#log.warn(m);
+      });
       if (typeof block === "string") {
+        this.#dropped = true;
         this.#log.warn(`a controller block: dropped, ${block}`);
         return [];
       }
       return [block];
     });
+    if (raw.length === 0) {
+      this.#log.info("no controller configured; add one on the settings page");
+    }
     api.on("didFinishLaunching", () =>
       this.#launch().catch((error: unknown) => {
         this.#log.error(`startup failed: ${String(error)}`);
@@ -161,6 +169,12 @@ export class OmniLogicPlatform implements DynamicPlatformPlugin {
         this.#fault(wiring, true);
       }
       session.start();
+    }
+    if (this.#dropped) {
+      this.#log.warn(
+        "something in the config was dropped, so no cached accessory is removed; fix it on the settings page",
+      );
+      return;
     }
     this.#remove(
       [...this.#accessories.values()].filter((a) => !keep.has(a.UUID)),

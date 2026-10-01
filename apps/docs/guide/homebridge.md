@@ -5,13 +5,14 @@ equipment in HomeKit over your local network.
 
 ## Installing
 
-From the Homebridge terminal:
+Search for "omnilogic" in the Plugins tab of the Homebridge UI and install
+**OmniLogicLocal** (`@rygine/homebridge-omnilogic-local`).
+
+Or, from the Homebridge terminal:
 
 ```bash
 npm install @rygine/homebridge-omnilogic-local
 ```
-
-Or search for "omnilogic" on the Homebridge UI's Plugins page and install it.
 
 ## Using the settings page
 

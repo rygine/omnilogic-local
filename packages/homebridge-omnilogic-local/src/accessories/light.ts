@@ -8,6 +8,7 @@ import {
   coalesce,
   defer,
   forMinutes,
+  guard,
   label,
   lightOf,
   lightSender,
@@ -132,28 +133,32 @@ export const attachLight = (
       }, DEBOUNCE_MS);
     });
 
-  on.onSet(async (value) => {
-    if (value === true) {
-      return queue({ on: true });
-    }
-    // an off goes out at once, never gathered with other values
-    if (timer !== null) {
-      clearTimeout(timer);
-      timer = null;
-    }
-    pending = {};
-    const dropped = waiting;
-    waiting = [];
-    dropped.forEach((w) => w.resolve());
-    await send("SetUIEquipmentCmd", { isOn: 0 }, "power");
-    on.updateValue(false);
-    sent(a, "off");
-  });
-  brightness?.onSet((value) =>
-    queue({ brightness: Math.round(Number(value) / 20) * 20 }),
+  on.onSet(
+    guard(a, async (value) => {
+      if (value === true) {
+        return queue({ on: true });
+      }
+      // an off goes out at once, never gathered with other values
+      if (timer !== null) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      pending = {};
+      const dropped = waiting;
+      waiting = [];
+      dropped.forEach((w) => w.resolve());
+      await send("SetUIEquipmentCmd", { isOn: 0 }, "power");
+      on.updateValue(false);
+      sent(a, "off");
+    }),
   );
-  hue.onSet((value) => queue({ hue: Number(value) }));
-  saturation.onSet((value) => queue({ saturation: Number(value) }));
+  brightness?.onSet(
+    guard(a, (value) =>
+      queue({ brightness: Math.round(Number(value) / 20) * 20 }),
+    ),
+  );
+  hue.onSet(guard(a, (value) => queue({ hue: Number(value) })));
+  saturation.onSet(guard(a, (value) => queue({ saturation: Number(value) })));
 
   return {
     update: () => {
@@ -201,34 +206,36 @@ export const attachLightSwitch = (
     light().shows.find((s) => s.value === opts.show)?.name ??
     `show ${opts.show}`;
   const sender = lightSender(a, opts.lightId);
-  on.onSet(async (value) => {
-    const ids = () => ({ poolId: light().poolId, equipmentId: opts.lightId });
-    await sender.send(
-      () =>
+  on.onSet(
+    guard(a, async (value) => {
+      const ids = () => ({ poolId: light().poolId, equipmentId: opts.lightId });
+      await sender.send(
+        () =>
+          value === true
+            ? a.session.omni.command("SetStandAloneLightShow", {
+                ...ids(),
+                ...timerParams(),
+                ...light().showParams(opts.show, showOptions()),
+                ...(opts.offAfter === undefined
+                  ? {}
+                  : countdownParams(opts.offAfter)),
+              })
+            : a.session.omni.command("SetUIEquipmentCmd", {
+                ...ids(),
+                isOn: 0,
+                ...timerParams(),
+              }),
+        "power",
+      );
+      on.updateValue(value === true);
+      sent(
+        a,
         value === true
-          ? a.session.omni.command("SetStandAloneLightShow", {
-              ...ids(),
-              ...timerParams(),
-              ...light().showParams(opts.show, showOptions()),
-              ...(opts.offAfter === undefined
-                ? {}
-                : countdownParams(opts.offAfter)),
-            })
-          : a.session.omni.command("SetUIEquipmentCmd", {
-              ...ids(),
-              isOn: 0,
-              ...timerParams(),
-            }),
-      "power",
-    );
-    on.updateValue(value === true);
-    sent(
-      a,
-      value === true
-        ? `on with ${showName()}${forMinutes(opts.offAfter)}`
-        : "off",
-    );
-  });
+          ? `on with ${showName()}${forMinutes(opts.offAfter)}`
+          : "off",
+      );
+    }),
+  );
   return {
     update: () => {
       sender.read();
@@ -294,9 +301,11 @@ export const attachLightDimmer = (
     );
   };
   const queue = coalesce(apply);
-  on.onSet((value) => queue({ on: value === true }));
-  brightness.onSet((value) =>
-    queue({ percent: Math.round(Number(value) / 20) * 20 }),
+  on.onSet(guard(a, (value) => queue({ on: value === true })));
+  brightness.onSet(
+    guard(a, (value) =>
+      queue({ percent: Math.round(Number(value) / 20) * 20 }),
+    ),
   );
 
   return {

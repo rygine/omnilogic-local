@@ -3,11 +3,6 @@
 Homebridge plugin for local control of Hayward OmniLogic pool controllers. No
 internet or cloud login required.
 
-> [!IMPORTANT]
->
-> This plugin is currently in beta. It may contain bugs or change based on
-> feedback.
-
 ## Features
 
 - Filter pumps as fans with a speed slider or switches
@@ -26,13 +21,8 @@ internet or cloud login required.
 
 ## Installation
 
-From the Homebridge terminal:
-
-```bash
-npm install @rygine/homebridge-omnilogic-local
-```
-
-Or search for "omnilogic" in the Homebridge UI's plugin search.
+Search for "omnilogic" in the Plugins tab of the Homebridge UI and install
+**OmniLogicLocal** (`@rygine/homebridge-omnilogic-local`).
 
 ## Usage
 

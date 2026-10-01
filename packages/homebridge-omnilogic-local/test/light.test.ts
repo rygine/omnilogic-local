@@ -11,7 +11,7 @@ import {
 } from "@/accessories/light";
 
 import { omniDirectConfigXml } from "./fixtures";
-import { attachment, read, set } from "./hap";
+import { attachment, read, recordingLog, set } from "./hap";
 import { readySession, testSession } from "./session";
 
 const light = async (
@@ -383,4 +383,16 @@ describe("one-color light", () => {
     });
     expect(read(service, Characteristic.On)).toBe(false);
   });
+});
+
+it("a color after the light leaves the controller is logged and reverts the tile", async () => {
+  const t = await readySession();
+  const { lines, log } = recordingLog();
+  const service = new Service.Lightbulb("Pool Light");
+  attachLight(attachment(service, t.session, log), { lightId: 8 });
+  vi.spyOn(t.omni.backyard, "bodies", "get").mockReturnValue([]);
+  await expect(set(service, Characteristic.Hue, 240)).rejects.toBeDefined();
+  expect(lines.at(-1)).toBe(
+    "Pool Light failed, the tile reverts: Error: no light 8",
+  );
 });

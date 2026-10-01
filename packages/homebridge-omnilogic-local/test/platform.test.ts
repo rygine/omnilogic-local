@@ -627,6 +627,55 @@ describe("OmniLogicPlatform", () => {
     await api.shutdown();
   });
 
+  it.each([
+    [
+      "a controller block",
+      { ...config, controllers: [{ host: "bad host" }, ...config.controllers] },
+    ],
+    [
+      "an accessory entry",
+      only({
+        id: "relay99",
+        type: "relaySwitch",
+        equipment: 22,
+        name: "Old Relay",
+        offAfter: "ten",
+      }),
+    ],
+  ])("removes no cached accessory while %s is dropped", async (_, cfg) => {
+    const api = fakeApi();
+    const { log, lines: messages } = recordingLog();
+    const platform = new OmniLogicPlatform(
+      log,
+      cfg,
+      api.api,
+      () => testSession().session,
+    );
+    platform.configureAccessory(api.cached("Old Relay", { id: "relay99" }));
+    await api.launch();
+    expect(api.unregistered).toEqual([]);
+    expect(messages).toContain(
+      "something in the config was dropped, so no cached accessory is removed; fix it on the settings page",
+    );
+    await api.shutdown();
+  });
+
+  it("logs that no controller is configured", async () => {
+    const api = fakeApi();
+    const { log, lines: messages } = recordingLog();
+    void new OmniLogicPlatform(
+      log,
+      { platform: "OmniLogicLocal" },
+      api.api,
+      () => testSession().session,
+    );
+    await api.launch();
+    expect(messages).toEqual([
+      "no controller configured; add one on the settings page",
+    ]);
+    await api.shutdown();
+  });
+
   it("keeps the accessories and wires again on the next refresh when the first wiring throws", async () => {
     const api = fakeApi();
     const { log, lines: messages } = recordingLog();
