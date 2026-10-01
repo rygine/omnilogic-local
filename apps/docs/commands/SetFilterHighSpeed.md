@@ -2,7 +2,8 @@
 opcode: 135
 area: equipment
 status: verified
-summary: Sets the filter pump's maximum operating speed.
+summary:
+  Sets the filter pump's maximum speed, which cannot be below its minimum speed.
 firmware:
   - R0502000
 models:
@@ -13,7 +14,7 @@ models:
 
 <CommandFacts />
 
-Sets the filter pump's maximum operating speed.
+Sets the filter pump's maximum speed, which cannot be below its minimum speed.
 
 ## Parameters
 

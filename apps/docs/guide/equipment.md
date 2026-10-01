@@ -194,6 +194,11 @@ a pump is: `"single"`, `"dual"`, or `"variable"`, and an unknown type counts as
 variable. `pumpSpeedType(type)` gives the same for a type string from the
 configuration.
 
+The controller refuses a minimum speed above the maximum speed, a maximum speed
+below the minimum speed, a freeze protect speed above the maximum speed, and a
+freeze protect temperature above 42 °F. For each of these, the setter throws
+`OmniValidationError` and sends nothing.
+
 ```typescript
 // 38
 console.log(omni.backyard.pool?.filter?.freezeProtectTemp);
@@ -234,6 +239,10 @@ Each remaining setting has a setter. `cooldown`, `extend`, `allowLowSpeed`, and
 `lowSpeed` are getters that read the configuration. `silentMode` is a getter
 that reads telemetry. `autoDifferential()` is an `async` method that asks the
 controller.
+
+`setAutoDifferential()` takes 2 to 10 degrees, and `setLowSpeed()` takes a speed
+within the filter pump's `minSpeed` and `maxSpeed`. For any other value, each
+throws `OmniValidationError` and sends nothing.
 
 ### Heat sources
 

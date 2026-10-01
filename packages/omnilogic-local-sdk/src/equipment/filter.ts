@@ -7,6 +7,7 @@ import {
 import { Pump } from "@/equipment/pump";
 import type { Filter as FilterConfig } from "@/types/config";
 import { bcdWatts, displayRevision, driveRevision, word } from "@/utils/decode";
+import { OmniValidationError } from "@/utils/errors";
 
 const ascii = (bytes: number[]) =>
   String.fromCharCode(...bytes).replace(/[\0 ]+$/, "");
@@ -110,6 +111,12 @@ export class Filter extends Pump {
   }
 
   setMinSpeed(value: number) {
+    const max = this.maxSpeed;
+    if (value > max) {
+      throw new OmniValidationError(
+        `Minimum speed ${value} is above the maximum speed ${max}`,
+      );
+    }
     return this.omni.command("SetFilterLowSpeed", {
       poolId: this.poolId,
       equipmentId: this.equipmentId,
@@ -118,6 +125,12 @@ export class Filter extends Pump {
   }
 
   setMaxSpeed(value: number) {
+    const min = this.minSpeed;
+    if (value < min) {
+      throw new OmniValidationError(
+        `Maximum speed ${value} is below the minimum speed ${min}`,
+      );
+    }
     return this.omni.command("SetFilterHighSpeed", {
       poolId: this.poolId,
       equipmentId: this.equipmentId,
@@ -189,6 +202,11 @@ export class Filter extends Pump {
   }
 
   setFreezeProtectTemp(degrees: number) {
+    if (degrees > 42) {
+      throw new OmniValidationError(
+        `Freeze protect temperature ${degrees} is above 42`,
+      );
+    }
     return this.omni.command("SetFreezeProtectTemp", {
       poolId: this.poolId,
       data: degrees,
@@ -200,6 +218,12 @@ export class Filter extends Pump {
   }
 
   setFreezeProtectSpeed(value: number) {
+    const max = this.maxSpeed;
+    if (value > max) {
+      throw new OmniValidationError(
+        `Freeze protect speed ${value} is above the maximum speed ${max}`,
+      );
+    }
     return this.omni.command("SetFreezeProtectSpeed", {
       poolId: this.poolId,
       data: value,

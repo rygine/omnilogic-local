@@ -73,6 +73,18 @@ export class HeaterAppliance extends Device {
   }
 
   setLowSpeed(value: number) {
+    const filter = this.bodyConfig?.filter;
+    if (filter === undefined) {
+      throw new OmniValidationError(
+        `"${this.name}" has no filter pump to take a low speed from`,
+      );
+    }
+    const { minPumpSpeed: min, maxPumpSpeed: max } = filter;
+    if (value < min || value > max) {
+      throw new OmniValidationError(
+        `Low speed ${value} is not between ${min} and ${max}`,
+      );
+    }
     return this.omni.command("SetHeaterLowSpeed", {
       poolId: this.poolId,
       equipmentId: this.equipmentId,

@@ -10,7 +10,7 @@ import { vi } from "vitest";
 // every send goes through the SDK's real encoder
 const { omni, sent, protocol } = makeRecorder();
 
-// a real OmniLogic over the same recording transport, with a thermostat (heater 4) and its appliance (heater-equipment 5) on body 1
+// a real OmniLogic over the same recording transport, with a filter (3), a thermostat (heater 4), and its appliance (heater-equipment 5) on body 1
 const heaterOmni = new OmniLogic({ host: "127.0.0.1", port: 10444, protocol });
 heaterOmni.fetchTelemetry = () =>
   Promise.resolve({
@@ -29,6 +29,7 @@ heaterOmni.fetchConfig = () =>
           relays: [],
           pumps: [],
           colorLogicLights: [],
+          filter: { systemId: 3, minPumpSpeed: 18, maxPumpSpeed: 100 },
           heater: {
             systemId: 4,
             name: "Heater",

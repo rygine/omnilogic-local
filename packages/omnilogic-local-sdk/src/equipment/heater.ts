@@ -154,6 +154,11 @@ export class Heater extends Device {
   }
 
   setAutoDifferential(degrees: number) {
+    if (degrees < 2 || degrees > 10) {
+      throw new OmniValidationError(
+        `Auto-differential ${degrees} is not between 2 and 10`,
+      );
+    }
     return this.omni.command("SetHeaterAutoDifferential", {
       poolId: this.poolId,
       equipmentId: this.equipmentId,

@@ -854,6 +854,51 @@ describe("Backyard", () => {
     ]);
   });
 
+  it("refuses before sending the speeds and temperatures the controller refuses", () => {
+    const { eq, sent } = sessionFor(loadConfigFixture());
+    const pool = eq.pool!;
+
+    // the pool filter runs 58 to 100
+    expect(() => pool.filter!.setMinSpeed(101)).toThrow(
+      "Minimum speed 101 is above the maximum speed 100",
+    );
+    expect(() => pool.filter!.setMaxSpeed(50)).toThrow(
+      "Maximum speed 50 is below the minimum speed 58",
+    );
+    expect(() => pool.filter!.setFreezeProtectSpeed(101)).toThrow(
+      "Freeze protect speed 101 is above the maximum speed 100",
+    );
+    expect(() => pool.filter!.setFreezeProtectTemp(43)).toThrow(
+      "Freeze protect temperature 43 is above 42",
+    );
+    expect(() => pool.heater!.setLowSpeed(57)).toThrow(
+      "Low speed 57 is not between 58 and 100",
+    );
+    for (const degrees of [1, 11]) {
+      expect(() => pool.heater!.setAutoDifferential(degrees)).toThrow(
+        `Auto-differential ${degrees} is not between 2 and 10`,
+      );
+    }
+    expect(sent).toEqual([]);
+
+    void pool.filter!.setFreezeProtectTemp(42);
+    void pool.heater!.setAutoDifferential(10);
+    expect(sent.map((s) => s.name)).toEqual([
+      "SetFreezeProtectTemp",
+      "SetHeaterAutoDifferential",
+    ]);
+  });
+
+  it("refuses a heater low speed on a body with no filter pump to take a range from", () => {
+    const noFilter = loadConfigFixture();
+    delete noFilter.backyard.bodiesOfWater[0]!.filter;
+    const { eq, sent } = sessionFor(noFilter);
+    expect(() => eq.pool!.heater!.setLowSpeed(60)).toThrow(
+      '"Gas" has no filter pump to take a low speed from',
+    );
+    expect(sent).toEqual([]);
+  });
+
   it("decodes a diagnostics read, raw on request", async () => {
     const { eq, sent } = sessionFor(loadConfigFixture(), {
       poolId: 1,

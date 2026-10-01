@@ -2,7 +2,8 @@
 opcode: 133
 area: equipment
 status: verified
-summary: Sets the filter pump's minimum operating speed.
+summary:
+  Sets the filter pump's minimum speed, which cannot be above its maximum speed.
 firmware:
   - R0502000
 models:
@@ -13,7 +14,7 @@ models:
 
 <CommandFacts />
 
-Sets the filter pump's minimum operating speed.
+Sets the filter pump's minimum speed, which cannot be above its maximum speed.
 
 ## Parameters
 
