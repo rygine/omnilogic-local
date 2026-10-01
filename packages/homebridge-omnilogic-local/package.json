@@ -1,7 +1,7 @@
 {
   "name": "@rygine/homebridge-omnilogic-local",
   "displayName": "OmniLogicLocal",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Homebridge plugin for local control of Hayward OmniLogic pool controllers",
   "keywords": [
     "hayward",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@homebridge/plugin-ui-utils": "^2.2.6",
-    "@rygine/omnilogic-local-sdk": "^0.0.6"
+    "@rygine/omnilogic-local-sdk": "^0.0.7"
   },
   "devDependencies": {
     "@homebridge/hap-nodejs": "^2.2.3",
