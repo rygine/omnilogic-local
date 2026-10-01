@@ -56,7 +56,7 @@ config cache, prompt, send), `utils.ts` reads the spec for all three, `store.ts`
 owns `~/.config/omnilogic-local/`. No dependency the SDK does not already need.
 
 `packages/homeassistant-omnilogic-local` is the Home Assistant MQTT bridge and
-its add-on (`addon/`, published through the root `repository.yaml`): `entities/`
+its app (`addon/`, published through the root `repository.yaml`): `entities/`
 builds one device per piece of equipment, `bridge.ts` publishes discovery and
 state, and `import.ts` imports controller schedules as automations.
 

@@ -69,7 +69,7 @@ describe("loadSettings", () => {
     expect(percent.speedUnit).toBe("percent");
   });
 
-  it("asks the Supervisor for the broker in add-on mode, unless mqtt_url is set", async () => {
+  it("asks the Supervisor for the broker in app mode, unless mqtt_url is set", async () => {
     const fetch = vi.fn(async () =>
       Response.json({
         data: {
@@ -126,7 +126,7 @@ describe("loadSettings", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("refuses a missing host or broker, a non-number interval, an unknown speed unit, an empty controller address, and an add-on with no broker", async () => {
+  it("refuses a missing host or broker, a non-number interval, an unknown speed unit, an empty controller address, and an app with no broker", async () => {
     await expect(loadSettings({ MQTT_URL: "m" })).rejects.toThrow(
       "OMNILOGIC_HOST",
     );
@@ -153,7 +153,7 @@ describe("loadSettings", () => {
     await expect(
       loadSettings({ SUPERVISOR_TOKEN: "sv" }, await options({ host: "h" })),
     ).rejects.toThrow(
-      "No MQTT broker: install the Mosquitto broker add-on or set mqtt_url",
+      "No MQTT broker: install the Mosquitto broker app or set mqtt_url",
     );
   });
 });

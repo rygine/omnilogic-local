@@ -9,9 +9,9 @@ Connect your OmniLogic controller to Home Assistant to:
 
 ## Setup
 
-1. Install the **Mosquitto broker** add-on and the **MQTT** integration.
+1. Install the **Mosquitto broker** app and the **MQTT** integration.
 2. Set **Controller address** on the **Configuration** tab.
-3. Start the add-on.
+3. Start the app.
 
 The [guide](https://rygine.github.io/omnilogic-local/guide/home-assistant)
 covers the rest.

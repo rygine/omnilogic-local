@@ -70,7 +70,7 @@ const brokerUrlFromSupervisor = async (token: string) => {
   const body: unknown = res.ok ? await res.json() : undefined;
   if (!isBrokerResponse(body)) {
     throw new Error(
-      "No MQTT broker: install the Mosquitto broker add-on or set mqtt_url",
+      "No MQTT broker: install the Mosquitto broker app or set mqtt_url",
     );
   }
   const { data } = body;

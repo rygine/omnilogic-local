@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 const dir = join(import.meta.dirname, "..");
 
-describe("add-on", () => {
+describe("app", () => {
   it("carries the package version and names the same options in config and translations", () => {
     const { version } = JSON.parse(
       readFileSync(join(dir, "package.json"), "utf8"),

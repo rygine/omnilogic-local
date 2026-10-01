@@ -7,26 +7,26 @@ Connect your OmniLogic controller to Home Assistant to:
 - Disable or remove controller schedules
 - Import controller schedules as automations
 
-The bridge runs as the **OmniLogicLocal** add-on, or on its own.
+The bridge runs as the **OmniLogicLocal** app, or on its own.
 
 ## Installing
 
 ### With Home Assistant OS
 
-1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**, open the
+1. In Home Assistant, go to **Settings → Apps → Install app**, open the
    three-dot menu, choose **Repositories**, and add
    `https://github.com/rygine/omnilogic-local`. Or use this button, which opens
    your Home Assistant with the repository filled in:
 
    [![Add the repository to your Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Frygine%2Fomnilogic-local)
 
-2. If you do not have the **Mosquitto broker** add-on, install it and start it.
+2. If you do not have the **Mosquitto broker** app, install it and start it.
 3. If you do not have the **MQTT** integration, add it under **Settings →
    Devices & services**.
-4. Install **OmniLogicLocal** from the **Add-on Store**, set its **Controller
-   address**, and start it.
+4. Install **OmniLogicLocal** from **Settings → Apps → Install app**, set its
+   **Controller address**, and start it.
 
-The add-on finds the Mosquitto broker on its own.
+The app finds the Mosquitto broker on its own.
 
 ### With Home Assistant Container or Core
 
@@ -170,9 +170,9 @@ Home Assistant lists these entities under **Diagnostic** on the device's page.
 
 Press **Save diagnostics** on the controller device to save a JSON file. The
 file holds the bridge's version and settings, and the controller's raw
-configuration, telemetry, and system information. The add-on saves it in Home
-Assistant's `share` folder, under `omnilogiclocal`. Outside the add-on, it goes
-in `STATE_DIR`. With Home Assistant API access, a notification gives the file's
+configuration, telemetry, and system information. The app saves it in Home
+Assistant's `share` folder, under `omnilogiclocal`. Outside the app, it goes in
+`STATE_DIR`. With Home Assistant API access, a notification gives the file's
 path.
 
 ## Importing schedules
@@ -183,9 +183,9 @@ repeating schedule into a Home Assistant automation. The automation uses the
 equipment's own controls, such as **Speed** or **Output**, and the import skips
 a schedule whose control Home Assistant does not have.
 
-The button needs Home Assistant API access. The add-on sets up this access.
-Outside the add-on, set `HA_URL` and `HA_TOKEN`. With this access, the bridge
-also sends a notification that lists the enabled, repeating schedules.
+The button needs Home Assistant API access. The app sets up this access. Outside
+the app, set `HA_URL` and `HA_TOKEN`. With this access, the bridge also sends a
+notification that lists the enabled, repeating schedules.
 
 Only the controller or Home Assistant runs each schedule, not both:
 
@@ -193,7 +193,7 @@ Only the controller or Home Assistant runs each schedule, not both:
   keeps running the schedule. To move a schedule to Home Assistant, turn its
   automation on, then turn off the schedule's switch on the controller device.
 - With **Disable imported schedules** on (`DISABLE_IMPORTED_SCHEDULES=true`
-  outside the add-on), the import turns the schedule off on the controller and
+  outside the app), the import turns the schedule off on the controller and
   leaves its automation on.
 
 An automation differs from a controller schedule in one way. If you turn on a

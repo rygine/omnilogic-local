@@ -18,7 +18,7 @@ configuration:
   mqtt_url:
     name: MQTT broker URL
     description:
-      The URL of a broker other than the Mosquitto broker add-on, such as
+      The URL of a broker other than the Mosquitto broker app, such as
       mqtt://user:password@host:1883.
   disable_imported_schedules:
     name: Disable imported schedules

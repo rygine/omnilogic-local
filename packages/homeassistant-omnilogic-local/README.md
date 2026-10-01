@@ -18,7 +18,7 @@ over MQTT. No internet or cloud login required.
 ## Requirements
 
 - Home Assistant, with the MQTT integration and a broker
-- Node.js >= 22, only when running outside the Home Assistant add-on
+- Node.js >= 22, only when running outside the Home Assistant app
 - Network access to the OmniLogic controller on port 10444
 
 ## Installation
@@ -28,8 +28,8 @@ over MQTT. No internet or cloud login required.
 [![Add the repository to your Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Frygine%2Fomnilogic-local)
 
 Or add `https://github.com/rygine/omnilogic-local` as a repository in **Settings
-→ Add-ons → Add-on Store**. Then install **OmniLogicLocal** and set its
-**Controller address**.
+→ Apps → Install app**. Then install **OmniLogicLocal** and set its **Controller
+address**.
 
 ### With Home Assistant Container or Core
 
@@ -49,7 +49,7 @@ services → MQTT**. Air temperature and schedules appear as sensors and control
 on the **OmniLogic** device.
 
 Press **Import controller schedules** on the **OmniLogic** device. It turns the
-controller's schedules into automations. Outside the add-on, this needs `HA_URL`
+controller's schedules into automations. Outside the app, this needs `HA_URL`
 and `HA_TOKEN`.
 
 ## Disclaimer
