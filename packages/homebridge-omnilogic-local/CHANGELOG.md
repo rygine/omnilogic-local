@@ -3,6 +3,12 @@
 All notable changes to this project are recorded here, and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## 0.0.5
+
+- Upgraded `@rygine/omnilogic-local-sdk` to `0.0.8`
+- Added check to require firmware R0502000 or newer
+- Updated Discover to show error messages
+
 ## 0.0.4
 
 - Captured and added logs for every error from a HomeKit set
