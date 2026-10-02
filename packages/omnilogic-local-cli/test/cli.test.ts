@@ -482,7 +482,7 @@ describe("command", () => {
     );
     expect(r.code).toBe(1);
     expect(r.stderr).toContain(
-      "SetBackLight refused: the controller must be in a normal operating state (state: Config Mode)",
+      "SetBackLight refused: the controller must be in a normal operating state (state: Config Mode).\n\nPass --force to ignore this error.\n",
     );
     expect(r.sent.map((s) => s.opcode)).toEqual([
       SWITCH_OPCODE.RequestConfiguration,
@@ -502,6 +502,70 @@ describe("command", () => {
     expect(forced.sent.map((s) => s.opcode)).toEqual([
       COMMANDS.SetBackLight.opcode,
     ]);
+  });
+
+  it("refuses unsupported firmware, naming the minimum and --force", async () => {
+    const older = await cli(
+      ["command", "SetBackLight", "--data", "1", "-y", ...HOST],
+      {
+        answers: {
+          ...CONFIG,
+          [SWITCH_OPCODE.GetTelemetry]: TELEMETRY_XML.replace(
+            'mspVersion="R0502000"',
+            'mspVersion="R0501000"',
+          ),
+        },
+      },
+    );
+    expect(older.code).toBe(1);
+    expect(older.stderr).toContain(
+      "Firmware R0501000 is not supported: R0502000 or newer required.\n\nPass --force to ignore this error.\n",
+    );
+    expect(older.sent.map((s) => s.opcode)).toEqual([
+      SWITCH_OPCODE.RequestConfiguration,
+      SWITCH_OPCODE.GetTelemetry,
+    ]);
+
+    const unknown = await cli(
+      ["command", "SetBackLight", "--data", "1", "-y", ...HOST],
+      {
+        answers: {
+          ...CONFIG,
+          [SWITCH_OPCODE.GetTelemetry]: TELEMETRY_XML.replace(
+            ' mspVersion="R0502000"',
+            "",
+          ),
+        },
+      },
+    );
+    expect(unknown.code).toBe(1);
+    expect(unknown.stderr).toContain(
+      "Firmware version unknown: R0502000 or newer required.\n\nPass --force to ignore this error.\n",
+    );
+    expect(unknown.sent.map((s) => s.opcode)).toEqual([
+      SWITCH_OPCODE.RequestConfiguration,
+      SWITCH_OPCODE.GetTelemetry,
+    ]);
+  });
+
+  it("prints a refusal's stack trace with --debug", async () => {
+    const r = await cli(
+      ["command", "SetBackLight", "--data", "1", "-y", "--debug", ...HOST],
+      {
+        answers: {
+          ...CONFIG,
+          [SWITCH_OPCODE.GetTelemetry]: TELEMETRY_XML.replace(
+            'mspVersion="R0502000"',
+            'mspVersion="R0501000"',
+          ),
+        },
+      },
+    );
+    expect(r.code).toBe(1);
+    expect(r.stderr).toMatch(
+      /FirmwareTooOldError: Firmware R0501000[\s\S]*\n {4}at /,
+    );
+    expect(r.stderr).toContain("\n\nPass --force to ignore this error.\n");
   });
 
   it("sends with --yes and leaves safe.json alone", async () => {

@@ -4,6 +4,12 @@ From a shell, `omnilogic-local` reads a controller's configuration, telemetry,
 and system info. It also sends any command in the
 [spec](/guide/commands#typing-outside-a-call), the SDK's list of every command.
 
+## Requirements
+
+- Node.js >= 22
+- Hayward OmniLogic MSP firmware 5.2 (R0502000) or newer
+- Network access to the OmniLogic controller on UDP port 10444
+
 ## Installing
 
 ```bash
@@ -103,8 +109,9 @@ input at the prompt, the CLI takes it as no.
 The CLI checks each value against the spec. If a number is out of range, or a
 string is not one the command accepts, the CLI sends nothing.
 
-Before it sends, the CLI fetches the telemetry and gets the configuration. Then
-it runs its own checks:
+Before it sends, the CLI fetches the telemetry and gets the configuration. The
+SDK refuses a controller whose firmware is older than R0502000 or reports no
+version. Then the CLI runs its own checks:
 
 - The CLI refuses a write while the controller is not in normal operation,
   before it asks you to confirm.

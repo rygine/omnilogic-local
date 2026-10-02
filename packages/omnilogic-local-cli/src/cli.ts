@@ -5,6 +5,8 @@ import {
   COMMANDS,
   type CommandName,
   DEFAULT_PORT,
+  EquipmentNotInstalledError,
+  FirmwareTooOldError,
   type MSPConfig,
   OmniLogic,
   type OmniLogicProtocol,
@@ -12,6 +14,7 @@ import {
   parseConfig,
   parseSysInfo,
   parseTelemetry,
+  SystemStateError,
 } from "@rygine/omnilogic-local-sdk";
 
 import { sendCommand } from "@/command";
@@ -314,6 +317,16 @@ export const run = async (argv: string[], io: Io): Promise<number> => {
     if (error instanceof RefusedError) {
       io.stderr.write(`${error.message}\n`);
       return 3;
+    }
+    if (
+      error instanceof EquipmentNotInstalledError ||
+      error instanceof FirmwareTooOldError ||
+      error instanceof SystemStateError
+    ) {
+      const [reason] = error.message.split("\n\n");
+      const text = debug && error.stack ? error.stack : reason;
+      io.stderr.write(`${text}\n\nPass --force to ignore this error.\n`);
+      return 1;
     }
     const text =
       error instanceof Error
