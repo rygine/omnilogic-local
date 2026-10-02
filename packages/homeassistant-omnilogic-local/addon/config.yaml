@@ -1,5 +1,5 @@
 name: OmniLogicLocal
-version: "0.0.2"
+version: "0.0.3"
 slug: omnilogic_local
 description: Local control of a Hayward OmniLogic pool controller over MQTT
 url: https://rygine.github.io/omnilogic-local/guide/home-assistant
