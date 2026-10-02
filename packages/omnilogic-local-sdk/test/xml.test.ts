@@ -151,6 +151,27 @@ describe("the config, telemetry, and sysinfo parsers", () => {
     expect(two.colorLogicLights[1]!.operations).not.toHaveLength(0);
   });
 
+  it("parseConfig reads a favorite, a blower, and a system with no time zone", () => {
+    const config = parseConfig(fixture("config-2.xml"));
+    expect(config.checksum).toBe(2885919);
+    expect(config.favorites).toEqual([
+      {
+        systemId: 23,
+        indexId: 1,
+        equipmentIdOrThemeId: 15,
+        sequence: 0,
+        data: 0,
+        simpleModeEnabled: 1,
+      },
+    ]);
+    const [pool, spa] = config.backyard.bodiesOfWater;
+    expect(pool!.supportsSpillover).toBe(false);
+    expect(spa!.relays.map((r) => r.function)).toEqual(["RLY_BLOWER"]);
+    expect(config.system).not.toHaveProperty("timeZone");
+    expect(config.system).not.toHaveProperty("dst");
+    expect(config.system).not.toHaveProperty("internetTime");
+  });
+
   it("parseConfig reads the optional fields only when sent: a filter, OmniDirect, solar, cooling, and valve speed", () => {
     const xml = fixture("config.xml");
     const extra = fixture("config-extra.xml");

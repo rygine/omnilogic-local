@@ -530,7 +530,10 @@ export class OmniLogic {
 
   #refuseUnsupportedFirmware(telemetry: Telemetry) {
     const version = telemetry.backyard.mspVersion;
-    if (version === undefined || !MSP_VERSION_SHAPE.test(version)) {
+    if (version === undefined) {
+      throw new FirmwareTooOldError({ minimum: MIN_MSP_VERSION });
+    }
+    if (!MSP_VERSION_SHAPE.test(version)) {
       omnilogicLog.debug("firmware version unrecognized, not checked", {
         version,
       });
@@ -685,7 +688,7 @@ export class OmniLogic {
       });
       const configStarted = Date.now();
       const config = await this.fetchConfig();
-      this.#configChecksum = newChecksum;
+      this.#configChecksum = newChecksum ?? config.checksum;
       omnilogicLog.trace("config fetched", { ms: Date.now() - configStarted });
       this.#adopt(config);
     } else {

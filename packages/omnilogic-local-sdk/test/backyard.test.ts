@@ -39,7 +39,7 @@ const sessionFor = (
 // filter and equipment telemetry at speed 58, for any backyard state
 const telemetryIn = (state: number) => ({
   ...EMPTY_TELEMETRY,
-  backyard: { state },
+  backyard: { ...EMPTY_TELEMETRY.backyard, state },
   bodiesOfWater: [{ systemId: 1, waterTemp: -1, flow: 255 }],
   filters: [
     {
@@ -83,7 +83,12 @@ const backyard = async (
   const { omni } = makeRecorder({
     telemetry: () => ({
       ...EMPTY_TELEMETRY,
-      backyard: { configChksum: 1, state, airTemp },
+      backyard: {
+        ...EMPTY_TELEMETRY.backyard,
+        configChksum: 1,
+        state,
+        airTemp,
+      },
       bodiesOfWater: [{ systemId: 1, waterTemp }],
       filters: [{ systemId: 3, filterState, filterSpeed }],
     }),
@@ -641,7 +646,11 @@ describe("Backyard", () => {
     const { omni } = makeRecorder({
       telemetry: () => ({
         ...EMPTY_TELEMETRY,
-        backyard: { configChksum: ++fetches, state: 1 },
+        backyard: {
+          ...EMPTY_TELEMETRY.backyard,
+          configChksum: ++fetches,
+          state: 1,
+        },
       }),
       config: () => (fetches <= 1 ? first : second),
     });

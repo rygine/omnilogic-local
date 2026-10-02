@@ -69,7 +69,9 @@ export const makeRecorder = () => {
   const omni = new OmniLogic({ host: "127.0.0.1", port: 10444, protocol });
   // an empty configuration and telemetry, the controller on with nothing installed
   omni.fetchTelemetry = () =>
-    Promise.resolve({ backyard: { configChksum: 0, state: 1 } } as never);
+    Promise.resolve({
+      backyard: { configChksum: 0, state: 1, mspVersion: "R0502000" },
+    } as never);
   omni.fetchConfig = () =>
     Promise.resolve({ backyard: { bodiesOfWater: [] } } as never);
   return { omni, sent, protocol };

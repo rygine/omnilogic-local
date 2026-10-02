@@ -8,6 +8,7 @@ import { Themes } from "@/equipment/themes";
 import { CommandFailedError, OmniValidationError } from "@/utils/errors";
 
 import {
+  EMPTY_TELEMETRY,
   loadConfigFixture,
   makeRecorder,
   seeded,
@@ -214,7 +215,13 @@ const themeStub = async (
       }
     },
     // a fresh checksum every time
-    telemetry: () => ({ backyard: { configChksum: ++checksum, state: 1 } }),
+    telemetry: () => ({
+      backyard: {
+        ...EMPTY_TELEMETRY.backyard,
+        configChksum: ++checksum,
+        state: 1,
+      },
+    }),
     config: () => ({
       backyard: {
         bodiesOfWater: [

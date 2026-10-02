@@ -38,13 +38,13 @@ throws it before it sends anything.
 ## `FirmwareTooOldError`
 
 `refresh()` refused because the controller reports firmware older than
-`R0502000`, the version the SDK's commands are written for. The error carries
-the reported `version` and the `minimum`, which is also exported as
-`MIN_MSP_VERSION`.
+`R0502000`, or reports no version at all. The error carries the reported
+`version` (`undefined` when there is none) and the `minimum`, which is also
+exported as `MIN_MSP_VERSION`.
 
 `fetchTelemetry()` does not check the version, so you can still read it from a
-controller that `refresh()` refuses. A controller that reports no version, or a
-version the SDK cannot read, passes the check. `refresh({ force: true })` and
+controller that `refresh()` refuses. A version in a format other than
+`R0502000`'s is not checked. `refresh({ force: true })` and
 `command(name, params, { force: true })` both send anyway.
 
 ## `EquipmentNotInstalledError`

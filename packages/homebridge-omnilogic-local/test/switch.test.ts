@@ -84,7 +84,7 @@ describe("theme switch", () => {
     attachThemeSwitch(attachment(service, t.session, log), { themeId: 29 });
     xml = xml.replace(/<Groups>[\s\S]*<\/Groups>/, "");
     // the controller announces a changed config through the checksum
-    t.telemetry.backyard.configChksum += 1;
+    t.telemetry.backyard.configChksum = 2;
     await t.session.refresh();
     const before = t.sent.length;
     await expect(set(service, Characteristic.On, true)).rejects.toBeDefined();

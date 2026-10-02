@@ -14,7 +14,7 @@ const { omni, sent, protocol } = makeRecorder();
 const heaterOmni = new OmniLogic({ host: "127.0.0.1", port: 10444, protocol });
 heaterOmni.fetchTelemetry = () =>
   Promise.resolve({
-    backyard: { configChksum: 0, state: 1 },
+    backyard: { configChksum: 0, state: 1, mspVersion: "R0502000" },
     heaters: [],
   } as never);
 heaterOmni.fetchConfig = () =>

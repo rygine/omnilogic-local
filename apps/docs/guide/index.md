@@ -9,6 +9,7 @@ settings, and controls attached equipment.
 ## Requirements
 
 - Node.js >= 22
+- Hayward OmniLogic MSP firmware 5.2 (R0502000) or newer
 - A Hayward OmniLogic controller on your local network, reachable on UDP port
   10444
 

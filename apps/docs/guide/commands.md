@@ -118,8 +118,8 @@ await omni.command(
 - `force` skips the refresh before the first command, and sends even when:
   - the configuration shows the equipment is not installed
   - the controller is not in normal operation
-  - the firmware is older than R0502000, which otherwise throws
-    [`FirmwareTooOldError`](/guide/errors#firmwaretooolderror)
+  - the firmware is older than R0502000 or reports no version, which otherwise
+    throws [`FirmwareTooOldError`](/guide/errors#firmwaretooolderror)
 
   `command()` still checks the parameters against the spec. See
   [Inventory](/guide/inventory).

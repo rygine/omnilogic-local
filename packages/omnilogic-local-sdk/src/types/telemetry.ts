@@ -1,6 +1,8 @@
 export type Backyard = {
   airTemp: number;
-  configChksum: number;
+  // missing on older firmware
+  configChksum?: number;
+  // missing on older firmware
   mspVersion?: string;
   state: number;
   statusVersion: number;

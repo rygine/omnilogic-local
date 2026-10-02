@@ -7,6 +7,11 @@ It runs on your local machine or in Docker.
 Do not expose the app to the internet. It has no authentication or other
 security. Use it only on your local network.
 
+## Requirements
+
+- Hayward OmniLogic MSP firmware 5.2 (R0502000) or newer
+- Network access to the OmniLogic controller on UDP port 10444
+
 ## Running on the host
 
 The app needs Node.js 22.18 or later and Yarn 4. From the repository root:

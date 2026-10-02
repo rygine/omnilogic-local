@@ -5,6 +5,13 @@ cloud login required. Equipment controls, schedules, themes, favorites,
 settings, and a command log for one controller, over
 `@rygine/omnilogic-local-sdk`.
 
+## Requirements
+
+- Hayward OmniLogic MSP firmware 5.2 (R0502000) or newer
+- Network access to the OmniLogic controller on port 10444
+
+## Running
+
 Run these from `apps/web`; they need Docker.
 
 ```bash

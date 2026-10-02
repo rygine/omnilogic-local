@@ -2,7 +2,7 @@ import { ColorLogicPowerState as P } from "@/constants/lightShows";
 import { Light } from "@/equipment/light";
 import { CommandFailedError, OmniValidationError } from "@/utils/errors";
 
-import { makeRecorder, valuesOf } from "./mocks";
+import { EMPTY_TELEMETRY, makeRecorder, valuesOf } from "./mocks";
 
 // a scripted light that steps its state toward a target on each refresh and can ignore a show
 const lightStub = (
@@ -53,7 +53,11 @@ const lightStub = (
         lightState = queue.shift()!;
       }
       return {
-        backyard: { configChksum: refreshes, state: 1 },
+        backyard: {
+          ...EMPTY_TELEMETRY.backyard,
+          configChksum: refreshes,
+          state: 1,
+        },
         colorLogicLights: [
           {
             systemId: 8,

@@ -304,9 +304,9 @@ export type UnitSystem = "Standard" | "Metric";
 
 type System = {
   // daylight savings time
-  dst: boolean;
+  dst?: boolean;
   // "on" or "off", whether the clock is set from the internet
-  internetTime: string;
+  internetTime?: string;
   // Salt or Minerals
   mspChlorDisplay: string;
   mspLanguage: string;
@@ -314,7 +314,7 @@ type System = {
   // RPM or percent
   mspVspSpeedFormat: string;
   // minutes from UTC
-  timeZone: number;
+  timeZone?: number;
   uiDisplayMode: string;
   // "Yes" or "No"
   uiFilterSimpleMode: string;

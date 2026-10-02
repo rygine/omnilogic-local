@@ -423,7 +423,11 @@ describe("command() gate", () => {
         fetches.telemetry++;
         return {
           ...EMPTY_TELEMETRY,
-          backyard: { configChksum: 2824508, state: 1 },
+          backyard: {
+            ...EMPTY_TELEMETRY.backyard,
+            configChksum: 2824508,
+            state: 1,
+          },
         };
       },
       config: () => {
@@ -466,7 +470,7 @@ describe("command() gate", () => {
       config: () => loadConfigFixture(),
       telemetry: () => ({
         ...EMPTY_TELEMETRY,
-        backyard: { configChksum: 0, state },
+        backyard: { ...EMPTY_TELEMETRY.backyard, configChksum: 0, state },
       }),
     });
 
@@ -506,7 +510,7 @@ describe("command() gate", () => {
       config: () => loadConfigFixture(),
       telemetry: () => ({
         ...EMPTY_TELEMETRY,
-        backyard: { configChksum: 0, state },
+        backyard: { ...EMPTY_TELEMETRY.backyard, configChksum: 0, state },
       }),
     });
     await leaving.omni.refresh({ refetch: true });

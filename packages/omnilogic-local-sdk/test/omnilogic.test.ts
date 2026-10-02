@@ -71,7 +71,13 @@ describe("OmniLogic", () => {
       {
         telemetry: () => {
           fetches++;
-          return { backyard: { configChksum: checksum, state: 1 } };
+          return {
+            backyard: {
+              ...EMPTY_TELEMETRY.backyard,
+              configChksum: checksum,
+              state: 1,
+            },
+          };
         },
         config: () => ({ backyard: { bodiesOfWater: [] } }),
       },
@@ -338,9 +344,19 @@ describe("the firmware floor", () => {
     for (const accepted of [MIN_MSP_VERSION, "R0502001", "R0600000"]) {
       await expect(session(accepted).omni.refresh()).resolves.toBeUndefined();
     }
-    for (const unreadable of [undefined, "4.3.0"]) {
-      await expect(session(unreadable).omni.refresh()).resolves.toBeUndefined();
-    }
+    await expect(session("4.3.0").omni.refresh()).resolves.toBeUndefined();
+  });
+
+  it("refuses a controller that reports no firmware version", async () => {
+    const error = await session()
+      .omni.refresh()
+      .catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(FirmwareTooOldError);
+    expect(error).toMatchObject({
+      version: undefined,
+      minimum: MIN_MSP_VERSION,
+    });
+    expect((error as Error).message).toContain("Firmware version unknown");
   });
 
   it("refreshes from, and sends to, a refused controller when forced", async () => {

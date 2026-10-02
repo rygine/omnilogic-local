@@ -279,7 +279,7 @@ describe("OmniLogicPlatform", () => {
     expect(api.registered.map((a) => a.displayName)).toEqual(["Party Theme"]);
     xml = xml.replace(/<Groups>[\s\S]*<\/Groups>/, "");
     // the controller announces a changed config through the checksum
-    t.telemetry.backyard.configChksum += 1;
+    t.telemetry.backyard.configChksum = 2;
     await t.session.refresh();
     expect(api.unregistered.map((a) => a.displayName)).toEqual(["Party Theme"]);
     expect(messages.at(-1)).toBe(

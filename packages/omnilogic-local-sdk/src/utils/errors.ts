@@ -68,12 +68,17 @@ export class SystemStateError extends OmniLogicError {
 }
 
 export class FirmwareTooOldError extends OmniLogicError {
-  version: string;
+  // missing on older firmware
+  version?: string;
   minimum: string;
 
-  constructor(details: { version: string; minimum: string }) {
+  constructor(details: { version?: string; minimum: string }) {
+    const reportedFirmware =
+      details.version === undefined
+        ? "Firmware version unknown"
+        : `Firmware ${details.version} is not supported`;
     super(
-      `This controller reports firmware ${details.version}, below the ${details.minimum} this library was built against, so nothing it sends can be trusted.\n\nPass { force: true } to refresh() or command() to ignore this error; fetchTelemetry() works either way.`,
+      `${reportedFirmware}: ${details.minimum} or newer required.\n\nPass { force: true } to ignore this error.`,
     );
     this.name = "FirmwareTooOldError";
     this.version = details.version;

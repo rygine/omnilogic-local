@@ -89,9 +89,9 @@ export const fixture = (name: string): string =>
 export const loadConfigFixture = (name = "config.xml"): MSPConfig =>
   parseConfig(fixture(name));
 
-// telemetry reporting nothing: the controller on, every list empty, no checksum
+// telemetry reporting nothing: the controller on, supported firmware, every list empty
 export const EMPTY_TELEMETRY = {
-  backyard: { configChksum: 0, state: 1 },
+  backyard: { configChksum: 0, state: 1, mspVersion: "R0502000" },
   bodiesOfWater: [],
   chlorinators: [],
   colorLogicLights: [],
