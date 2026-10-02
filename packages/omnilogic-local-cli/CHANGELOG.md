@@ -3,6 +3,11 @@
 All notable changes to this project are recorded here, and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## 0.0.5
+
+- Upgraded `@rygine/omnilogic-local-sdk` to `0.0.8`
+- Updated error messages to suggest `--force`
+
 ## 0.0.4
 
 - Upgraded `@rygine/omnilogic-local-sdk` to `0.0.7`
