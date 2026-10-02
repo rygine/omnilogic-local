@@ -262,18 +262,10 @@ export const mount = async (root: HTMLElement) => {
     ]);
   };
 
-  const errorDetail = h("small", { class: "opacity-75" });
-  const errorBlock = h(
-    "div",
-    { class: "alert alert-danger mt-3 mb-0", role: "alert" },
-    h("h6", { class: "alert-heading mb-1" }, "Could not reach the controller"),
-    h(
-      "p",
-      { class: "mb-1" },
-      "Check the host and port, then press Discover to try again. Saved accessories are unchanged.",
-    ),
-    errorDetail,
-  );
+  const errorBlock = h("div", {
+    class: "alert alert-danger mt-3 mb-0",
+    role: "alert",
+  });
   errorBlock.hidden = true;
   const summary = h("div", { id: "summary", class: "mt-3" });
   const addButton = h(
@@ -738,9 +730,32 @@ export const mount = async (root: HTMLElement) => {
       render();
     } catch (error) {
       found = [];
-      const message = error instanceof Error ? error.message : String(error);
+      const message =
+        isRecord(error) && typeof error.message === "string"
+          ? error.message
+          : String(error);
+      const firmware =
+        isRecord(error) &&
+        isRecord(error.error) &&
+        error.error.firmware === true;
       clear();
-      errorDetail.textContent = message;
+      errorBlock.replaceChildren(
+        ...(firmware
+          ? [h("h6", { class: "alert-heading mb-0" }, message)]
+          : [
+              h(
+                "h6",
+                { class: "alert-heading mb-1" },
+                "Could not reach the controller",
+              ),
+              h(
+                "p",
+                { class: "mb-1" },
+                "Check the host and port, then press Discover to try again. Saved accessories are unchanged.",
+              ),
+              h("small", { class: "opacity-75" }, message),
+            ]),
+      );
       errorBlock.hidden = false;
     } finally {
       hb.hideSpinner();

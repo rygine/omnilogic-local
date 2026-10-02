@@ -17,6 +17,7 @@ internet or cloud login required.
 
 - Homebridge 2
 - Node.js >= 22
+- Hayward OmniLogic MSP firmware 5.2 (R0502000) or newer
 - Network access to the OmniLogic controller on port 10444
 
 ## Installation

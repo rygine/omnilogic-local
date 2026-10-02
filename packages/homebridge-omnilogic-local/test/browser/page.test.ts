@@ -433,4 +433,28 @@ describe("the settings page", () => {
       expect(typeof a === "string" ? a : fitProblem(a, found)).toBeUndefined();
     }
   });
+
+  it("shows unsupported firmware as one line, and a network failure with its message", async () => {
+    const firmware =
+      "Firmware R0501000 is not supported: R0502000 or newer required.";
+    installHomebridge(found, block(), {
+      message: firmware,
+      error: { status: 400, firmware: true },
+    });
+    await mount(query("#omnilogic"));
+    await tick();
+    expect(query('[role="alert"]').textContent).toBe(firmware);
+
+    document.body.innerHTML =
+      '<div id="omnilogic" class="card card-body"></div>';
+    installHomebridge(found, block(), {
+      message: "timed out",
+      error: { status: 400 },
+    });
+    await mount(query("#omnilogic"));
+    await tick();
+    expect(query('[role="alert"]').textContent).toBe(
+      "Could not reach the controllerCheck the host and port, then press Discover to try again. Saved accessories are unchanged.timed out",
+    );
+  });
 });

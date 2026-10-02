@@ -1,7 +1,12 @@
 import { EventEmitter } from "node:events";
 
-import type { OmniLogic } from "@rygine/omnilogic-local-sdk";
+import {
+  FirmwareTooOldError,
+  type OmniLogic,
+} from "@rygine/omnilogic-local-sdk";
 import type { Logging } from "homebridge";
+
+import { unsupportedFirmwareMessage } from "@/firmware";
 
 // the delays after a write before each re-read
 const SETTLE_MS = [2000, 10000, 30000, 60000];
@@ -23,6 +28,7 @@ export class ControllerSession extends EventEmitter<{
   #primingPoll: ReturnType<typeof setTimeout> | null = null;
   #pumpsLockedUntil = Number.NEGATIVE_INFINITY;
   #read = false;
+  #firmwareRefused = false;
   #stopped = false;
   #inFlight: Promise<boolean> | null = null;
 
@@ -55,7 +61,12 @@ export class ControllerSession extends EventEmitter<{
       this.#read = true;
       if (this.faulted) {
         this.faulted = false;
-        this.#log.info("controller answering again");
+        this.#log.info(
+          this.#firmwareRefused
+            ? `controller firmware ${this.omni.mspVersion}`
+            : "controller answering again",
+        );
+        this.#firmwareRefused = false;
         this.emit("fault", false);
       }
       const priming = this.#priming();
@@ -69,9 +80,17 @@ export class ControllerSession extends EventEmitter<{
       }
       ok = true;
     } catch (error) {
+      const firmware = error instanceof FirmwareTooOldError;
+      if (!this.faulted || firmware !== this.#firmwareRefused) {
+        this.#log.warn(
+          error instanceof FirmwareTooOldError
+            ? await unsupportedFirmwareMessage(this.omni, error)
+            : `controller not answering: ${String(error)}`,
+        );
+      }
+      this.#firmwareRefused = firmware;
       if (!this.faulted) {
         this.faulted = true;
-        this.#log.warn(`controller not answering: ${String(error)}`);
         this.emit("fault", true);
       }
       ok = false;

@@ -2,6 +2,7 @@ import type { Telemetry } from "@rygine/omnilogic-local-sdk";
 
 import { recordingLog } from "./hap";
 import { testSession } from "./session";
+import { telemetryFixture } from "./telemetry";
 
 describe("ControllerSession", () => {
   it("refreshes and reports success", async () => {
@@ -25,6 +26,71 @@ describe("ControllerSession", () => {
     omni.fetchTelemetry = good;
     expect(await session.refresh()).toBe(true);
     expect(faults).toEqual([true, false]);
+  });
+
+  it("names unsupported firmware once, in place of the not-answering warning, and faults", async () => {
+    const telemetry = telemetryFixture();
+    telemetry.backyard.mspVersion = "R0501000";
+    const { lines, log } = recordingLog();
+    const { session } = testSession({ telemetry, log });
+    const faults: boolean[] = [];
+    session.on("fault", (f) => faults.push(f));
+    expect(await session.refresh()).toBe(false);
+    expect(await session.refresh()).toBe(false);
+    expect(lines).toEqual([
+      "Firmware R0501000 is not supported: R0502000 or newer required.",
+    ]);
+    expect(faults).toEqual([true]);
+
+    telemetry.backyard.mspVersion = "R0502000";
+    expect(await session.refresh()).toBe(true);
+    expect(lines.at(-1)).toBe("controller firmware R0502000");
+    expect(faults).toEqual([true, false]);
+  });
+
+  it("names the firmware from the system info when telemetry reports no version", async () => {
+    const telemetry = telemetryFixture();
+    delete telemetry.backyard.mspVersion;
+    const { lines, log } = recordingLog();
+    const { session, omni } = testSession({ telemetry, log });
+    vi.spyOn(omni, "fetchSysInfo").mockResolvedValueOnce({
+      numComponents: 1,
+      components: [
+        {
+          devName: "MSP",
+          type: "MSP",
+          hua: "",
+          version: "R0302001",
+          nodeId: -1,
+          systemId: 1,
+          upgradeCapable: true,
+        },
+      ],
+    });
+    expect(await session.refresh()).toBe(false);
+    expect(lines).toEqual([
+      "Firmware R0302001 is not supported: R0502000 or newer required.",
+    ]);
+  });
+
+  it("names unsupported firmware after an earlier network fault, and unknown firmware as unknown", async () => {
+    const telemetry = telemetryFixture();
+    delete telemetry.backyard.mspVersion;
+    const { lines, log } = recordingLog();
+    const { session, omni } = testSession({ telemetry, log });
+    const faults: boolean[] = [];
+    session.on("fault", (f) => faults.push(f));
+    const good = omni.fetchTelemetry;
+    omni.fetchTelemetry = () => Promise.reject(new Error("timeout"));
+    expect(await session.refresh()).toBe(false);
+    omni.fetchTelemetry = good;
+    expect(await session.refresh()).toBe(false);
+    expect(await session.refresh()).toBe(false);
+    expect(lines).toEqual([
+      "controller not answering: Error: timeout",
+      "Firmware version unknown: R0502000 or newer required.",
+    ]);
+    expect(faults).toEqual([true]);
   });
 
   it("a refreshed listener that throws reaches the caller and does not fault the session", async () => {

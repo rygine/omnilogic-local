@@ -4,6 +4,8 @@ import type { Exposable } from "@/discovery";
 export const installHomebridge = (
   found: Exposable[],
   config?: Record<string, unknown>,
+  // what a failed Discover rejects with
+  failure?: unknown,
 ) => {
   const saved: unknown[] = [];
   const fake = {
@@ -14,9 +16,11 @@ export const installHomebridge = (
       return Promise.resolve();
     },
     request: (path: string) =>
-      path === "/discover"
-        ? Promise.resolve(found)
-        : Promise.reject(new Error(path)),
+      path !== "/discover"
+        ? Promise.reject(new Error(path))
+        : failure === undefined
+          ? Promise.resolve(found)
+          : Promise.reject(failure),
     showSpinner: () => {},
     hideSpinner: () => {},
     hideSchemaForm: () => {},
