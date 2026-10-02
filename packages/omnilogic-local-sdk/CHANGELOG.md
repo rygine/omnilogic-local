@@ -3,6 +3,13 @@
 All notable changes to this project are recorded here, and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## 0.0.8
+
+- Updated `refresh()` to refuse a controller that reports no firmware version
+- Updated `FirmwareTooOldError` message
+- Changed `configChksum` and `mspVersion` to optional in telemetry
+- Changed `timeZone`, `dst`, and `internetTime` to optional in the configuration
+
 ## 0.0.7
 
 - Added `minSpeed`, `maxSpeed`, `presets`, and `speedType` to every pump
