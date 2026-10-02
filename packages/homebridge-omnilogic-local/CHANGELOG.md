@@ -3,6 +3,12 @@
 All notable changes to this project are recorded here, and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## 0.0.4
+
+- Captured and added logs for every error from a HomeKit set
+- Updated startup check to keep accessories when the config is invalid
+- Added a log line when no controller is configured
+
 ## 0.0.3
 
 - Changed a single-speed filter pump to a Switch only, at its maximum speed
