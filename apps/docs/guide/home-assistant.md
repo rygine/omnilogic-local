@@ -9,6 +9,16 @@ Connect your OmniLogic controller to Home Assistant to:
 
 The bridge runs as the **OmniLogicLocal** app, or on its own.
 
+## Requirements
+
+- Home Assistant, with the MQTT integration and a broker
+- Hayward OmniLogic MSP firmware 5.2 (R0502000) or newer
+- Network access to the OmniLogic controller on UDP port 10444
+
+On older firmware, the bridge adds no devices. It logs the firmware version and,
+with Home Assistant API access, shows a notification. It keeps checking, and
+adds the devices once the controller is upgraded.
+
 ## Installing
 
 ### With Home Assistant OS
@@ -169,11 +179,11 @@ Home Assistant lists these entities under **Diagnostic** on the device's page.
 | Chemistry Sense and Dispense | pH calibration and alarm limits               |
 
 Press **Save diagnostics** on the controller device to save a JSON file. The
-file holds the bridge's version and settings, and the controller's raw
-configuration, telemetry, and system information. The app saves it in Home
-Assistant's `share` folder, under `omnilogiclocal`. Outside the app, it goes in
-`STATE_DIR`. With Home Assistant API access, a notification gives the file's
-path.
+file holds the bridge's version and settings, without the MQTT broker URL, and
+the controller's raw configuration, telemetry, and system information. The app
+saves it in Home Assistant's `share` folder, under `omnilogiclocal`. Outside the
+app, it goes in `STATE_DIR`. With Home Assistant API access, a notification
+gives the file's path.
 
 ## Importing schedules
 

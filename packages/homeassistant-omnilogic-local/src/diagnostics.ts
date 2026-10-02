@@ -29,7 +29,14 @@ export const saveDiagnostics = async (
   await writeFile(
     path,
     JSON.stringify(
-      { bridge: { version: pkg.version, ...settings }, controller },
+      {
+        bridge: {
+          version: pkg.version,
+          ...settings,
+          mqttUrl: "redacted",
+        },
+        controller,
+      },
       null,
       2,
     ),

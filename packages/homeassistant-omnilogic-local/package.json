@@ -39,7 +39,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@rygine/omnilogic-local-sdk": "^0.0.7",
+    "@rygine/omnilogic-local-sdk": "^0.0.8",
     "mqtt": "^5.16.0"
   },
   "devDependencies": {

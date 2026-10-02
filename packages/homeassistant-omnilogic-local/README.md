@@ -19,6 +19,7 @@ over MQTT. No internet or cloud login required.
 
 - Home Assistant, with the MQTT integration and a broker
 - Node.js >= 22, only when running outside the Home Assistant app
+- Hayward OmniLogic MSP firmware 5.2 (R0502000) or newer
 - Network access to the OmniLogic controller on port 10444
 
 ## Installation

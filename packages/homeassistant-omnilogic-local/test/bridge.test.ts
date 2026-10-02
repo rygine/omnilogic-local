@@ -40,8 +40,24 @@ const cmps = (t: ReturnType<typeof setup>) =>
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
+
+// a fake Home Assistant REST API, recording each service call
+const haApi = () => {
+  const calls: { url: string; body: Record<string, unknown> }[] = [];
+  vi.stubGlobal("fetch", async (url: string, init: RequestInit = {}) => {
+    calls.push({
+      url,
+      body: JSON.parse(
+        typeof init.body === "string" ? init.body : "{}",
+      ) as Record<string, unknown>,
+    });
+    return Response.json({});
+  });
+  return { api: { url: "http://ha/api", token: "t" }, calls };
+};
 
 describe("polling", () => {
   it("publishes retained discovery and state, sharing a poll between overlapping callers and republishing only a changed state", async () => {
@@ -477,6 +493,111 @@ describe("configuration changes", () => {
   });
 });
 
+describe("firmware", () => {
+  it("logs the controller's firmware each time it comes online, and dismisses the firmware notification", async () => {
+    const { api, calls } = haApi();
+    const info = vi.fn();
+    const t = setup({}, { api, log: { ...silent, info } });
+    vi.spyOn(t.omni, "refresh").mockRejectedValueOnce(new Error("timeout"));
+    expect(await t.bridge.poll()).toBe(false);
+    expect(await t.bridge.poll()).toBe(true);
+    expect(await t.bridge.poll()).toBe(true);
+    expect(
+      info.mock.calls.filter(
+        ([line]) => line === "controller firmware R0502000",
+      ),
+    ).toHaveLength(1);
+    expect(
+      calls.filter((c) => c.url.endsWith("/persistent_notification/dismiss")),
+    ).toEqual([
+      {
+        url: "http://ha/api/services/persistent_notification/dismiss",
+        body: { notification_id: "omnilogic_firmware" },
+      },
+    ]);
+  });
+
+  it("marks the controller offline when its firmware is refused after it was online", async () => {
+    const telemetry = telemetryFixture();
+    const t = setup({ telemetry });
+    expect(await t.bridge.poll()).toBe(true);
+    expect(t.last("omnilogic/controller")).toBe("online");
+
+    telemetry.backyard.mspVersion = "R0501000";
+    expect(await t.bridge.poll()).toBe(false);
+    expect(t.last("omnilogic/controller")).toBe("offline");
+  });
+
+  it("refuses unsupported firmware once, publishing nothing, then bridges after an upgrade and dismisses the notification", async () => {
+    const { api, calls } = haApi();
+    const warn = vi.fn();
+    const info = vi.fn();
+    const telemetry = telemetryFixture();
+    telemetry.backyard.mspVersion = "R0501000";
+    const t = setup({ telemetry }, { api, log: { ...silent, warn, info } });
+
+    expect(await t.bridge.poll()).toBe(false);
+    expect(await t.bridge.poll()).toBe(false);
+    const reason =
+      "Firmware R0501000 is not supported: R0502000 or newer required.";
+    expect(warn.mock.calls).toEqual([[reason]]);
+    expect(calls).toEqual([
+      {
+        url: "http://ha/api/services/persistent_notification/create",
+        body: {
+          notification_id: "omnilogic_firmware",
+          title: "OmniLogic firmware not supported",
+          message: reason,
+        },
+      },
+    ]);
+    expect(t.json(CONTROLLER)).toBeUndefined();
+
+    telemetry.backyard.mspVersion = "R0502000";
+    expect(await t.bridge.poll()).toBe(true);
+    expect(info).toHaveBeenCalledWith("controller firmware R0502000");
+    expect(calls).toContainEqual({
+      url: "http://ha/api/services/persistent_notification/dismiss",
+      body: { notification_id: "omnilogic_firmware" },
+    });
+    expect(t.json(CONTROLLER)).toBeDefined();
+  });
+
+  it("names the firmware from the system info when telemetry reports no version, or says it is unknown", async () => {
+    const warn = vi.fn();
+    const telemetry = telemetryFixture();
+    delete telemetry.backyard.mspVersion;
+    const t = setup({ telemetry }, { log: { ...silent, warn } });
+    vi.spyOn(t.omni, "fetchSysInfo").mockResolvedValueOnce({
+      numComponents: 1,
+      components: [
+        {
+          devName: "MSP",
+          type: "MSP",
+          hua: "",
+          version: "R0302001",
+          nodeId: -1,
+          systemId: 1,
+          upgradeCapable: true,
+        },
+      ],
+    });
+    await t.bridge.poll();
+    expect(warn).toHaveBeenCalledWith(
+      "Firmware R0302001 is not supported: R0502000 or newer required.",
+    );
+
+    const unknown = setup({ telemetry }, { log: { ...silent, warn } });
+    vi.spyOn(unknown.omni, "fetchSysInfo").mockRejectedValueOnce(
+      new Error("timeout"),
+    );
+    await unknown.bridge.poll();
+    expect(warn).toHaveBeenLastCalledWith(
+      "Firmware version unknown: R0502000 or newer required.",
+    );
+  });
+});
+
 describe("logging", () => {
   it("logs at LOG_LEVEL and above, and from warn when LOG_LEVEL is unset", () => {
     const debug = vi.spyOn(console, "debug").mockImplementation(() => {});
@@ -499,9 +620,14 @@ describe("logging", () => {
 });
 
 describe("diagnostics", () => {
-  it("saves the bridge's settings and the controller's raw configuration, telemetry, and system info to one file, without the units' hardware addresses", async () => {
+  it("saves the bridge's settings and the controller's raw configuration, telemetry, and system info to one file, without the units' hardware addresses or the broker URL", async () => {
     const dir = await mkdtemp(join(tmpdir(), "diagnostics-"));
-    const t = setup({}, { diagnosticsDir: join(dir, "out") });
+    // the settings as the app passes them, broker URL included
+    const settings = {
+      diagnosticsDir: join(dir, "out"),
+      mqttUrl: "mqtt://addons:secret@core-mosquitto:1883",
+    };
+    const t = setup({}, settings);
     await t.bridge.poll();
 
     const save = cmps(t).save_diagnostics;
@@ -510,9 +636,10 @@ describe("diagnostics", () => {
 
     const [file] = await readdir(join(dir, "out"));
     expect(file).toMatch(/^diagnostics-.*\.json$/);
-    const saved = JSON.parse(
-      await readFile(join(dir, "out", file!), "utf8"),
-    ) as {
+    const text = await readFile(join(dir, "out", file!), "utf8");
+    expect(text).not.toContain("secret");
+    expect(text).not.toContain("core-mosquitto");
+    const saved = JSON.parse(text) as {
       bridge: Record<string, unknown>;
       controller: Record<string, unknown>;
     };
@@ -523,6 +650,7 @@ describe("diagnostics", () => {
       apiAccess: false,
     });
     expect(saved.bridge).not.toHaveProperty("api");
+    expect(saved.bridge.mqttUrl).toBe("redacted");
     expect(saved.bridge.version).toEqual(expect.any(String));
     expect(saved.controller.config).toEqual(
       expect.stringContaining("<MSPConfig"),

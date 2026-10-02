@@ -38,6 +38,11 @@ export const notify = (api: Api, id: string, title: string, message: string) =>
     message,
   });
 
+export const dismiss = (api: Api, id: string) =>
+  callService(api, "persistent_notification", "dismiss", {
+    notification_id: id,
+  });
+
 export const automationExists = async (api: Api, id: string) =>
   (await call(api, `/config/automation/config/${id}`)).ok;
 

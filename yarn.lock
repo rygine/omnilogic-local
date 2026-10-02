@@ -1903,7 +1903,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@rygine/homeassistant-omnilogic-local@workspace:packages/homeassistant-omnilogic-local"
   dependencies:
-    "@rygine/omnilogic-local-sdk": "npm:^0.0.7"
+    "@rygine/omnilogic-local-sdk": "npm:^0.0.8"
     "@types/node": "npm:^26.6.3"
     "@vitest/coverage-v8": "npm:^5.0.2"
     mqtt: "npm:^5.16.0"

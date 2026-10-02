@@ -1,7 +1,10 @@
-import type { OmniLogic } from "@rygine/omnilogic-local-sdk";
+import {
+  FirmwareTooOldError,
+  type OmniLogic,
+} from "@rygine/omnilogic-local-sdk";
 import type { MqttClient } from "mqtt";
 
-import { notify } from "@/api";
+import { dismiss, notify } from "@/api";
 import { saveDiagnostics } from "@/diagnostics";
 import { backyardEntities } from "@/entities/backyard";
 import { body } from "@/entities/body";
@@ -99,6 +102,8 @@ export const devicesOf = (
   return all;
 };
 
+const FIRMWARE_NOTIFICATION = "omnilogic_firmware";
+
 // a value as Home Assistant reads it from state
 const encode = (value: unknown) =>
   typeof value === "boolean" ? (value ? "ON" : "OFF") : (value ?? null);
@@ -124,6 +129,7 @@ export class Bridge {
   // resolves when the last write has ended
   #lastWrite: Promise<void> = Promise.resolve();
   #online?: boolean;
+  #firmwareRefused = false;
   #retainedTopics = new Set<string>();
   #timers: ReturnType<typeof setInterval>[] = [];
 
@@ -372,8 +378,25 @@ export class Bridge {
     try {
       await this.#omni.refresh();
     } catch (error) {
-      this.#setOnline(false, error);
+      if (error instanceof FirmwareTooOldError) {
+        if (this.#online === true) {
+          this.#setOnline(false, error);
+        }
+        await this.#refuseFirmware(error);
+      } else {
+        this.#setOnline(false, error);
+      }
       return false;
+    }
+    if (this.#online !== true) {
+      this.#firmwareRefused = false;
+      this.#log.info(`controller firmware ${this.#omni.mspVersion}`);
+      const { api } = this.#options;
+      if (api !== undefined) {
+        dismiss(api, FIRMWARE_NOTIFICATION).catch((error: unknown) => {
+          this.#log.warn(`firmware notification: ${messageOf(error)}`);
+        });
+      }
     }
     this.#setOnline(true);
     if (this.#omni.configChecksum !== this.#checksum) {
@@ -386,6 +409,34 @@ export class Bridge {
       this.#log.warn(`schedule notification: ${messageOf(error)}`);
     });
     return true;
+  }
+
+  async #refuseFirmware(refusal: FirmwareTooOldError) {
+    if (this.#firmwareRefused) {
+      return;
+    }
+    this.#firmwareRefused = true;
+    const version =
+      refusal.version ??
+      (await this.#omni.fetchSysInfo().catch(() => undefined))?.components.find(
+        (c) => c.type === "MSP",
+      )?.version;
+    const [reason] = new FirmwareTooOldError({
+      version,
+      minimum: refusal.minimum,
+    }).message.split("\n\n");
+    this.#log.warn(reason!);
+    const { api } = this.#options;
+    if (api !== undefined) {
+      await notify(
+        api,
+        FIRMWARE_NOTIFICATION,
+        "OmniLogic firmware not supported",
+        reason!,
+      ).catch((error: unknown) => {
+        this.#log.warn(`firmware notification: ${messageOf(error)}`);
+      });
+    }
   }
 
   async #updateCommandRead(device: DeviceSpec, e: Entity) {
