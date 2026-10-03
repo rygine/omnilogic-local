@@ -16,8 +16,8 @@ The bridge runs as the **OmniLogicLocal** app, or on its own.
 - Network access to the OmniLogic controller on UDP port 10444
 
 On older firmware, the bridge adds no devices. It logs the firmware version and,
-with Home Assistant API access, shows a notification. It keeps checking, and
-adds the devices once the controller is upgraded.
+with Home Assistant API access, shows a notification. It adds the devices after
+you upgrade the controller.
 
 ## Installing
 

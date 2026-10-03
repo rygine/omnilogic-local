@@ -1,7 +1,6 @@
 # Homebridge plugin
 
-`OmniLogicLocal` is a Homebridge platform plugin that puts a controller's
-equipment in HomeKit over your local network.
+This plugin lets you control your pool equipment in HomeKit.
 
 ## Requirements
 
@@ -12,7 +11,6 @@ equipment in HomeKit over your local network.
 
 On older firmware, the plugin logs that the firmware is not supported and adds
 no accessories, and **Discover** on the settings page shows the same message.
-Tiles it added before show a fault until the controller is upgraded.
 
 ## Installing
 

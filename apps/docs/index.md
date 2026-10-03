@@ -18,11 +18,13 @@ features:
     link: /guide/cli
     linkText: Use the command line
   - title: Homebridge plugin
-    details: Your pool equipment in HomeKit via Homebridge.
+    details: Control your pool equipment in HomeKit with Homebridge.
     link: /guide/homebridge
     linkText: Set up the plugin
   - title: Home Assistant bridge
-    details: Your pool equipment in Home Assistant via MQTT discovery.
+    details:
+      Control your pool equipment and settings in Home Assistant with MQTT
+      discovery.
     link: /guide/home-assistant
     linkText: Set up the bridge
   - title: Web app
