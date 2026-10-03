@@ -24,7 +24,7 @@ const setup = (overrides: Partial<Pick<Props, "onSave" | "onTest">> = {}) => {
 };
 
 describe("SettingsForm", () => {
-  it("disables both buttons until the host is a valid address", async () => {
+  it("disables Test until the host is a valid address, and Save until a test passes", async () => {
     setup();
     const user = userEvent.setup();
     expect(screen.getByRole("button", { name: /test/i })).toBeDisabled();
@@ -37,7 +37,7 @@ describe("SettingsForm", () => {
     expect(screen.getByRole("button", { name: /save/i })).toBeDisabled();
     await user.type(screen.getByRole("textbox", { name: "IP" }), ".228");
     expect(screen.getByRole("button", { name: /test/i })).toBeEnabled();
-    expect(screen.getByRole("button", { name: /save/i })).toBeEnabled();
+    expect(screen.getByRole("button", { name: /save/i })).toBeDisabled();
   });
 
   it("keeps Save disabled while the address matches what is stored", async () => {
@@ -60,6 +60,8 @@ describe("SettingsForm", () => {
       screen.getByRole("textbox", { name: "IP" }),
       "192.168.1.101",
     );
+    expect(screen.getByRole("button", { name: /save/i })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: /test/i }));
     expect(screen.getByRole("button", { name: /save/i })).toBeEnabled();
   });
 
@@ -70,17 +72,92 @@ describe("SettingsForm", () => {
       screen.getByRole("textbox", { name: "IP" }),
       "192.168.1.100",
     );
+    await user.click(screen.getByRole("button", { name: /test/i }));
     await user.click(screen.getByRole("button", { name: /save/i }));
     expect(onSave).toHaveBeenCalledWith({ host: "192.168.1.100", port: 10444 });
   });
 
-  it("runs the test against the current address and reports through a notification", async () => {
-    const { onTest } = setup();
+  it("shows the test's result under the fields until the address changes", async () => {
+    const firmware =
+      "Firmware R0501000 is not supported: R0502000 or newer required.";
+    const onTest = vi
+      .fn<Props["onTest"]>()
+      .mockResolvedValueOnce({ ok: false, message: firmware })
+      .mockResolvedValueOnce({
+        ok: true,
+        message: "Connection successful. Save to continue.",
+      });
+    setup({ onTest });
     const user = userEvent.setup();
-    await user.type(screen.getByRole("textbox", { name: "IP" }), "1.1.1.1");
+    const ip = screen.getByRole("textbox", { name: "IP" });
+    await user.type(ip, "1.1.1.1");
     await user.click(screen.getByRole("button", { name: /test/i }));
     expect(onTest).toHaveBeenCalledWith({ host: "1.1.1.1", port: 10444 });
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(firmware);
+
+    await user.type(ip, "1");
+    expect(screen.queryByText(firmware)).toBeNull();
+    expect(
+      screen.getByText("Test the connection before saving."),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /test/i }));
+    expect(
+      screen.getByText("Connection successful. Save to continue."),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
+  it("enables Save only after a passing test of the address entered", async () => {
+    const onTest = vi
+      .fn<Props["onTest"]>()
+      .mockResolvedValueOnce({
+        ok: false,
+        message:
+          "Firmware R0501000 is not supported: R0502000 or newer required.",
+      })
+      .mockResolvedValue({ ok: true });
+    setup({ onTest });
+    const user = userEvent.setup();
+    const ip = screen.getByRole("textbox", { name: "IP" });
+    const save = () => screen.getByRole("button", { name: /save/i });
+    await user.type(ip, "192.168.1.100");
+    await user.click(screen.getByRole("button", { name: /test/i }));
+    expect(save()).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: /test/i }));
+    expect(save()).toBeEnabled();
+    await user.type(ip, "1");
+    expect(save()).toBeDisabled();
+  });
+
+  it("clears a verified address when a later test request fails", async () => {
+    const onTest = vi
+      .fn<Props["onTest"]>()
+      .mockResolvedValueOnce({ ok: true })
+      .mockRejectedValueOnce(new Error("network"));
+    setup({ onTest });
+    const user = userEvent.setup();
+    await user.type(
+      screen.getByRole("textbox", { name: "IP" }),
+      "192.168.1.100",
+    );
+    await user.click(screen.getByRole("button", { name: /test/i }));
+    expect(screen.getByRole("button", { name: /save/i })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: /test/i }));
+    expect(screen.getByRole("button", { name: /save/i })).toBeDisabled();
+  });
+
+  it("asks for a test while Save waits on one", async () => {
+    setup();
+    const user = userEvent.setup();
+    const hint = "Test the connection before saving.";
+    expect(screen.queryByText(hint)).toBeNull();
+    await user.type(
+      screen.getByRole("textbox", { name: "IP" }),
+      "192.168.1.100",
+    );
+    expect(screen.getByText(hint)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /test/i }));
+    expect(screen.queryByText(hint)).toBeNull();
   });
 });

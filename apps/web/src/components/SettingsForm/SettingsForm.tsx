@@ -6,11 +6,11 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 
 import { inputNumber } from "@/client/number-input";
 import type { Connection } from "@/client/settings";
+import { UNREACHABLE } from "@/components/LoadError/LoadError";
 import { isValidHost } from "@/shared/host";
 
 export const SettingsForm = ({
@@ -28,6 +28,11 @@ export const SettingsForm = ({
   const [host, setHost] = useState(initial.host);
   const [port, setPort] = useState<number | string>(initial.port);
   const [testing, setTesting] = useState(false);
+  const [lastTest, setLastTest] = useState<{
+    address: string;
+    ok: boolean;
+    message: string;
+  }>();
 
   const portValue = inputNumber(port);
   const hostOk = isValidHost(host);
@@ -35,23 +40,36 @@ export const SettingsForm = ({
     Number.isInteger(portValue) && portValue >= 1 && portValue <= 65535;
   const valid = hostOk && portOk;
   const changed = host.trim() !== initial.host || portValue !== initial.port;
-  // one message line: the IP's problem first
-  const message =
+  const address = `${host.trim()}:${portValue}`;
+  const tested = lastTest?.address === address ? lastTest : undefined;
+  const awaitingTest = valid && changed && tested?.ok !== true;
+  const invalid =
     host.length > 0 && !hostOk
       ? "Enter an IP address or a hostname"
       : portOk
         ? undefined
         : "Port is a whole number between 1 and 65535";
+  // one line under the fields: an invalid entry first, then the test's result
+  const line =
+    invalid !== undefined
+      ? { text: invalid, color: "red" }
+      : tested !== undefined
+        ? { text: tested.message, color: tested.ok ? "green" : "red" }
+        : awaitingTest
+          ? {
+              text: "Test the connection before saving.",
+              color: "dimmed",
+            }
+          : undefined;
 
   const handleTest = async () => {
     setTesting(true);
+    setLastTest(undefined);
     try {
-      const res = await onTest({ host: host.trim(), port: portValue });
-      notifications.show({
-        color: res.ok ? "green" : "red",
-        title: res.ok ? "Connection successful" : "Connection failed",
-        message: res.message ?? "",
-      });
+      const res = await onTest({ host: host.trim(), port: portValue }).catch(
+        () => ({ ok: false, message: UNREACHABLE }),
+      );
+      setLastTest({ address, ok: res.ok, message: res.message ?? "" });
     } finally {
       setTesting(false);
     }
@@ -93,19 +111,19 @@ export const SettingsForm = ({
               disabled={!valid}>
               Test connection
             </Button>
-            <Button type="submit" disabled={!valid || !changed}>
+            <Button type="submit" disabled={!valid || !changed || awaitingTest}>
               Save
             </Button>
           </Group>
         </Group>
         <Text
-          size="xs"
-          c="red"
+          size="sm"
+          c={line?.color}
           mt={-8}
-          mih={18}
-          role={message === undefined ? undefined : "alert"}
+          mih={22}
+          role={line?.color === "red" ? "alert" : undefined}
           aria-live="polite">
-          {message ?? "\u00a0"}
+          {line?.text ?? "\u00a0"}
         </Text>
       </Stack>
     </form>

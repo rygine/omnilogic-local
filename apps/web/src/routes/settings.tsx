@@ -67,8 +67,11 @@ const SettingsPage = () => {
           onTest={async (s) => {
             const res = await ping({ data: s });
             return res.ok
-              ? { ok: true, message: "Controller reachable." }
-              : { ok: false, message: UNREACHABLE };
+              ? {
+                  ok: true,
+                  message: "Connection successful. Save to continue.",
+                }
+              : { ok: false, message: res.message ?? UNREACHABLE };
           }}
         />
       ) : (

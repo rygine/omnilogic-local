@@ -1,34 +1,32 @@
 import { callServerFn } from "@tests/server/support";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { fetchSysInfo, fetchConfig, built } = vi.hoisted(() => ({
-  fetchSysInfo: vi.fn(() => Promise.resolve({})),
-  fetchConfig: vi.fn(() => Promise.resolve({})),
+const { refresh, built } = vi.hoisted(() => ({
+  refresh: vi.fn(() => Promise.resolve()),
   built: vi.fn(),
 }));
-vi.mock("@rygine/omnilogic-local-sdk", () => ({
+vi.mock("@rygine/omnilogic-local-sdk", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
   OmniLogic: class {
     constructor(options: unknown) {
       built(options);
     }
-    fetchSysInfo = fetchSysInfo;
-    fetchConfig = fetchConfig;
+    refresh = refresh;
+    mspVersion = "R0502000";
   },
 }));
 
 import { ping } from "./ping";
 
 beforeEach(() => {
-  fetchSysInfo.mockClear();
-  fetchConfig.mockClear();
+  refresh.mockClear();
 });
 
 describe("ping", () => {
-  // reachability only needs an answer, and the system info is the small one
-  it("asks for the system info, not the whole config", async () => {
+  // the SDK's own refresh decides whether the firmware is supported
+  it("checks the controller through a refresh", async () => {
     await callServerFn(ping, { host: "192.168.1.100", port: 10444 });
-    expect(fetchSysInfo).toHaveBeenCalled();
-    expect(fetchConfig).not.toHaveBeenCalled();
+    expect(refresh).toHaveBeenCalledTimes(1);
   });
 
   // a wrong address must not hold the send queue for the SDK's full patience
