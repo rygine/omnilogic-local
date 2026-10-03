@@ -45,9 +45,6 @@ const SystemPage = () => {
       getSystemInventory({ data: { ...settings, refresh: true } }),
     onSuccess: (data) => queryClient.setQueryData(inventoryKey, data),
   });
-  if (!hasSettings(settings)) {
-    return null;
-  }
 
   // the config's own System rows join the facts at the top
   const systemRows =

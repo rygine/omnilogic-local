@@ -13,7 +13,6 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { useBows, useFavorites } from "@/client/queries";
-import { hasSettings, useSettings } from "@/client/settings";
 import { useCreateTheme, useThemes } from "@/client/themes";
 import { Empty } from "@/components/Empty/Empty";
 import { EquipmentList } from "@/components/EquipmentList/EquipmentList";
@@ -24,7 +23,6 @@ import { THEME_NAME_MAX, utf8Bytes } from "@/shared/names";
 import { THEME_FAVORITE_DATA } from "@/shared/spillover";
 
 const ThemesPage = () => {
-  const settings = useSettings();
   const navigate = useNavigate();
 
   const [createOpen, createModal] = useDisclosure(false);
@@ -34,10 +32,6 @@ const ThemesPage = () => {
   const bows = useBows();
   const favorites = useFavorites();
   const createMut = useCreateTheme();
-
-  if (!hasSettings(settings)) {
-    return null;
-  }
 
   return (
     <ContentLayout title="Themes">

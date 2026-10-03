@@ -3,7 +3,6 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 
 import { deviceRows } from "@/client/equipment-rows";
 import { useBows, useSystemState } from "@/client/queries";
-import { hasSettings, useSettings } from "@/client/settings";
 import { Empty } from "@/components/Empty/Empty";
 import { DeviceCard } from "@/components/EquipmentCard/DeviceCard";
 import { ContentLayout } from "@/components/layout/ContentLayout";
@@ -13,14 +12,9 @@ import { TemperatureReading } from "@/components/Temperature/TemperatureReading"
 import type { BowDetail } from "@/server/serializers";
 
 const Equipment = () => {
-  const settings = useSettings();
   const bows = useBows();
   const systemState = useSystemState();
   const navigate = useNavigate();
-
-  if (!hasSettings(settings)) {
-    return null;
-  }
 
   const openDevice = (id: number) =>
     void navigate({

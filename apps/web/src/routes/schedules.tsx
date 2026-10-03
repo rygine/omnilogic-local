@@ -3,7 +3,6 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 
 import { useBows, useSchedules } from "@/client/queries";
 import { scheduleTargets } from "@/client/schedule-targets";
-import { hasSettings, useSettings } from "@/client/settings";
 import { useThemes } from "@/client/themes";
 import { Empty } from "@/components/Empty/Empty";
 import { ContentLayout } from "@/components/layout/ContentLayout";
@@ -13,15 +12,10 @@ import { SectionsSkeleton } from "@/components/Skeletons/SectionsSkeleton";
 import type { BowDetail, ScheduleSummary } from "@/server/serializers";
 
 const Schedules = () => {
-  const settings = useSettings();
   const q = useSchedules();
   const bows = useBows();
   const themes = useThemes();
   const navigate = useNavigate();
-
-  if (!hasSettings(settings)) {
-    return null;
-  }
 
   const targets = bows.data ? scheduleTargets(bows.data, themes.data) : [];
   const openSchedule = (id: number) =>

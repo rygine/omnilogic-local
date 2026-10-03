@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 
 import { favoriteRows, themeFavoriteRows } from "@/client/favorites";
 import { useBows, useFavorites } from "@/client/queries";
-import { hasSettings, useSettings } from "@/client/settings";
 import { useThemes } from "@/client/themes";
 import { Empty } from "@/components/Empty/Empty";
 import { DeviceCard } from "@/components/EquipmentCard/DeviceCard";
@@ -16,15 +15,10 @@ import { ThemeCard } from "@/components/ThemeCard/ThemeCard";
 
 // a section per body, then Themes
 const Favorites = () => {
-  const settings = useSettings();
   const favorites = useFavorites();
   const bows = useBows();
   const themes = useThemes();
   const navigate = useNavigate();
-
-  if (!hasSettings(settings)) {
-    return null;
-  }
 
   const openDevice = (id: number) =>
     void navigate({
